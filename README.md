@@ -53,11 +53,11 @@ SADROG records your screen, a window, your camera and sound on macOS, then lets 
 - Without activation: open, edit and save projects.
 - With activation: new recording and export.
 - **5-day Full trial**, starting at the first actual activation, after manual approval of the request. One trial per Mac.
-- **Permanent activation** after a 25 EUR contribution, checked by the developer: no subscription, one Mac, works offline once activated.
+- **Permanent activation:** the conditions for permanent activation are available in the app.
 - The request sends your name and e-mail (only to reply), computer name, chosen option, language, version and this Mac’s identifier — no recordings, projects or files.
 
-![Activation page (name and e-mail fields empty).](docs/images/en-11-activation-900.webp)
-*Activation page (name and e-mail fields empty).*
+![Activation page, excerpt (name and e-mail fields empty).](docs/images/en-11-activation-900.webp)
+*Activation page, excerpt (name and e-mail fields empty).*
 
 ## User manual
 

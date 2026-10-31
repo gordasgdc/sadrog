@@ -53,11 +53,11 @@ SADROG graba la pantalla, una ventana, la cámara y el sonido en macOS, y luego 
 - Sin activación: abres, editas y guardas proyectos.
 - Con activación: grabación nueva y exportación.
 - **Prueba Full de 5 días**, desde la primera activación efectiva, tras la aprobación manual de la solicitud. Una prueba por Mac.
-- **Activación permanente** tras una contribución de 25 EUR, verificada por el desarrollador: sin suscripción, un Mac, funciona sin conexión una vez activada.
+- **Activación permanente:** las condiciones de la activación permanente están disponibles en la aplicación.
 - La solicitud envía tu nombre y correo (solo para responder), el nombre del ordenador, la opción elegida, el idioma, la versión y el identificador de este Mac; no envía grabaciones, proyectos ni archivos.
 
-![Página Activación (campos de nombre y correo vacíos).](docs/images/es-11-activation-900.webp)
-*Página Activación (campos de nombre y correo vacíos).*
+![Página Activación, fragmento (campos de nombre y correo vacíos).](docs/images/es-11-activation-900.webp)
+*Página Activación, fragmento (campos de nombre y correo vacíos).*
 
 ## Manual de usuario
 

@@ -9,7 +9,7 @@
 - Export: copy without re-encoding, compressed, ProRes master, and a lossless frame sequence + WAV; the destination is protected and a cancelled export leaves no partial file.
 - Projects open from older versions (format 16 reads formats up to 15) and are saved safely.
 - Languages: Romanian, English, Spanish. Dark, Light and System appearance.
-- Access: a 5-day Full trial approved by the owner and started at the first activation, or a permanent activation after a 25 EUR contribution (one Mac, works offline). Without activation you can still open, edit, save and recover projects; a new recording and an export need an active trial or permanent activation.
+- Access: a 5-day Full trial approved by the owner and started at the first activation, or a permanent activation (conditions available in the app). Without activation you can still open, edit, save and recover projects; a new recording and an export need an active trial or permanent activation.
 - Updates: checked from https://gordas.dev/sadrog/update.json.
 
 ## 0.6.0 (intermediate build, not published)

@@ -53,11 +53,11 @@ SADROG înregistrează ecranul, o fereastră, camera și sunetul pe macOS, apoi 
 - Fără activare: deschizi, editezi și salvezi proiecte.
 - Cu activare: înregistrare nouă și export.
 - **Trial Full de 5 zile**, pornit la prima activare efectivă, după aprobarea manuală a cererii. Un singur trial pe Mac.
-- **Activare permanentă** după o contribuție de 25 EUR, verificată de dezvoltator: fără abonament, un Mac, funcționează offline după activare.
+- **Activarea permanentă:** condițiile activării permanente sunt disponibile în aplicație.
 - Cererea trimite numele și e-mailul (doar pentru răspuns), numele calculatorului, opțiunea aleasă, limba, versiunea și identificatorul acestui Mac — nu trimite înregistrări, proiecte sau fișiere.
 
-![Pagina Activare (câmpurile nume și e-mail sunt goale).](docs/images/ro-11-activation-900.webp)
-*Pagina Activare (câmpurile nume și e-mail sunt goale).*
+![Pagina Activare, fragment (câmpurile nume și e-mail sunt goale).](docs/images/ro-11-activation-900.webp)
+*Pagina Activare, fragment (câmpurile nume și e-mail sunt goale).*
 
 ## Manual de utilizare
 
