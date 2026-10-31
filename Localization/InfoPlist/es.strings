@@ -1,0 +1,2 @@
+"NSCameraUsageDescription" = "SADROG graba la cámara que elijas, en un archivo aparte, solo mientras grabas.";
+"NSMicrophoneUsageDescription" = "SADROG usa el micrófono y las entradas de audio que elijas solo para mostrar el nivel y para grabar, cuando los activas expresamente.";

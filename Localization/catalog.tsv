@@ -1,0 +1,1115 @@
+# SADROG — catalog central RO → EN → ES (tab-separat). Cheia = textul românesc. Regenerare: python3 scripts/l10n_check.py
+1:1 cu sursa	1:1 with source	1:1 con la fuente
+Acces la microfon refuzat (Setări → Confidențialitate și securitate).	Microphone access denied (Settings → Privacy & Security).	Acceso al micrófono denegado (Ajustes → Privacidad y seguridad).
+Acordă…	Grant…	Conceder…
+Activează camera	Enable camera	Activar cámara
+Activează sursa	Enable source	Activar fuente
+Adaugă sursă	Add source	Añadir fuente
+Alege camera…	Choose camera…	Elige la cámara…
+Alege fereastra…	Choose window…	Elige la ventana…
+Alege monitorul…	Choose display…	Elige la pantalla…
+Anulează	Cancel	Cancelar
+Anulează exportul	Cancel export	Cancelar exportación
+Anulează pornirea	Cancel start	Cancelar inicio
+Anulează pornirea; nu se înregistrează nimic	Cancel the start; nothing is recorded	Cancela el inicio; no se graba nada
+Arată SADROG	Show SADROG	Mostrar SADROG
+Arată în Finder	Show in Finder	Mostrar en Finder
+Audio	Audio	Audio
+Cadre pe secundă	Frames per second	Fotogramas por segundo
+Cadre/s	Frames/s	Fotogramas/s
+Camera	Camera	Cámara
+Camera lipsește	Camera missing	Falta la cámara
+Camera se înregistrează în fișierul ei, pe ceasul comun; se pregătește înainte de numărătoare. În editor apare ca prezentator în cerc.	The camera is recorded to its own file on the shared clock and is prepared before the countdown. In the editor it appears as a circle presenter.	La cámara se graba en su propio archivo con el reloj común y se prepara antes de la cuenta atrás. En el editor aparece como presentador en círculo.
+Cameră	Camera	Cámara
+Cameră sau dispozitiv video	Camera or video device	Cámara o dispositivo de vídeo
+Canale	Channels	Canales
+Captură	Capture	Captura
+Ce	What	Qué
+Ce exporți	What to export	Qué exportar
+Container	Container	Contenedor
+Creează documentul	Create document	Crear documento
+Deschide	Open	Abrir
+Deschide un proiect SADROG din orice folder (de exemplu proiectul demonstrativ al versiunii intermediare)	Open a SADROG project from any folder (for example the demo project of the intermediate build)	Abre un proyecto SADROG desde cualquier carpeta (por ejemplo, el proyecto de demostración de la versión intermedia)
+Deschide un proiect…	Open a project…	Abrir un proyecto…
+Despre SADROG	About SADROG	Acerca de SADROG
+Detalii	Details	Detalles
+Detalii rezoluție	Resolution details	Detalles de resolución
+Dimensiunea și cadența documentului se aplică previzualizării și exportului. Nu depind de mărimea ferestrei sau de zoomul previzualizării; înregistrările se încadrează în document.	The document size and frame rate apply to preview and export. They do not depend on the window size or preview zoom; recordings are fitted into the document.	El tamaño y la cadencia del documento se aplican a la vista previa y a la exportación. No dependen del tamaño de la ventana ni del zoom; las grabaciones se ajustan al documento.
+Doar sursa video de mai sus. Poți adăuga alte monitoare, ferestre și camere; fiecare rămâne o pistă separată, editabilă.	Only the video source above. You can add other displays, windows and cameras; each stays a separate, editable track.	Solo la fuente de vídeo de arriba. Puedes añadir otras pantallas, ventanas y cámaras; cada una sigue siendo una pista separada y editable.
+Document	Document	Documento
+Document de montaj	Editing document	Documento de montaje
+Documente	Documents	Documentos
+Efectele audio, volumul, mute-ul și fade-urile fiecărei surse se aplică în fișierul ei. Volumul general (Mix) se aplică doar fișierului „mix”. Sursele mute nu se exportă.	Each source's audio effects, volume, mute and fades apply to its own file. The master (Mix) volume applies only to the “mix” file. Muted sources are not exported.	Los efectos de audio, el volumen, el silencio y los fundidos de cada fuente se aplican a su archivo. El volumen general (Mix) solo se aplica al archivo “mix”. Las fuentes silenciadas no se exportan.
+Elimină camera	Remove camera	Quitar cámara
+Elimină sursa	Remove source	Quitar fuente
+Exportă	Export	Exportar
+Fereastră	Window	Ventana
+Fișier captură	Capture file	Archivo de captura
+Fișiere	Files	Archivos
+Folder	Folder	Carpeta
+Format	Format	Formato
+Fără sunet. Adaugă sunetul calculatorului, un microfon sau canalele unui echipament extern; fiecare sursă devine o pistă separată în editor.	No sound. Add computer sound, a microphone or the channels of an external device; each source becomes a separate track in the editor.	Sin sonido. Añade el sonido del ordenador, un micrófono o los canales de un equipo externo; cada fuente se convierte en una pista separada en el editor.
+Gata	Done	Listo
+Gata de înregistrare	Ready to record	Listo para grabar
+Identifică: ramă roșie pe sursă timp de 2 s (nu intră în înregistrare)	Identify: red frame on the source for 2 s (not recorded)	Identificar: marco rojo en la fuente durante 2 s (no se graba)
+Imagine	Picture	Imagen
+Inversează	Swap	Invertir
+Lipsește permisiunea „Înregistrare ecran”.	The “Screen Recording” permission is missing.	Falta el permiso “Grabación de pantalla”.
+Lățime	Width	Anchura
+Maxim 1920 px	Maximum 1920 px	Máximo 1920 px
+Microfon	Microphone	Micrófono
+Monitor	Display	Pantalla
+Monitorul folosit data trecută. Nimic nu se înregistrează sau monitorizează până nu pornești tu.	The display used last time. Nothing is recorded or monitored until you start it.	La pantalla usada la última vez. No se graba ni se monitoriza nada hasta que lo inicies.
+Mărimea și cadența se schimbă din inspector → Document. Sursele separate se exportă cu opțiunea „Audio: mix + surse separate”.	Size and frame rate are changed in the inspector → Document. Separate sources are exported with “Audio: mix + separate sources”.	El tamaño y la cadencia se cambian en el inspector → Documento. Las fuentes separadas se exportan con “Audio: mezcla + fuentes separadas”.
+Nicio intrare audio detectată	No audio input detected	No se detectó ninguna entrada de audio
+Nicio înregistrare în folderul de destinație.	No recordings in the destination folder.	No hay grabaciones en la carpeta de destino.
+Niciun document creat separat.	No separately created documents.	Ningún documento creado por separado.
+Nume	Name	Nombre
+Numărătoare	Countdown	Cuenta atrás
+Oprește și salvează	Stop and save	Detener y guardar
+Orizontal ↔ vertical	Landscape ↔ portrait	Horizontal ↔ vertical
+Pauză sau reluare pentru TOATE sursele în același moment (⇧⌘P)	Pause or resume ALL sources at the same moment (⇧⌘P)	Pausa o reanudación de TODAS las fuentes en el mismo momento (⇧⌘P)
+Permisiuni macOS	macOS permissions	Permisos de macOS
+Permisiuni…	Permissions…	Permisos…
+Personalizat	Custom	Personalizado
+Pornește…	Starting…	Iniciando…
+Poți anula oricând; fișierul parțial se șterge.	You can cancel at any time; the partial file is deleted.	Puedes cancelar en cualquier momento; el archivo parcial se elimina.
+Preset	Preset	Ajuste
+Previzualizare (o imagine, la cerere)	Preview (one picture, on demand)	Vista previa (una imagen, a petición)
+Proporții	Aspect ratio	Proporción
+Regiune	Region	Región
+SADROG	SADROG	SADROG
+SIMULARE — nu se înregistrează	SIMULATION — nothing is recorded	SIMULACIÓN — no se graba nada
+Schimbă…	Change…	Cambiar…
+Se exportă…	Exporting…	Exportando…
+Se salvează în	Saved to	Se guarda en
+Se salvează…	Saving…	Guardando…
+Se înregistrează	Recording	Grabando
+Sesiuni neterminate	Unfinished sessions	Sesiones sin terminar
+Sunet	Sound	Sonido
+Sunetul calculatorului	Computer sound	Sonido del ordenador
+Sursa	Source	Fuente
+Surse suplimentare	Additional sources	Fuentes adicionales
+Trage pe monitor, în orice direcție; Esc anulează.	Drag on the display, in any direction; Esc cancels.	Arrastra en la pantalla, en cualquier dirección; Esc cancela.
+Unde	Where	Dónde
+Unele fișiere există deja; nimic nu se suprascrie. Schimbă numele sau folderul.	Some files already exist; nothing is overwritten. Change the name or the folder.	Algunos archivos ya existen; no se sobrescribe nada. Cambia el nombre o la carpeta.
+Verifică și recuperează	Check and recover	Comprobar y recuperar
+Video	Video	Vídeo
+Volum	Volume	Volumen
+acces necerut	access not requested	acceso no solicitado
+acces refuzat	access denied	acceso denegado
+anulat	cancelled	cancelado
+eroare	error	error
+nume	name	nombre
+reținut	remembered	recordado
+terminat	finished	terminado
+În pauză — toate sursele	Paused — all sources	En pausa — todas las fuentes
+Închide	Close	Cerrar
+Înregistrare ecran	Screen Recording	Grabación de pantalla
+Înregistrează	Record	Grabar
+Înregistrări	Recordings	Grabaciones
+Înălțime	Height	Altura
+În repaus	Idle	En reposo
+Se pregătesc camerele…	Preparing cameras…	Preparando cámaras…
+Pregătire…	Preparing…	Preparando…
+În pauză	Paused	En pausa
+Începe în %d s	Starts in %d s	Empieza en %d s
+versiunea %@ · build %@	version %@ · build %@	versión %@ · build %@
+Limba interfeței	Interface language	Idioma de la interfaz
+A1	A1	A1
+A2	A2	A2
+Adaugă ca sunet separat (A2)	Add as separate sound (A2)	Añadir como sonido separado (A2)
+Adaugă ca sunet separat la cursor	Add as separate sound at the playhead	Añadir como sonido separado en el cursor
+Adaugă ca suprapunere (V2)	Add as overlay (V2)	Añadir como superposición (V2)
+Adaugă ca suprapunere video la cursor	Add as video overlay at the playhead	Añadir como superposición de vídeo en el cursor
+Adaugă efect…	Add effect…	Añadir efecto…
+Adaugă evidențiere	Add highlight	Añadir resaltado
+Adaugă la secvența principală	Add to the main sequence	Añadir a la secuencia principal
+Adaugă la sfârșitul lanțului	Add to the end of the chain	Añadir al final de la cadena
+Adaugă o evidențiere locală la cursor (pista C)	Add a local highlight at the playhead (lane C)	Añadir un resaltado local en el cursor (pista C)
+Adaugă titlu	Add title	Añadir título
+Adaugă un titlu la cursor (pista T)	Add a title at the playhead (lane T)	Añadir un título en el cursor (pista T)
+Aliniere	Alignment	Alineación
+Aliniere pe canvas (ghidaje)	Canvas alignment (guides)	Alineación en el lienzo (guías)
+Alte piste	Other tracks	Otras pistas
+Altă culoare	Other colour	Otro color
+Animat între două stări	Animated between two states	Animado entre dos estados
+Animație	Animation	Animación
+Animă clipul principal spre o stare finală care umple cadrul cu caseta selecției	Animates the main clip to an end state where the selection box fills the frame	Anima el clip principal hacia un estado final en el que la selección llena el encuadre
+Anulează (⌘Z)	Undo (⌘Z)	Deshacer (⌘Z)
+Anulează ultima modificare	Undo the last change	Deshacer el último cambio
+Arată clipul ca un cerc (de exemplu camera peste ecran). Sursa rămâne neschimbată; revii oricând la dreptunghi.	Shows the clip as a circle (for example the camera over the screen). The source stays unchanged; you can return to the rectangle at any time.	Muestra el clip como un círculo (por ejemplo, la cámara sobre la pantalla). La fuente no cambia; puedes volver al rectángulo en cualquier momento.
+Ca sursa	As source	Como la fuente
+Ca sursa: cadența nominală a fișierului (o captură de ecran are cadență variabilă).	As source: the file's nominal frame rate (a screen capture has a variable frame rate).	Como la fuente: la cadencia nominal del archivo (una captura de pantalla tiene cadencia variable).
+Cadru	Frame	Fotograma
+Cadrul elementului selectat	Frame of the selected item	Marco del elemento seleccionado
+Calitate	Quality	Calidad
+Casetă	Box	Recuadro
+Caută după nume sau producător	Search by name or maker	Buscar por nombre o fabricante
+Caută materiale…	Search media…	Buscar materiales…
+Cerc	Circle	Círculo
+Clipuri	Clips	Clips
+Colțuri	Corners	Esquinas
+Contur	Outline	Contorno
+Contur liber	Freehand outline	Contorno libre
+Contur liber: desenează cu mouse-ul în previzualizare (Esc anulează)	Freehand outline: draw with the mouse in the preview (Esc cancels)	Contorno libre: dibuja con el ratón en la vista previa (Esc cancela)
+Culoare	Colour	Color
+Culoare personalizată a conturului	Custom outline colour	Color personalizado del contorno
+Culoarea textului, hexazecimal	Text colour, hexadecimal	Color del texto, hexadecimal
+Desenezi din nou selecția direct în previzualizare	Draw the selection again directly in the preview	Vuelve a dibujar la selección directamente en la vista previa
+Din diametrul cercului; conturul e desenat în interiorul marginii	Of the circle's diameter; the outline is drawn inside the edge	Del diámetro del círculo; el contorno se dibuja dentro del borde
+Documentul preia mărimea și cadența configurate la înregistrare; durata și sincronizarea nu se schimbă	The document takes the size and frame rate set for the recording; duration and sync do not change	El documento toma el tamaño y la cadencia configurados para la grabación; la duración y la sincronización no cambian
+Dreptunghi	Rectangle	Rectángulo
+Dublu-clic adaugă în secvență. Clic dreapta: suprapunere sau sunet separat.	Double-click adds to the sequence. Right-click: overlay or separate sound.	Doble clic añade a la secuencia. Clic derecho: superposición o sonido separado.
+Durata proiectului	Project duration	Duración del proyecto
+Durată	Duration	Duración
+Efect	Effect	Efecto
+Efecte procesate	Effects processed	Efectos procesados
+Efectele sunt procesate; previzualizarea și exportul le folosesc	The effects are processed; preview and export use them	Los efectos están procesados; la vista previa y la exportación los usan
+Efecte…	Effects…	Efectos…
+Elipsa devine cerc (lățime = înălțime în pixeli)	The ellipse becomes a circle (width = height in pixels)	La elipse se convierte en círculo (anchura = altura en píxeles)
+Elipsă	Ellipse	Elipse
+Estimare conservatoare, NU vârful măsurat al mixului: suma vârfurilor maxime ale surselor active (inclusiv A2), cu volumele lor. Poate avertiza chiar dacă vârfurile nu coincid în timp. Peste 0 dBFS poate apărea tăiere (clipping); SADROG nu normalizează și nu limitează automat.	Conservative estimate, NOT the measured peak of the mix: the sum of the maximum peaks of the active sources (A2 included), with their volumes. It may warn even if the peaks do not coincide. Above 0 dBFS clipping may occur; SADROG does not normalise or limit automatically.	Estimación conservadora, NO el pico medido de la mezcla: la suma de los picos máximos de las fuentes activas (incluida A2), con sus volúmenes. Puede avisar aunque los picos no coincidan. Por encima de 0 dBFS puede haber recorte; SADROG no normaliza ni limita automáticamente.
+Estompare	Blur	Desenfoque
+Evidențiere	Highlight	Resaltado
+Fade	Fade	Fundido
+Fade-in	Fade-in	Fundido de entrada
+Fade-out	Fade-out	Fundido de salida
+Față de centrul cadrului; negativ = în sus	From the centre of the frame; negative = up	Respecto al centro del encuadre; negativo = arriba
+Față de centrul cadrului; pozitiv = spre dreapta	From the centre of the frame; positive = to the right	Respecto al centro del encuadre; positivo = a la derecha
+Fișier	File	Archivo
+Foarfecă (B): clic pe o pistă taie în punctul indicat; Esc revine la Selectare	Blade (B): a click on a lane cuts at that point; Esc returns to Select	Cuchilla (B): un clic en una pista corta en ese punto; Esc vuelve a Seleccionar
+Foarfecă activă — clic taie · Esc revine	Blade active — click cuts · Esc returns	Cuchilla activa — clic corta · Esc vuelve
+Font	Font	Fuente
+Forma selecției	Selection shape	Forma de la selección
+Fără	None	Ninguno
+Grosime	Thickness	Grosor
+Grup de inspector	Inspector group	Grupo del inspector
+Importă	Import	Importar
+Importă video sau sunet în bibliotecă	Import video or sound into the library	Importar vídeo o sonido a la biblioteca
+La clipul anterior	To the previous clip	Al clip anterior
+La clipul următor	To the next clip	Al clip siguiente
+Liber	Freehand	Libre
+Lipsește fișierul media	Media file missing	Falta el archivo multimedia
+Lucios	Glossy	Brillante
+Lățime document	Document width	Anchura del documento
+Magnet	Magnet	Imán
+Magnetism	Snapping	Magnetismo
+Margine moale	Soft edge	Borde suave
+Materiale	Media	Materiales
+Meniu deschis: nativ macOS (vezi captura din aplicație).	Open menu: native macOS (see the in-app capture).	Menú abierto: nativo de macOS (ver la captura en la aplicación).
+Micșorează previzualizarea	Zoom the preview out	Alejar la vista previa
+Micșorează scara timeline-ului	Zoom the timeline out	Alejar la línea de tiempo
+Micșorează timeline-ul	Zoom the timeline out	Alejar la línea de tiempo
+Mix	Mix	Mezcla
+Mută pe rândul de deasupra (în față)	Move to the row above (in front)	Mover a la fila de arriba (delante)
+Mută pe rândul de dedesubt	Move to the row below	Mover a la fila de abajo
+Mâner de redimensionare	Resize handle	Tirador de tamaño
+Mâner de redimensionare a regiunii	Region resize handle	Tirador de tamaño de la región
+Mâner de rotație	Rotation handle	Tirador de rotación
+Mărește previzualizarea	Zoom the preview in	Acercar la vista previa
+Mărește scara timeline-ului	Zoom the timeline in	Acercar la línea de tiempo
+Mărește timeline-ul	Zoom the timeline in	Acercar la línea de tiempo
+Mărește tot cadrul spre zonă (animația clipului, același mecanism ca zoomul existent). Lupa locală — zona mărită într-o suprapunere, fără a mări cadrul — nu există încă.	Zooms the whole frame towards the area (the clip's animation, same mechanism as the existing zoom). A local magnifier — the area enlarged in an overlay without zooming the frame — does not exist yet.	Amplía todo el encuadre hacia la zona (la animación del clip, el mismo mecanismo que el zoom existente). Una lupa local — la zona ampliada en una superposición sin ampliar el encuadre — aún no existe.
+Mărime	Size	Tamaño
+Mărirea imaginii în cerc; cercul nu își schimbă mărimea. În viewer: ⌥ + tragere mută imaginea în cerc.	Zoom of the picture inside the circle; the circle keeps its size. In the viewer: ⌥ + drag moves the picture inside the circle.	Ampliación de la imagen en el círculo; el círculo mantiene su tamaño. En el visor: ⌥ + arrastrar mueve la imagen dentro del círculo.
+Niciun efect pe această sursă.	No effects on this source.	Ningún efecto en esta fuente.
+Niciun material găsit.	No media found.	No se encontró ningún material.
+Numele proiectului	Project name	Nombre del proyecto
+Numele proiectului — clic pentru a-l redenumi	Project name — click to rename	Nombre del proyecto — clic para renombrarlo
+Opacitate	Opacity	Opacidad
+Oprește	Stop	Detener
+Oprit = mut în previzualizare și export; volumul și fade-urile se păstrează	Off = muted in preview and export; volume and fades are kept	Desactivado = silenciado en vista previa y exportación; se mantienen volumen y fundidos
+Orizontal	Horizontal	Horizontal
+Pista A1 e mută; sursele se pot porni după ce o activezi.	Lane A1 is muted; the sources can be turned on once you enable it.	La pista A1 está silenciada; las fuentes se pueden activar después de activarla.
+Pluginuri audio (Audio Unit) pe această sursă	Audio plug-ins (Audio Unit) on this source	Plug-ins de audio (Audio Unit) en esta fuente
+Pornește animația cu un zoom simplu; apoi poți muta sau redimensiona starea finală	Starts the animation with a simple zoom; then you can move or resize the end state	Inicia la animación con un zoom simple; después puedes mover o redimensionar el estado final
+Potrivește proiectul	Fit project	Ajustar proyecto
+Potrivește tot proiectul în fereastră	Fit the whole project in the window	Ajustar todo el proyecto a la ventana
+Potrivire în fereastră	Fit to window	Ajustar a la ventana
+Potrivire și zoom pentru previzualizare (nu schimbă clipul și nici exportul)	Fit and zoom for the preview (changes neither the clip nor the export)	Ajuste y zoom de la vista previa (no cambia el clip ni la exportación)
+Pozitiv = în sensul acelor de ceasornic	Positive = clockwise	Positivo = en sentido horario
+Poziția cursorului	Playhead position	Posición del cursor
+Poziția, scara, opacitatea și rotația trec lin de la starea inițială la cea finală	Position, scale, opacity and rotation move smoothly from the start state to the end state	La posición, la escala, la opacidad y la rotación pasan suavemente del estado inicial al final
+Poziție	Position	Posición
+Poziție X	Position X	Posición X
+Poziție Y	Position Y	Posición Y
+Poziție în proiect	Position in project	Posición en el proyecto
+Prezentator în cerc	Circle presenter	Presentador en círculo
+Procesare eșuată	Processing failed	Procesamiento fallido
+Procesat	Processed	Procesado
+Procesat; niciun plugin nu întârzie sunetul.	Processed; no plug-in delays the sound.	Procesado; ningún plug-in retrasa el sonido.
+Proiect	Project	Proyecto
+Proiect salvat	Project saved	Proyecto guardado
+Rapid (fără recodare)	Fast (no re-encoding)	Rápido (sin recodificar)
+Redesenează	Redraw	Redibujar
+Refă (⇧⌘Z)	Redo (⇧⌘Z)	Rehacer (⇧⌘Z)
+Refă modificarea	Redo the change	Rehacer el cambio
+Regiunea e măsurată în cadrul final (nu în fereastra de previzualizare), deci rămâne la fel la orice zoom. Trage-o sau trage mânerele din previzualizare; marginile se lipesc de centru, margini și treimi când magnetul e activ.	The region is measured in the final frame (not in the preview window), so it stays the same at any zoom. Drag it or its handles in the preview; edges snap to the centre, edges and thirds when the magnet is on.	La región se mide en el encuadre final (no en la ventana de vista previa), así que no cambia con el zoom. Arrástrala o arrastra sus tiradores en la vista previa; los bordes se ajustan al centro, a los bordes y a los tercios cuando el imán está activo.
+Regiunea evidențiată	Highlighted region	Región resaltada
+Reîncearcă	Retry	Reintentar
+Rotație	Rotation	Rotación
+Salvat automat	Saved automatically	Guardado automáticamente
+Scara timeline-ului	Timeline scale	Escala de la línea de tiempo
+Scară	Scale	Escala
+Se aplică după volumele și fade-urile surselor, la previzualizare, la exportul video și la fișierul „mix” — nu la fișierele surselor separate.	Applied after the sources' volumes and fades, in the preview, the video export and the “mix” file — not to the separate source files.	Se aplica después de los volúmenes y fundidos de las fuentes, en la vista previa, la exportación de vídeo y el archivo “mix” — no en los archivos de fuentes separadas.
+Se aplică în ordine, înaintea volumului și fade-urilor sursei, pe toată înregistrarea (tăieturile nu le resetează). Pluginul rulează într-un proces separat; sunetul se procesează offline și se aude după procesare.	Applied in order, before the source's volume and fades, over the whole recording (cuts do not reset them). The plug-in runs in a separate process; the sound is processed offline and heard after processing.	Se aplican en orden, antes del volumen y los fundidos de la fuente, en toda la grabación (los cortes no los reinician). El plug-in se ejecuta en un proceso separado; el sonido se procesa sin conexión y se oye tras el procesamiento.
+Se procesează; până la final se aude sursa fără efecte	Processing; until it finishes the source plays without effects	Procesando; hasta terminar, la fuente suena sin efectos
+Selectare (A)	Select (A)	Seleccionar (A)
+Selectează un element în timeline pentru a-i vedea proprietățile.	Select an item in the timeline to see its properties.	Selecciona un elemento en la línea de tiempo para ver sus propiedades.
+Selecție	Selection	Selección
+Selecție dreptunghiulară	Rectangular selection	Selección rectangular
+Selecție dreptunghiulară: trage în previzualizare, în orice direcție (Esc anulează)	Rectangular selection: drag in the preview, in any direction (Esc cancels)	Selección rectangular: arrastra en la vista previa, en cualquier dirección (Esc cancela)
+Selecție eliptică	Elliptical selection	Selección elíptica
+Selecție eliptică: trage în previzualizare (Esc anulează)	Elliptical selection: drag in the preview (Esc cancels)	Selección elíptica: arrastra en la vista previa (Esc cancela)
+Sfârșit	End	Fin
+Sfârșit = cursor	End = playhead	Fin = cursor
+Simplu	Simple	Simple
+Starea editată	Edited state	Estado editado
+Starea editată; cursorul sare la începutul sau sfârșitul elementului. Mișcarea e lină pe toată durata.	The edited state; the playhead jumps to the start or end of the item. The motion is smooth over the whole duration.	El estado editado; el cursor salta al inicio o al final del elemento. El movimiento es suave durante toda la duración.
+Suma vârfurilor maxime ale surselor active (inclusiv A2), cu volumele lor și volumul general. Poate avertiza chiar dacă vârfurile nu coincid. Fără limitare sau normalizare automată.	The sum of the maximum peaks of the active sources (A2 included), with their volumes and the master volume. It may warn even if the peaks do not coincide. No automatic limiting or normalising.	La suma de los picos máximos de las fuentes activas (incluida A2), con sus volúmenes y el volumen general. Puede avisar aunque los picos no coincidan. Sin limitación ni normalización automáticas.
+Sunet activ	Sound on	Sonido activo
+Sunet pista A1	Lane A1 sound	Sonido de la pista A1
+Sursă	Source	Fuente
+Taie la cursor	Cut at the playhead	Cortar en el cursor
+Taie la cursor (⌘K)	Cut at the playhead (⌘K)	Cortar en el cursor (⌘K)
+Text	Text	Texto
+Textul titlului	Title text	Texto del título
+Timp	Time	Tiempo
+Titluri	Titles	Títulos
+Trage pentru a muta regiunea	Drag to move the region	Arrastra para mover la región
+Trage pentru a roti; se lipește la 45°	Drag to rotate; snaps at 45°	Arrastra para rotar; se ajusta a 45°
+Trage în previzualizare pentru a defini selecția; Escape anulează	Drag in the preview to define the selection; Escape cancels	Arrastra en la vista previa para definir la selección; Escape cancela
+Un cadru înainte	One frame forward	Un fotograma adelante
+Un cadru înapoi	One frame back	Un fotograma atrás
+Unde se aplică efectul	Where the effect applies	Dónde se aplica el efecto
+Unealta Foarfecă	Blade tool	Herramienta Cuchilla
+Unealta Selectare	Select tool	Herramienta Seleccionar
+Urmărire cursor	Follow playhead	Seguir el cursor
+V2	V2	V2
+Vertical	Vertical	Vertical
+Volum la 0 dB (neutru)	Volume at 0 dB (neutral)	Volumen a 0 dB (neutro)
+Volum mix	Mix volume	Volumen de la mezcla
+Zonă de desenare a selecției	Selection drawing area	Zona de dibujo de la selección
+Zoom cadru către zonă	Zoom frame to area	Zoom del encuadre hacia la zona
+Zoom de cadru	Frame zoom	Zoom de encuadre
+Zoom lent (+20%)	Slow zoom (+20%)	Zoom lento (+20%)
+Zoom previzualizare	Preview zoom	Zoom de la vista previa
+dezactivat	off	desactivado
+În exterior	Outside	Fuera
+În interior	Inside	Dentro
+În secvență	In sequence	En la secuencia
+Înalt (HEVC)	High (HEVC)	Alta (HEVC)
+Înapoi la pregătirea capturii	Back to capture setup	Volver a la preparación de la captura
+Încadrare	Framing	Encuadre
+Început	Start	Inicio
+Început = cursor	Start = playhead	Inicio = cursor
+Întunecare	Darken	Oscurecer
+Înălțime document	Document height	Altura del documento
+Înălțimea rândurilor audio	Audio row height	Altura de las filas de audio
+Șterge	Delete	Eliminar
+Șterge elementul selectat	Delete the selected item	Eliminar el elemento seleccionado
+Șterge elementul selectat (⌫)	Delete the selected item (⌫)	Eliminar el elemento seleccionado (⌫)
+Înregistrare nouă	New recording	Nueva grabación
+Document nou	New document	Nuevo documento
+Recente	Recent	Recientes
+Permisiuni	Permissions	Permisos
+fără sunet	no sound	sin sonido
+%d surse audio, piste separate	%d audio sources, separate tracks	%d fuentes de audio, pistas separadas
+Destinație nealeasă	No destination chosen	Destino no elegido
+Alege folderul în care se salvează înregistrările	Choose the folder where recordings are saved	Elige la carpeta donde se guardan las grabaciones
+%.0f GB liberi	%.0f GB free	%.0f GB libres
+nicio sursă video aleasă	no video source chosen	ninguna fuente de vídeo elegida
+ · panoul fizic are aceeași rezoluție	 · the physical panel has the same resolution	 · el panel físico tiene la misma resolución
+ · panoul fizic: %@×%@ px (mod nativ raportat de macOS)	 · physical panel: %@×%@ px (native mode reported by macOS)	 · panel físico: %@×%@ px (modo nativo indicado por macOS)
+ · pista %@	 · track %@	 · pista %@
+ › 	 › 	 › 
+%@ a dispărut: %@. Celelalte surse continuă; nu s-a trecut la alt dispozitiv.	%@ disappeared: %@. The other sources continue; no other device was used instead.	%@ ha desaparecido: %@. Las demás fuentes continúan; no se ha usado otro dispositivo en su lugar.
+%@ din %@ efecte instalate (Audio Unit)	%@ of %@ installed effects (Audio Unit)	%@ de %@ efectos instalados (Audio Unit)
+%@ efecte instalate (Audio Unit)	%@ installed effects (Audio Unit)	%@ efectos instalados (Audio Unit)
+%@ fișiere complete · %@	%@ complete files · %@	%@ archivos completos · %@
+%@ · H.264, calitate maximă	%@ · H.264, maximum quality	%@ · H.264, calidad máxima
+%@ · LIPSEȘTE pe acest Mac (starea e păstrată)	%@ · MISSING on this Mac (its state is kept)	%@ · NO ESTÁ en este Mac (se conserva su estado)
+%@ · build %@ · sursa %@	%@ · build %@ · source %@	%@ · build %@ · fuente %@
+%@ · fișier %@×%@ px	%@ · file %@×%@ px	%@ · archivo %@×%@ px
+%@ — fiecare canal pe pistă separată (%@)	%@ — each channel on its own track (%@)	%@ — cada canal en su propia pista (%@)
+%@ — fișierele parțiale au fost șterse.	%@ — the partial files were deleted.	%@ — se han borrado los archivos parciales.
+%@%@ la scara %@× (pixeli de randare macOS)	%@%@ at %@× scale (macOS rendering pixels)	%@%@ a escala %@× (píxeles de renderizado de macOS)
+%@: întârziere %@ ms raportată de plugin, compensată	%@: %@ ms latency reported by the plug-in, compensated	%@: latencia de %@ ms indicada por el plugin, compensada
+%@: întârziere constantă %@ ms măsurată (nu e raportată de plugin), compensată	%@: constant %@ ms latency measured (not reported by the plug-in), compensated	%@: latencia constante de %@ ms medida (el plugin no la indica), compensada
+%@: întârzierea nu se poate determina — nu e compensată	%@: the latency cannot be determined — not compensated	%@: no se puede determinar la latencia — no se compensa
+. Se aude sursa fără efecte; exportul e blocat până la reușită sau până ocolești efectul.	. You hear the source without effects; export is blocked until it succeeds or you bypass the effect.	. Se oye la fuente sin efectos; la exportación queda bloqueada hasta que funcione o hasta que omitas el efecto.
+AAC .m4a, 48 kHz; toate fișierele încep la 0 și au durata documentului (%@), cu liniște unde sursa tace.	AAC .m4a, 48 kHz; every file starts at 0 and lasts as long as the document (%@), with silence where the source is silent.	AAC .m4a, 48 kHz; todos los archivos empiezan en 0 y duran lo que el documento (%@), con silencio donde la fuente calla.
+AAC stereo · %@ surse mixate într-o pistă, ca în previzualizare (sursele mute nu se aud)	AAC stereo · %@ sources mixed into one track, as in the preview (muted sources are not heard)	AAC estéreo · %@ fuentes mezcladas en una pista, como en la vista previa (las fuentes silenciadas no se oyen)
+AAC stereo, ca în previzualizare	AAC stereo, as in the preview	AAC estéreo, como en la vista previa
+Acest Mac nu are un identificator citibil; activarea nu e posibilă.	This Mac has no readable identifier; activation is not possible.	Este Mac no tiene un identificador legible; la activación no es posible.
+Acest Mac: %@	This Mac: %@	Este Mac: %@
+Acordă permisiunea pentru înregistrarea ecranului.	Grant the screen recording permission.	Concede el permiso de grabación de pantalla.
+Activare	Activation	Activación
+Activează efectul	Turn the effect on	Activar el efecto
+Activează sunetul pistei %@ (acum mut)	Unmute track %@ (now muted)	Activar el sonido de la pista %@ (ahora silenciada)
+Activează sunetul întregii piste A1 (acum mută)	Unmute the whole A1 track (now muted)	Activar el sonido de toda la pista A1 (ahora silenciada)
+Activează sursa „%@” (acum mută)	Unmute the source “%@” (now muted)	Activar la fuente «%@» (ahora silenciada)
+Activă — oprește-o (mute)	On — turn it off (mute)	Activa — desactívala (silenciar)
+Activă — se înregistrează	On — being recorded	Activa — se graba
+Activă: se înregistrează	On: being recorded	Activa: se graba
+Actualizarea nu s-a putut instala	The update could not be installed	No se ha podido instalar la actualización
+Actualizează acum	Update now	Actualizar ahora
+Adaugă %@ de %@	Add %@ by %@	Añadir %@ de %@
+Ai primit licența pe WhatsApp sau e-mail?	Did you receive the licence on WhatsApp or by e-mail?	¿Has recibido la licencia por WhatsApp o por correo?
+Alege camera pentru fiecare rând de cameră (sau dezactivează-l).	Choose the camera for each camera row (or turn the row off).	Elige la cámara de cada fila de cámara (o desactívala).
+Alege ce se înregistrează (monitor, fereastră sau regiune).	Choose what to record (display, window or region).	Elige qué grabar (monitor, ventana o región).
+Alege destinația.	Choose the destination.	Elige el destino.
+Alege folderul proiectului (cel care conține project.sadrogproj)	Choose the project folder (the one that contains project.sadrogproj)	Elige la carpeta del proyecto (la que contiene project.sadrogproj)
+Alege materialele de importat	Choose the media to import	Elige el material que quieres importar
+Alege monitorul sau fereastra pentru fiecare sursă adăugată (sau dezactiveaz-o).	Choose the display or window for each added source (or turn it off).	Elige el monitor o la ventana de cada fuente añadida (o desactívala).
+Alege întâi folderul de destinație.	Choose the destination folder first.	Elige primero la carpeta de destino.
+Alege întâi monitorul.	Choose the display first.	Elige primero el monitor.
+Aliniere pe canvas activă: ghidaje galbene la margini, centru și alte elemente (⌘ în timpul tragerii o ocolește)	Canvas alignment on: yellow guides at the edges, the centre and other items (hold ⌘ while dragging to bypass)	Alineación en el lienzo activa: guías amarillas en los bordes, el centro y otros elementos (⌘ al arrastrar la omite)
+Aliniere pe canvas oprită	Canvas alignment off	Alineación en el lienzo desactivada
+Aplică setarea capturii: %@×%@ · %@ cadre/s	Use the capture setting: %@×%@ · %@ fps	Usar el ajuste de la captura: %@×%@ · %@ fps
+Arată biblioteca (⌃⌘S)	Show the library (⌃⌘S)	Mostrar la biblioteca (⌃⌘S)
+Arată inspectorul (⌥⌘I)	Show the inspector (⌥⌘I)	Mostrar el inspector (⌥⌘I)
+Arată nivelul real (fără redare pe difuzoare)	Show the real level (no playback on the speakers)	Mostrar el nivel real (sin reproducir por los altavoces)
+Arată pista %@ (acum ascunsă în previzualizare și export)	Show track %@ (now hidden in the preview and the export)	Mostrar la pista %@ (ahora oculta en la vista previa y la exportación)
+Ascunde biblioteca (⌃⌘S)	Hide the library (⌃⌘S)	Ocultar la biblioteca (⌃⌘S)
+Ascunde detaliile	Hide the details	Ocultar los detalles
+Ascunde inspectorul (⌥⌘I)	Hide the inspector (⌥⌘I)	Ocultar el inspector (⌥⌘I)
+Ascunde pista %@ din previzualizare și export	Hide track %@ in the preview and the export	Ocultar la pista %@ en la vista previa y la exportación
+Build	Build	Build
+Bună ziua, cer Trialul SADROG de 5 zile pentru acest Mac.	Hello, I am requesting the 5-day SADROG trial for this Mac.	Hola, solicito la prueba de 5 días de SADROG para este Mac.
+Bună ziua, cer licența permanentă SADROG (contribuție 25 EUR) pentru acest Mac.	Hello, I am requesting the permanent SADROG licence (25 EUR contribution) for this Mac.	Hola, solicito la licencia permanente de SADROG (contribución de 25 EUR) para este Mac.
+Calculator	Computer	Ordenador
+Camera nu poate fi pornită: %@	The camera cannot be started: %@	No se puede iniciar la cámara: %@
+Camera „%@”	Camera “%@”	Cámara «%@»
+Camera „%@” e adăugată de două ori.	The camera “%@” is added twice.	La cámara «%@» está añadida dos veces.
+Camera „%@” nu este disponibilă	The camera “%@” is not available	La cámara «%@» no está disponible
+Camera „%@” nu este disponibilă. Nu se folosește altă cameră în loc.	The camera “%@” is not available. No other camera is used instead.	La cámara «%@» no está disponible. No se usa otra cámara en su lugar.
+Camera „%@” nu s-a stabilizat în %@ s (fără cadre sau expunere încă în reglaj). Înregistrarea nu a pornit.	The camera “%@” did not settle within %@ s (no frames, or exposure still adjusting). Recording did not start.	La cámara «%@» no se estabilizó en %@ s (sin fotogramas o con la exposición aún ajustándose). La grabación no ha empezado.
+Camera „%@”: %@.	Camera “%@”: %@.	Cámara «%@»: %@.
+Captura s-a oprit: %@. Ce s-a înregistrat până acum a fost salvat.	Capture stopped: %@. What was recorded so far has been saved.	La captura se ha detenido: %@. Lo grabado hasta ahora se ha guardado.
+Captură de ecran și editare pentru macOS	Screen capture and editing for macOS	Captura de pantalla y edición para macOS
+Caută actualizări	Check for updates	Buscar actualizaciones
+Caută actualizări…	Check for Updates…	Buscar actualizaciones…
+Cere activarea	Request activation	Solicitar la activación
+Cererea a fost respinsă. Pentru detalii, scrie pe WhatsApp sau e-mail.	The request was declined. For details, write on WhatsApp or by e-mail.	La solicitud ha sido rechazada. Para más detalles, escribe por WhatsApp o por correo.
+Cererea de trial a fost trimisă. După aprobare, SADROG preia singur activarea; cele 5 zile pornesc atunci.	The trial request was sent. After approval, SADROG picks up the activation by itself; the 5 days start then.	La solicitud de prueba se ha enviado. Tras la aprobación, SADROG recoge la activación por sí solo; los 5 días empiezan entonces.
+Cererea există deja de pe altă instalare.	This request already exists from another installation.	La solicitud ya existe desde otra instalación.
+Cererea pentru licența permanentă a fost trimisă. După verificarea contribuției, SADROG preia singur licența.	The permanent licence request was sent. Once the contribution is checked, SADROG picks up the licence by itself.	La solicitud de licencia permanente se ha enviado. Una vez comprobada la contribución, SADROG recoge la licencia por sí solo.
+Cererea trimisă: %@. SADROG verifică singur la fiecare 20 de secunde cât e deschis.	Request sent: %@. SADROG checks by itself every 20 seconds while it is open.	Solicitud enviada: %@. SADROG lo comprueba solo cada 20 segundos mientras está abierto.
+Cheia acestui Mac nu poate fi citită din Keychain. Activarea nu e disponibilă.	This Mac's key cannot be read from the Keychain. Activation is not available.	No se puede leer la clave de este Mac en el Llavero. La activación no está disponible.
+Clic: tastezi valoarea · trage stânga/dreapta: reglaj (Shift = fin)	Click: type the value · drag left/right: adjust (Shift = fine)	Clic: escribe el valor · arrastra a izquierda/derecha: ajuste (Mayús = fino)
+Clip audio	Audio clip	Clip de audio
+Clip audio cu %@ surse	Audio clip with %@ sources	Clip de audio con %@ fuentes
+Clip video	Video clip	Clip de vídeo
+Clip video %@	Video clip %@	Clip de vídeo %@
+Clipul e mai scurt decât fade-urile: se aplică %.2f s + %.2f s (proporțional).	The clip is shorter than the fades: %.2f s + %.2f s are applied (proportionally).	El clip es más corto que los fundidos: se aplican %.2f s + %.2f s (proporcionalmente).
+Cod sursă	Source code	Código fuente
+Completează numele și o adresă de e-mail validă.	Enter your name and a valid e-mail address.	Escribe tu nombre y una dirección de correo válida.
+Compune din nou imaginea; mai lent, compatibil peste tot.	Recomposes the image; slower, compatible everywhere.	Vuelve a componer la imagen; más lento, compatible en todas partes.
+Copiază fluxurile existente; tăieturile urmează lista de editare.	Copies the existing streams; the cuts follow the edit list.	Copia los flujos existentes; los cortes siguen la lista de edición.
+Creator	Creator	Creador
+Deschide WhatsApp cu aceeași cerere (același identificator); nu se creează o cerere nouă.	Opens WhatsApp with the same request (same identifier); no new request is created.	Abre WhatsApp con la misma solicitud (mismo identificador); no se crea una solicitud nueva.
+Deschide interfața pluginului	Open the plug-in interface	Abrir la interfaz del plugin
+Deschide un e-mail cu aceeași cerere (același identificator).	Opens an e-mail with the same request (same identifier).	Abre un correo con la misma solicitud (mismo identificador).
+Destinația nu există (discul e deconectat?). Alege alt folder.	The destination does not exist (is the disk disconnected?). Choose another folder.	El destino no existe (¿disco desconectado?). Elige otra carpeta.
+Detalii: puncte, scară și panoul fizic	Details: points, scale and the physical panel	Detalles: puntos, escala y panel físico
+Dezactivată	Off	Desactivada
+Dezactivată — nu se înregistrează	Off — not recorded	Desactivada — no se graba
+Din fișier…	From a file…	Desde un archivo…
+Dispozitivul audio „%@” nu este disponibil. Nu se folosește alt dispozitiv în loc.	The audio device “%@” is not available. No other device is used instead.	El dispositivo de audio «%@» no está disponible. No se usa otro dispositivo en su lugar.
+Dispozitivul „%@” nu este disponibil.	The device “%@” is not available.	El dispositivo «%@» no está disponible.
+Durată totală: %@	Total duration: %@	Duración total: %@
+E-mail	E-mail	Correo
+Efecte audio pentru %@	Audio effects for %@	Efectos de audio para %@
+Efecte ocolite (%@)	Effects bypassed (%@)	Efectos omitidos (%@)
+Efecte procesate: %@	Processed effects: %@	Efectos procesados: %@
+Efecte — %@	Effects — %@	Efectos — %@
+Efectele audio se procesează (%@%%) — exportul devine disponibil după final	Audio effects are processing (%@%%) — export becomes available when it finishes	Los efectos de audio se están procesando (%@%%): la exportación estará disponible al terminar
+Efectele sursei „%@” nu s-au procesat: %@	The effects of the source “%@” were not processed: %@	Los efectos de la fuente «%@» no se han procesado: %@
+Efectul se aplică în exteriorul selecției (evidențiere); interiorul rămâne neschimbat. Aceeași imagine în previzualizare și în export.	The effect applies outside the selection (highlight); the inside stays unchanged. The same image in the preview and in the export.	El efecto se aplica fuera de la selección (resaltado); el interior no cambia. La misma imagen en la vista previa y en la exportación.
+Efectul se aplică în interiorul selecției (de ex. estompare pentru a ascunde o informație); exteriorul rămâne neschimbat.	The effect applies inside the selection (e.g. blur to hide information); the outside stays unchanged.	El efecto se aplica dentro de la selección (p. ej., desenfoque para ocultar información); el exterior no cambia.
+Elimină efectul	Remove the effect	Quitar el efecto
+Eroare: %@	Error: %@	Error: %@
+Estimare conservatoare a vârfului: %+.1f dBFS	Conservative peak estimate: %+.1f dBFS	Estimación conservadora del pico: %+.1f dBFS
+Evidențiere locală	Local highlight	Resaltado local
+Există deja un fișier cu acest nume. Alege alt nume.	A file with this name already exists. Choose another name.	Ya existe un archivo con este nombre. Elige otro nombre.
+Există deja: %@. Nimic nu a fost suprascris; alege alt nume.	Already exists: %@. Nothing was overwritten; choose another name.	Ya existe: %@. No se ha sobrescrito nada; elige otro nombre.
+Exportul a fost oprit; fișierele deja scrise din acest set au fost șterse.	The export was stopped; the files already written from this set were deleted.	La exportación se ha detenido; se han borrado los archivos ya escritos de este conjunto.
+Exportul a fost oprit; nu a rămas niciun fișier parțial.	The export was stopped; no partial file was left.	La exportación se ha detenido; no ha quedado ningún archivo parcial.
+Exportă %@ fișiere	Export %@ files	Exportar %@ archivos
+Ești la zi	You're up to date	Estás al día
+Fade-out: trage spre stânga	Fade-out: drag to the left	Fundido de salida: arrastra a la izquierda
+Fereastra suplimentară	Additional window	Ventana adicional
+Fișierul descărcat nu are mărimea anunțată.	The downloaded file does not have the announced size.	El archivo descargado no tiene el tamaño anunciado.
+Fișierul descărcat nu corespunde amprentei SHA-256 anunțate.	The downloaded file does not match the announced SHA-256 fingerprint.	El archivo descargado no coincide con la huella SHA-256 anunciada.
+Folderul ales nu conține un proiect SADROG (project.sadrogproj).	The chosen folder does not contain a SADROG project (project.sadrogproj).	La carpeta elegida no contiene un proyecto de SADROG (project.sadrogproj).
+Fără abonament și fără expirare; un Mac (transferul se face la cerere). Funcționează și dacă serviciul de activare nu mai există. Actualizările ulterioare sunt incluse. Contribuția se trimite după răspunsul nostru; cererea nu e o plată.	No subscription and no expiry; one Mac (transfer on request). It keeps working even if the activation service no longer exists. Later updates are included. You send the contribution after our reply; the request is not a payment.	Sin suscripción y sin caducidad; un Mac (el traspaso se hace a petición). Sigue funcionando aunque el servicio de activación deje de existir. Las actualizaciones posteriores están incluidas. La contribución se envía después de nuestra respuesta; la solicitud no es un pago.
+Fără activare: deschiderea, editarea, salvarea și recuperarea proiectelor rămân libere. Nimic nu se șterge, nu se criptează și nu primește filigran; o înregistrare sau un export deja pornit se termină.	Without activation: opening, editing, saving and recovering projects stay free. Nothing is deleted, encrypted or watermarked; a recording or export already running finishes.	Sin activación: abrir, editar, guardar y recuperar proyectos sigue siendo libre. No se borra, cifra ni marca nada con agua; una grabación o exportación ya iniciada termina.
+Fără conexiune. Cererea nu a plecat; o poți retrimite (aceeași cerere) sau trimite pe WhatsApp / e-mail.	No connection. The request was not sent; you can resend it (the same request) or send it on WhatsApp / by e-mail.	Sin conexión. La solicitud no ha salido; puedes reenviarla (la misma solicitud) o enviarla por WhatsApp / correo.
+Fără conexiune: trialul pornește la prima conectare.	No connection: the trial starts at the first connection.	Sin conexión: la prueba empieza con la primera conexión.
+Fără efecte	No effects	Sin efectos
+Fără fade	No fade	Sin fundido
+Gata. SADROG repornește…	Done. SADROG is restarting…	Listo. SADROG se reinicia…
+Imaginea descărcată conține %@, nu %@.	The downloaded image contains %@, not %@.	La imagen descargada contiene %@, no %@.
+Imaginea descărcată nu conține SADROG.	The downloaded image does not contain SADROG.	La imagen descargada no contiene SADROG.
+Inactivă: nu se înregistrează	Off: not recorded	Inactiva: no se graba
+Instalată: %@. „Actualizează acum” descarcă, verifică și instalează versiunea nouă, apoi repornește SADROG. Proiectele și înregistrările nu se ating.	Installed: %@. “Update now” downloads, checks and installs the new version, then restarts SADROG. Projects and recordings are not touched.	Instalada: %@. «Actualizar ahora» descarga, comprueba e instala la versión nueva y reinicia SADROG. Los proyectos y las grabaciones no se tocan.
+Licența GPL…	GPL licence…	Licencia GPL…
+Licența a fost oprită	The licence was stopped	La licencia se ha detenido
+Licența acestui Mac a fost oprită. Editarea rămâne liberă; pentru înregistrare și export, vezi Activare.	This Mac's licence was stopped. Editing stays free; for recording and export, see Activation.	La licencia de este Mac se ha detenido. La edición sigue siendo libre; para grabar y exportar, consulta Activación.
+Licența e pentru alt Mac.	The licence is for another Mac.	La licencia es para otro Mac.
+Licența e pentru altă instalare (altă cheie a dispozitivului).	The licence is for another installation (another device key).	La licencia es para otra instalación (otra clave del dispositivo).
+Licența importată nu e valabilă pe acest Mac	The imported licence is not valid on this Mac	La licencia importada no es válida en este Mac
+Licența permanentă e activă. Funcționează și fără internet.	The permanent licence is active. It also works without internet.	La licencia permanente está activa. Funciona también sin internet.
+Licență permanentă activă pe acest Mac	Permanent licence active on this Mac	Licencia permanente activa en este Mac
+Licență permanentă · contribuție %d EUR	Permanent licence · %d EUR contribution	Licencia permanente · contribución de %d EUR
+Licență: GNU GPL v3 sau ulterioară. Software liber, fără nicio garanție. Folosește doar framework-urile macOS (Apple), fără biblioteci terțe incluse; pluginurile Audio Unit pe care le alegi rămân ale producătorilor lor și nu fac parte din SADROG.	Licence: GNU GPL v3 or later. Free software, without any warranty. It uses only the macOS frameworks (Apple) and bundles no third-party libraries; the Audio Unit plug-ins you choose belong to their makers and are not part of SADROG.	Licencia: GNU GPL v3 o posterior. Software libre, sin ninguna garantía. Usa solo los frameworks de macOS (Apple) y no incluye bibliotecas de terceros; los plugins Audio Unit que elijas pertenecen a sus fabricantes y no forman parte de SADROG.
+Lipsește fișierul media: %@	Media file missing: %@	Falta el archivo multimedia: %@
+Magnetism în timeline activ: clipurile se lipesc de margini și de cursor (S). Alinierea pe canvas e separată, în bara previzualizării.	Timeline snapping on: clips stick to edges and to the playhead (S). Canvas alignment is separate, in the preview bar.	Imán en la línea de tiempo activo: los clips se pegan a los bordes y al cursor (S). La alineación en el lienzo es aparte, en la barra de la vista previa.
+Magnetism în timeline oprit (S)	Timeline snapping off (S)	Imán en la línea de tiempo desactivado (S)
+Mai târziu	Later	Más tarde
+Mută cercul în colțul %@	Move the circle to the %@ corner	Mover el círculo a la esquina %@
+Mută mai devreme în lanț	Move earlier in the chain	Mover antes en la cadena
+Mută mai târziu în lanț	Move later in the chain	Mover después en la cadena
+Mâner fade-in	Fade-in handle	Tirador del fundido de entrada
+Mâner fade-out	Fade-out handle	Tirador del fundido de salida
+Neactivat	Not activated	No activado
+Nivel audio	Audio level	Nivel de audio
+Nivel audio oprit	Audio level off	Nivel de audio desactivado
+Nu am putut crea documentul: %@	Could not create the document: %@	No se ha podido crear el documento: %@
+Nu am putut porni: %@	Could not start: %@	No se ha podido iniciar: %@
+Nu am putut verifica actualizările	Could not check for updates	No se han podido buscar actualizaciones
+Nu există un clip principal sub evidențiere.	There is no main clip under the highlight.	No hay un clip principal debajo del resaltado.
+Nu pot adăuga evidențierea acolo.	Cannot add the highlight there.	No puedo añadir el resaltado ahí.
+Nu pot adăuga titlul acolo.	Cannot add the title there.	No puedo añadir el título ahí.
+Nu pot construi previzualizarea: %@	Cannot build the preview: %@	No puedo crear la vista previa: %@
+Nu pot deschide documentul: %@	Cannot open the document: %@	No puedo abrir el documento: %@
+Nu pot deschide editorul: %@	Cannot open the editor: %@	No puedo abrir el editor: %@
+Nu pot deschide intrarea audio: %@	Cannot open the audio input: %@	No puedo abrir la entrada de audio: %@
+Nu pot lista sursele: %@	Cannot list the sources: %@	No puedo listar las fuentes: %@
+Nu se poate muta acolo: se suprapune cu alt element de pe pistă.	Cannot move it there: it overlaps another item on the track.	No se puede mover ahí: se solapa con otro elemento de la pista.
+Nu se poate muta acolo: se suprapune cu alt titlu.	Cannot move it there: it overlaps another title.	No se puede mover ahí: se solapa con otro título.
+Nu se poate muta acolo: se suprapune cu altă evidențiere.	Cannot move it there: it overlaps another highlight.	No se puede mover ahí: se solapa con otro resaltado.
+Nu se poate: evidențierea s-ar suprapune cu alta pe aceeași pistă.	Not possible: the highlight would overlap another one on the same track.	No es posible: el resaltado se solaparía con otro en la misma pista.
+Nu se poate: titlul s-ar suprapune cu altul pe aceeași pistă, sau textul e gol.	Not possible: the title would overlap another one on the same track, or the text is empty.	No es posible: el título se solaparía con otro en la misma pista, o el texto está vacío.
+Nume proiect	Project name	Nombre del proyecto
+Numele tău	Your name	Tu nombre
+Numele și e-mailul servesc doar ca să-ți putem răspunde despre această cerere.	Your name and e-mail are used only to reply to you about this request.	El nombre y el correo solo sirven para responderte sobre esta solicitud.
+Ocolește efectul (bypass): rămâne în lanț, nu procesează	Bypass the effect: it stays in the chain but does not process	Omitir el efecto (bypass): sigue en la cadena, no procesa
+Oferta nu mai e disponibilă. Actualizează SADROG.	The offer is no longer available. Update SADROG.	La oferta ya no está disponible. Actualiza SADROG.
+Oprește afișarea nivelului	Stop showing the level	Dejar de mostrar el nivel
+Oprește doar sursa „%@” în previzualizare și export	Mute only the source “%@” in the preview and the export	Silenciar solo la fuente «%@» en la vista previa y la exportación
+Oprește previzualizarea	Stop the preview	Detener la vista previa
+Oprește sunetul pistei %@ în previzualizare și export	Mute track %@ in the preview and the export	Silenciar la pista %@ en la vista previa y la exportación
+Oprește toate sursele pistei A1 în previzualizare și export	Mute every source of track A1 in the preview and the export	Silenciar todas las fuentes de la pista A1 en la vista previa y la exportación
+Oprit cu eroare: %@	Stopped with an error: %@	Detenido con un error: %@
+Oprit de garda probei; înregistrarea a fost salvată.	Stopped by the probe guard; the recording was saved.	Detenido por la guarda de la prueba; la grabación se ha guardado.
+Oprit din buton; înregistrarea a fost salvată.	Stopped with the button; the recording was saved.	Detenido con el botón; la grabación se ha guardado.
+Oprit la limita de %@ s; înregistrarea a fost salvată.	Stopped at the %@ s limit; the recording was saved.	Detenido en el límite de %@ s; la grabación se ha guardado.
+Pauză	Pause	Pausa
+Pauză (Spațiu)	Pause (Space)	Pausa (Espacio)
+Pauză (toate sursele)	Pause (all sources)	Pausa (todas las fuentes)
+Pauză pentru toate sursele	Pause all sources	Pausa para todas las fuentes
+Pe rândul acela există deja un element în același interval.	That row already has an item in the same time range.	En esa fila ya hay un elemento en el mismo intervalo.
+Permisiunea pentru microfon este refuzată (Setări de sistem → Confidențialitate → Microfon).	Microphone permission is denied (System Settings → Privacy → Microphone).	El permiso del micrófono está denegado (Ajustes del Sistema → Privacidad → Micrófono).
+Permisiunea pentru microfon nu a fost încă acordată.	Microphone permission has not been granted yet.	Aún no se ha concedido el permiso del micrófono.
+Pista audio %@	Audio track %@	Pista de audio %@
+Pluginul nu a pornit: %@	The plug-in did not start: %@	El plugin no se ha iniciado: %@
+Pluginul „%@” nu e instalat pe acest Mac	The plug-in “%@” is not installed on this Mac	El plugin «%@» no está instalado en este Mac
+Pluginul „%@” nu e instalat pe acest Mac.	The plug-in “%@” is not installed on this Mac.	El plugin «%@» no está instalado en este Mac.
+Pornește în %@ s…	Starting in %@ s…	Empieza en %@ s…
+Pornirea a fost anulată; nu s-a înregistrat nimic.	The start was cancelled; nothing was recorded.	Se ha cancelado el inicio; no se ha grabado nada.
+Prea multe cereri de pe acest Mac azi. Încearcă mâine sau scrie pe WhatsApp / e-mail.	Too many requests from this Mac today. Try tomorrow or write on WhatsApp / by e-mail.	Demasiadas solicitudes desde este Mac hoy. Inténtalo mañana o escribe por WhatsApp / correo.
+Pregătirea camerelor a fost anulată.	Camera preparation was cancelled.	Se ha cancelado la preparación de las cámaras.
+Previzualizare (imagini statice; nu înregistrează)	Preview (still images; does not record)	Vista previa (imágenes fijas; no graba)
+Procesare anulată	Processing cancelled	Procesamiento cancelado
+Procesarea a eșuat: %@	Processing failed: %@	El procesamiento ha fallado: %@
+Procesarea s-a blocat (fără progres %.0f s) și a fost oprită	Processing stalled (no progress for %.0f s) and was stopped	El procesamiento se ha bloqueado (sin avance durante %.0f s) y se ha detenido
+Proiect nou	New project	Proyecto nuevo
+Proiectul nu are sunet de exportat.	The project has no sound to export.	El proyecto no tiene sonido que exportar.
+Pătrat 1080	Square 1080	Cuadrado 1080
+Rata de eșantionare %.0f Hz nu e acceptată (doar 48 000 Hz)	A %.0f Hz sample rate is not supported (48,000 Hz only)	No se admite una frecuencia de muestreo de %.0f Hz (solo 48 000 Hz)
+Recuperare eșuată: %@	Recovery failed: %@	La recuperación ha fallado: %@
+Recuperat după oprire bruscă: %.1f s redabile.	Recovered after an abrupt stop: %.1f s playable.	Recuperado tras un cierre brusco: %.1f s reproducibles.
+Redimensionează panoul	Resize the panel	Redimensionar el panel
+Redimensionează timeline-ul	Resize the timeline	Redimensionar la línea de tiempo
+Redă	Play	Reproducir
+Redă (Spațiu)	Play (Space)	Reproducir (Espacio)
+Regiune anulată sau prea mică (minim 16×16 pt).	Region cancelled or too small (16×16 pt minimum).	Región cancelada o demasiado pequeña (mínimo 16×16 pt).
+Regiunea iese din monitor.	The region goes beyond the display.	La región se sale del monitor.
+Reia toate sursele	Resume all sources	Reanudar todas las fuentes
+Renunță la cerere	Drop the request	Descartar la solicitud
+Resetează transformarea	Reset the transform	Restablecer la transformación
+Resetează volumul sursei %@	Reset the volume of source %@	Restablecer el volumen de la fuente %@
+Retrasează…	Redraw…	Volver a trazar…
+Retrimite cererea	Resend the request	Reenviar la solicitud
+Revino la dreptunghi (sursa rămâne neschimbată)	Back to a rectangle (the source stays unchanged)	Volver al rectángulo (la fuente no cambia)
+Roșu	Red	Rojo
+Rulezi cea mai recentă versiune (%@).	You are running the latest version (%@).	Estás usando la versión más reciente (%@).
+Rânduri audio compacte	Compact audio rows	Filas de audio compactas
+Rânduri audio normale	Normal audio rows	Filas de audio normales
+Răspunsul serverului nu este un update.json valid.	The server's reply is not a valid update.json.	La respuesta del servidor no es un update.json válido.
+SADROG nu are acces la cameră	SADROG has no camera access	SADROG no tiene acceso a la cámara
+SADROG nu are acces la cameră. Permite-l în Setări → Confidențialitate → Cameră sau alege „Fără cameră”.	SADROG has no camera access. Allow it in Settings → Privacy → Camera or choose “No camera”.	SADROG no tiene acceso a la cámara. Permítelo en Ajustes → Privacidad → Cámara o elige «Sin cámara».
+Se descarcă SADROG %@…	Downloading SADROG %@…	Descargando SADROG %@…
+Se instalează…	Installing…	Instalando…
+Se pregătesc camerele… (clic din nou anulează)	Preparing the cameras… (click again to cancel)	Preparando las cámaras… (otro clic cancela)
+Se pregătește camera…	Preparing the camera…	Preparando la cámara…
+Se procesează %@ la sută	Processing %@ percent	Procesando %@ por ciento
+Se procesează (%@%%). Până la final se aude sursa fără efecte; exportul devine disponibil după final.	Processing (%@%%). Until it finishes you hear the source without effects; export becomes available when it finishes.	Procesando (%@%%). Hasta el final se oye la fuente sin efectos; la exportación estará disponible al terminar.
+Se verifică sursele… (clic din nou anulează)	Checking the sources… (click again to cancel)	Comprobando las fuentes… (otro clic cancela)
+Se verifică versiunea nouă…	Checking the new version…	Comprobando la versión nueva…
+Semnătura versiunii noi nu este a GDC.	The new version's signature is not GDC's.	La firma de la versión nueva no es de GDC.
+Serverul a refuzat cererea (%@).	The server refused the request (%@).	El servidor ha rechazado la solicitud (%@).
+Serverul a răspuns cu status %d.	The server replied with status %d.	El servidor ha respondido con el estado %d.
+Site	Website	Sitio web
+Spațiu insuficient pe destinație (minim 1 GB liber).	Not enough space on the destination (1 GB free minimum).	Espacio insuficiente en el destino (mínimo 1 GB libre).
+Spațiu insuficient pe destinație — înregistrarea a fost oprită și salvată.	Not enough space on the destination — the recording was stopped and saved.	Espacio insuficiente en el destino: la grabación se ha detenido y guardado.
+Stânga jos	bottom-left	inferior izquierda
+Stânga sus	top-left	superior izquierda
+Sunet pista %@	Track %@ sound	Sonido de la pista %@
+Sunet separat	Separate sound	Sonido separado
+Sunet sursa %@	Source %@ sound	Sonido de la fuente %@
+Sunetul calculatorului poate fi adăugat o singură dată.	Computer sound can be added only once.	El sonido del ordenador solo se puede añadir una vez.
+Sursa audio „%@”	Audio source “%@”	Fuente de audio «%@»
+Sursa nu mai există în înregistrare	The source no longer exists in the recording	La fuente ya no existe en la grabación
+Sursa video „%@”	Video source “%@”	Fuente de vídeo «%@»
+Sursa video „%@” nu mai este disponibilă. Alege din nou; nu se trece la altă sursă.	The video source “%@” is no longer available. Choose again; no other source is used instead.	La fuente de vídeo «%@» ya no está disponible. Vuelve a elegir; no se cambia a otra fuente.
+Sursă mută — activeaz-o	Source muted — turn it on	Fuente silenciada — actívala
+Textul nu e o licență SADROG valabilă.	The text is not a valid SADROG licence.	El texto no es una licencia válida de SADROG.
+Trage pentru a muta	Drag to move	Arrastra para mover
+Trage pentru a muta cercul; cu Option apăsat muți imaginea în cerc	Drag to move the circle; hold Option to move the image inside the circle	Arrastra para mover el círculo; con Opción pulsado mueves la imagen dentro del círculo
+Transformare — stare finală	Transform — end state	Transformación — estado final
+Transformare — stare inițială	Transform — start state	Transformación — estado inicial
+Trasează regiunea de înregistrat.	Draw the region to record.	Traza la región que quieres grabar.
+Trasează regiunea…	Draw the region…	Trazar la región…
+Trial Full · 5 zile	Full trial · 5 days	Prueba completa · 5 días
+Trial activ până la %@	Trial active until %@	Prueba activa hasta %@
+Trialul s-a încheiat	The trial has ended	La prueba ha terminado
+Trialul s-a încheiat.	The trial has ended.	La prueba ha terminado.
+Trialul s-a încheiat. Înregistrarea nouă și exportul cer licența permanentă (Activare).	The trial has ended. New recordings and export need the permanent licence (Activation).	La prueba ha terminado. Las grabaciones nuevas y la exportación necesitan la licencia permanente (Activación).
+Trimite cererea	Send the request	Enviar la solicitud
+Un singur trial per Mac. Cele 5 zile pornesc la prima activare, după aprobare; reinstalarea nu dă un trial nou.	One trial per Mac. The 5 days start at the first activation, after approval; reinstalling does not give a new trial.	Una sola prueba por Mac. Los 5 días empiezan con la primera activación, tras la aprobación; reinstalar no da una prueba nueva.
+Urmărire cursor activă: timeline-ul se deplasează la redare ca să-l păstreze vizibil. Clic oprește.	Playhead follow on: the timeline scrolls during playback to keep it visible. Click to stop.	Seguimiento del cursor activo: la línea de tiempo se desplaza al reproducir para mantenerlo visible. Un clic lo detiene.
+Urmărire oprită (ai derulat manual). Clic: revii la cursor și reiei urmărirea.	Follow stopped (you scrolled by hand). Click: go back to the playhead and resume following.	Seguimiento detenido (te has desplazado a mano). Clic: vuelves al cursor y se reanuda el seguimiento.
+Verifică conexiunea la internet și încearcă din nou.	Check the internet connection and try again.	Comprueba la conexión a internet e inténtalo de nuevo.
+Versiune	Version	Versión
+Versiune instalată diferită de cea cu care s-a salvat starea: %@	The installed version differs from the one the state was saved with: %@	La versión instalada es distinta de aquella con la que se guardó el estado: %@
+Versiune nouă disponibilă: %@	New version available: %@	Nueva versión disponible: %@
+Versiune nouă: %@	New version: %@	Versión nueva: %@
+Versiunea instalată a rămas neschimbată.	The installed version was left unchanged.	La versión instalada no ha cambiado.
+Vizibilitate pista %@	Track %@ visibility	Visibilidad de la pista %@
+Volum general la 0 dB	Master volume at 0 dB	Volumen general a 0 dB
+WhatsApp	WhatsApp	WhatsApp
+Zoom de cadru către zonă: setat ca stare finală a clipului (animat).	Frame zoom to the area: set as the clip's end state (animated).	Zoom del encuadre hacia la zona: definido como estado final del clip (animado).
+acordată	granted	concedido
+activ	on	activo
+activă	on	activa
+alege folderul în «Înregistrare nouă»	choose the folder in “New recording”	elige la carpeta en «Grabación nueva»
+ascunsă	hidden	oculta
+ca sursa: %@×%@ · %@ cadre/s	as the source: %@×%@ · %@ fps	como la fuente: %@×%@ · %@ fps
+camera a fost deconectată	the camera was disconnected	la cámara se ha desconectado
+canale %@ din %@	channels %@ of %@	canales %@ de %@
+codecul și mărimea sursei, fără re-codificare	the source's codec and size, no re-encoding	el códec y el tamaño de la fuente, sin recodificar
+documentul are altă mărime sau cadență decât sursa	the document has a different size or frame rate than the source	el documento tiene otro tamaño o cadencia que la fuente
+efectele audio nu sunt încă procesate; exportul așteaptă finalul procesării	the audio effects are not processed yet; export waits for processing to finish	los efectos de audio aún no están procesados; la exportación espera a que termine el procesamiento
+eroare de cameră	camera error	error de la cámara
+eroare de captură	capture error	error de captura
+există surse audio mute	there are muted audio sources	hay fuentes de audio silenciadas
+fișier captură %@×%@ px	capture file %@×%@ px	archivo de captura %@×%@ px
+fișier procesat fără sunet	processed file without sound	archivo procesado sin sonido
+fișierul nu s-a închis: %@	the file was not closed: %@	el archivo no se ha cerrado: %@
+format de intrare refuzat	input format refused	formato de entrada rechazado
+fără	none	ninguno
+fără video redabil	no playable video	sin vídeo reproducible
+ieșirea nu poate fi adăugată	the output cannot be added	no se puede añadir la salida
+intrarea nu poate fi adăugată	the input cannot be added	no se puede añadir la entrada
+jurnal lipsă sau ilizibil	journal missing or unreadable	registro ausente o ilegible
+licență permanentă	permanent licence	licencia permanente
+mai multe surse audio se mixează într-o pistă	several audio sources are mixed into one track	varias fuentes de audio se mezclan en una pista
+mut	muted	silenciada
+măsurare întârziere: stare %@	latency measurement: status %@	medición de la latencia: estado %@
+necesară pentru orice captură; după acordare, repornește aplicația	needed for any capture; after granting it, restart the app	necesario para cualquier captura; después de concederlo, reinicia la app
+numărătoare %@	countdown %@	cuenta atrás %@
+o sursă are efecte audio	a source has audio effects	una fuente tiene efectos de audio
+oprită	off	desactivada
+opțional	optional	opcional
+pauză	paused	en pausa
+pista audio a sursei, copiată	the source's audio track, copied	la pista de audio de la fuente, copiada
+pornire	starting	iniciando
+pregătire	preparing	preparando
+procesare oprită — apasă Reîncearcă	processing stopped — press Retry	procesamiento detenido — pulsa Reintentar
+procesul pluginului nu a răspuns în %@ s	the plug-in process did not respond within %@ s	el proceso del plugin no ha respondido en %@ s
+proiectul are titluri, suprapuneri sau transformări	the project has titles, overlays or transforms	el proyecto tiene títulos, superposiciones o transformaciones
+recuperată	recovered	recuperada
+refuzată — se schimbă din Setări de sistem	denied — change it in System Settings	denegado — se cambia en Ajustes del Sistema
+repaus	idle	en reposo
+restrâns	collapsed	contraído
+salvare	saving	guardando
+se cere doar când alegi o cameră la înregistrare	asked only when you choose a camera for a recording	se pide solo cuando eliges una cámara para grabar
+se cere la prima sursă de microfon	asked at the first microphone source	se pide con la primera fuente de micrófono
+selectat	selected	seleccionado
+sunetul aplicațiilor · stereo	app sound · stereo	sonido de las apps · estéreo
+vizibilă	visible	visible
+Înregistrare %@	Recording %@	Grabación %@
+Înregistrarea nouă și exportul cer activarea (Trial 5 zile sau licența permanentă). Editarea rămâne liberă.	New recordings and export need activation (5-day trial or the permanent licence). Editing stays free.	Las grabaciones nuevas y la exportación necesitan la activación (prueba de 5 días o licencia permanente). La edición sigue siendo libre.
+Înregistrează (↩)	Record (↩)	Grabar (↩)
+în editare	being edited	en edición
+înregistrare	recording	grabando
+„%@” e adăugată de două ori. Fiecare sursă se înregistrează o singură dată.	“%@” is added twice. Each source is recorded only once.	«%@» está añadida dos veces. Cada fuente se graba una sola vez.
+„%@” nu are o interfață proprie pe care SADROG s-o poată afișa.	“%@” has no interface of its own that SADROG can show.	«%@» no tiene una interfaz propia que SADROG pueda mostrar.
+„%@”: aceleași canale sunt alese de două ori.	“%@”: the same channels are chosen twice.	«%@»: los mismos canales están elegidos dos veces.
+„%@”: alege cel puțin un canal.	“%@”: choose at least one channel.	«%@»: elige al menos un canal.
+„%@”: canalul %@ nu există (disponibile: %@).	“%@”: channel %@ does not exist (available: %@).	«%@»: el canal %@ no existe (disponibles: %@).
+„Rapid” nu se poate folosi: %@. Se re-codifică.	“Fast” cannot be used: %@. Re-encoding instead.	No se puede usar «Rápido»: %@. Se recodifica.
+⚠︎ %@. Nu se folosește alt dispozitiv în loc.	⚠︎ %@. No other device is used instead.	⚠︎ %@. No se usa otro dispositivo en su lugar.
+nouă — așteaptă verificarea	new — waiting to be checked	nueva — pendiente de revisión
+verificată	checked	revisada
+aprobată	approved	aprobada
+respinsă	declined	rechazada
+licență emisă	licence issued	licencia emitida
+activată	activated	activada
+expirată	expired	caducada
+revocată	revoked	revocada
+dezactivată	deactivated	desactivada
+Calitate maximă (re-codificare)	Maximum quality (re-encode)	Calidad máxima (recodificar)
+Rapid, fără re-codificare	Fast, no re-encoding	Rápido, sin recodificar
+Bună ziua, aș vrea să susțin voluntar proiectul SADROG. Cum pot face asta?	Hello, I would like to support the SADROG project voluntarily. How can I do that?	Hola, me gustaría apoyar voluntariamente el proyecto SADROG. ¿Cómo puedo hacerlo?
+Cer activarea permanentă imediat după confirmarea contribuției, înainte de încheierea celor 14 zile de retragere.	I ask for the permanent activation right after the contribution is confirmed, before the 14-day withdrawal period ends.	Pido la activación permanente justo después de confirmarse la contribución, antes de que terminen los 14 días de desistimiento.
+Cererea %@ · %@	Request %@ · %@	Solicitud %@ · %@
+Confidențialitate	Privacy	Privacidad
+Dreptul legal de retragere (UE, 14 zile) se aplică activării permanente plătite și încetează la activare doar dacă ai cerut expres activarea imediată și ai confirmat că pierzi acest drept (cele două bife de mai sus).	The statutory right of withdrawal (EU, 14 days) applies to the paid permanent activation and ends at activation only if you expressly asked for immediate activation and confirmed that you lose this right (the two boxes above).	El derecho legal de desistimiento (UE, 14 días) se aplica a la activación permanente pagada y termina con la activación solo si pediste expresamente la activación inmediata y confirmaste que pierdes este derecho (las dos casillas de arriba).
+Drepturile legale în caz de neconformitate se aplică întotdeauna: remediere, iar dacă nu e posibilă într-un termen rezonabil, reducerea contribuției sau încetarea contractului, în condițiile legii.	Your statutory rights for non-conformity always apply: repair and, if that is not possible within a reasonable time, a reduction of the contribution or termination of the contract, as provided by law.	Los derechos legales por falta de conformidad se aplican siempre: reparación y, si no es posible en un plazo razonable, reducción de la contribución o resolución del contrato, según la ley.
+Drepturile tale	Your rights	Tus derechos
+Iau la cunoștință că, odată începută activarea, pierd dreptul legal de retragere.	I acknowledge that once the activation has started, I lose the statutory right of withdrawal.	Reconozco que, una vez iniciada la activación, pierdo el derecho legal de desistimiento.
+Opțional. Fără ambele acorduri, cererea pleacă oricum, iar activarea permanentă se face după 14 zile de la confirmarea contribuției. Confirmarea acordurilor îți vine odată cu licența.	Optional. Without both agreements the request is still sent, and the permanent activation happens 14 days after the contribution is confirmed. The confirmation of the agreements comes with the licence.	Opcional. Sin ambos acuerdos la solicitud se envía igualmente, y la activación permanente se hace 14 días después de confirmarse la contribución. La confirmación de los acuerdos llega con la licencia.
+Politica voluntară: SADROG nu oferă o rambursare voluntară suplimentară.	Voluntary policy: SADROG offers no additional voluntary refund.	Política voluntaria: SADROG no ofrece un reembolso voluntario adicional.
+SADROG este software liber (GNU GPL v3 sau ulterioară), oferit „așa cum este” conform licenței; aceasta nu restrânge drepturile legale de mai sus.	SADROG is free software (GNU GPL v3 or later), provided “as is” under that licence; this does not restrict the statutory rights above.	SADROG es software libre (GNU GPL v3 o posterior), ofrecido «tal cual» según la licencia; esto no limita los derechos legales anteriores.
+SADROG — susținere voluntară	SADROG — voluntary support	SADROG — apoyo voluntario
+Separată de activare: nu deblochează nimic și nu e niciodată obligatorie.	Separate from activation: it unlocks nothing and is never required.	Aparte de la activación: no desbloquea nada y nunca es obligatoria.
+Susținere voluntară	Voluntary support	Apoyo voluntario
+Termeni	Terms	Términos
+Mărire locală	Local magnification	Ampliación local
+Culoare contur	Outline colour	Color del contorno
+Umbră	Shadow	Sombra
+Decupare	Crop	Recorte
+Stânga	Left	Izquierda
+Dreapta	Right	Derecha
+Sus	Top	Arriba
+Jos	Bottom	Abajo
+Fără decupare	No crop	Sin recorte
+Decuparea nu modifică sursa; revii oricând la imaginea întreagă.	Cropping never changes the source; you can return to the full picture at any time.	El recorte no modifica el original; puedes volver a la imagen completa en cualquier momento.
+Legătură cu clipul	Clip link	Vínculo con el clip
+Legat de clipul de sub el: se mută, se taie și se șterge odată cu el.	Bound to the clip under it: it moves, is cut and is deleted with it.	Vinculado al clip que tiene debajo: se mueve, se corta y se elimina con él.
+Independent de clipuri: rămâne la timpul lui.	Independent of clips: it stays at its own time.	Independiente de los clips: se queda en su propio tiempo.
+Fă-l independent	Make independent	Hacer independiente
+Leagă de clip	Bind to clip	Vincular al clip
+Mărire	Magnify	Ampliar
+Blocare pista %@	Lock for track %@	Bloqueo de la pista %@
+Blochează pista	Lock track	Bloquear pista
+Blochează pista %@ (nu se mai poate edita)	Lock track %@ (it can no longer be edited)	Bloquear la pista %@ (ya no se puede editar)
+Clip	Clip	Clip
+Copiază	Copy	Copiar
+Deblochează pista %@	Unlock track %@	Desbloquear la pista %@
+Duplică	Duplicate	Duplicar
+Lipește	Paste	Pegar
+Nu pot lipi: pista este blocată sau nu e loc liber.	Cannot paste: the track is locked or there is no free room.	No se puede pegar: la pista está bloqueada o no hay espacio libre.
+Pista este blocată sau elementul nu poate fi șters.	The track is locked or the item cannot be deleted.	La pista está bloqueada o el elemento no se puede eliminar.
+Redenumește	Rename	Renombrar
+Redenumește elementul	Rename the item	Renombrar el elemento
+Redenumește…	Rename…	Renombrar…
+Selectează tot	Select All	Seleccionar todo
+Taie	Cut	Cortar
+Un nume gol readuce numele fișierului.	An empty name restores the file name.	Un nombre vacío restaura el nombre del archivo.
+blocată	locked	bloqueada
+deblocată	unlocked	desbloqueada
+Clipurile din pista principală au rămas pe loc; se mută doar celelalte elemente.	Main-track clips stayed in place; only the other items move.	Los clips de la pista principal se quedaron en su sitio; solo se mueven los demás elementos.
+Nu se poate muta: o pistă a selecției este blocată.	Cannot move: a track of the selection is locked.	No se puede mover: una pista de la selección está bloqueada.
+Nu se poate muta acolo: grupul s-ar suprapune cu un element care nu se mută.	Cannot move there: the group would overlap an item that is not moving.	No se puede mover ahí: el grupo se superpondría con un elemento que no se mueve.
+Clipurile selectate trebuie să fie vecine și pista deblocată pentru a se muta împreună.	The selected clips must be adjacent and the track unlocked to move together.	Los clips seleccionados deben ser contiguos y la pista estar desbloqueada para moverse juntos.
+Clipurile din pista principală se mută separat de restul selecției.	Main-track clips move separately from the rest of the selection.	Los clips de la pista principal se mueven aparte del resto de la selección.
+Pista este blocată — deblochează-o ca să editezi.	The lane is locked — unlock it to edit.	La pista está bloqueada: desbloquéala para editar.
+%@. Nu se folosește alt dispozitiv în loc.	%@. No other device is used instead.	%@. No se usa otro dispositivo en su lugar.
+Acces refuzat	Access denied	Acceso denegado
+Arată detaliile	Show details	Mostrar detalles
+Canale %@ din %@	Channels %@ of %@	Canales %@ de %@
+Destinația înregistrărilor	Recordings destination	Destino de las grabaciones
+Doar ecranul principal. Adaugă camere, ferestre sau sunet.	Main screen only. Add cameras, windows or sound.	Solo la pantalla principal. Añade cámaras, ventanas o sonido.
+Mai multe	More	Más
+Necesită activare	Activation required	Requiere activación
+Numărătoare înainte de start	Countdown before start	Cuenta atrás antes de empezar
+Sunetul aplicațiilor · stereo	App sound · stereo	Sonido de las apps · estéreo
+Surse	Sources	Fuentes
+ultima folosită	last used	último usado
+Înregistrarea și exportul cer activare. Editarea rămâne liberă.	Recording and export require activation. Editing stays free.	Grabar y exportar requieren activación. Editar sigue libre.
+Decupare în vizor	Crop in viewer	Recortar en el visor
+Elementul are animație: decuparea în vizor nu e disponibilă; folosește câmpurile.	This item is animated: crop in the viewer is unavailable; use the fields.	Este elemento tiene animación: recortar en el visor no está disponible; usa los campos.
+Trage marginile imaginii direct în vizor; conținutul rămâne pe loc.	Drag the picture edges in the viewer; the content stays in place.	Arrastra los bordes de la imagen en el visor; el contenido no se mueve.
+Mâner de decupare	Crop handle	Asa de recorte
+Aplică și peste suprapuneri (prezentator)	Also apply over overlays (presenter)	Aplicar también sobre las superposiciones (presentador)
+Implicit efectul acționează doar asupra imaginii clipului; camera și celelalte straturi rămân neatinse.	By default the effect acts on the clip picture only; the camera and other layers stay untouched.	Por defecto el efecto actúa solo sobre la imagen del clip; la cámara y las demás capas no se tocan.
+Umple cadrul	Fill the frame	Rellenar el encuadre
+Centrează imaginea decupată și o mărește până umple cadrul.	Centres the cropped picture and enlarges it until it fills the frame.	Centra la imagen recortada y la amplía hasta llenar el encuadre.
+%@ video · %@ audio	%@ video · %@ audio	%@ vídeo · %@ audio
+gata de înregistrare	ready to record	lista para grabar
+permisiune lipsă	permission missing	falta el permiso
+înregistrarea cere activare	recording needs activation	la grabación requiere activación
+Indisponibilă	Unavailable	No disponible
+Toate	All	Todos
+Doar sunet	Audio only	Solo audio
+Lipsă	Missing	Falta
+Filtru	Filter	Filtro
+Sortare	Sort	Orden
+Ordinea importului	Import order	Orden de importación
+Filtre și sortare	Filters and sorting	Filtros y orden
+Relegă fișierul…	Relink file…	Revincular archivo…
+Fișierul nu mai este la locul lui.	The file is no longer where it was.	El archivo ya no está en su lugar.
+Tip	Type	Tipo
+Rezoluție	Resolution	Resolución
+Alege fișierul care înlocuiește %@	Choose the file that replaces %@	Elige el archivo que sustituye a %@
+Țintă	Target	Destino
+Legat de suprapunere: se mută, se taie, se copiază și se șterge odată cu ea; efectul acționează doar în imaginea ei.	Bound to the overlay: it moves, is cut, copied and deleted with it; the effect acts only inside its picture.	Vinculado a la superposición: se mueve, se corta, se copia y se elimina con ella; el efecto actúa solo dentro de su imagen.
+Independent: rămâne la timpul lui și acționează asupra a tot ce e dedesubt.	Independent: it stays at its time and acts on everything below it.	Independiente: se queda en su tiempo y actúa sobre todo lo que hay debajo.
+Leagă de suprapunere	Bind to overlay	Vincular a superposición
+Nu pot lega evidențierea de suprapunere acolo.	I cannot bind the highlight to the overlay there.	No puedo vincular el resaltado a la superposición ahí.
+Timp și sursă	Time and source	Tiempo y fuente
+Categorii	Categories	Categorías
+Exportă proiectul	Export project	Exportar proyecto
+fără re-codificare	no re-encoding	sin recodificación
+Export terminat	Export finished	Exportación terminada
+Salvat · %@	Saved · %@	Guardado · %@
+Exportul nu s-a putut termina	The export could not finish	La exportación no pudo terminar
+Export anulat	Export cancelled	Exportación cancelada
+Înregistrarea și exportul sunt disponibile.	Recording and export are available.	La grabación y la exportación están disponibles.
+Editarea rămâne liberă; înregistrarea și exportul cer activare.	Editing stays free; recording and export need activation.	La edición sigue libre; grabar y exportar requieren activación.
+Interval	Range	Intervalo
+Doar între In și Out (%@)	Only between In and Out (%@)	Solo entre In y Out (%@)
+Marcaj	Marker	Marcador
+Redenumește marcajul…	Rename marker…	Renombrar marcador…
+Șterge marcajul	Delete marker	Eliminar marcador
+Numele marcajului	Marker name	Nombre del marcador
+Un nume gol păstrează doar poziția.	An empty name keeps only the position.	Un nombre vacío conserva solo la posición.
+Timeline	Timeline	Línea de tiempo
+Adaugă marcaj	Add marker	Añadir marcador
+Marcajul următor	Next marker	Marcador siguiente
+Marcajul anterior	Previous marker	Marcador anterior
+Setează In la cursor	Set In at playhead	Fijar In en el cursor
+Setează Out la cursor	Set Out at playhead	Fijar Out en el cursor
+Șterge In și Out	Clear In and Out	Borrar In y Out
+Îngheață cadrul de la cursor (⌥F)	Freeze the frame at the playhead (⌥F)	Congelar el fotograma en el cursor (⌥F)
+Îngheață cadrul	Freeze frame	Congelar fotograma
+Nu se poate îngheța cadrul aici: cursorul trebuie să fie pe un clip video normal.	Cannot freeze here: the playhead must be on a normal video clip.	No se puede congelar aquí: el cursor debe estar sobre un clip de vídeo normal.
+Linie	Line	Línea
+Săgeată	Arrow	Flecha
+Linie: trage în previzualizare (Esc anulează)	Line: drag in the preview (Esc cancels)	Línea: arrastra en la vista previa (Esc cancela)
+Săgeată: trage în previzualizare, de la coadă spre vârf (Esc anulează)	Arrow: drag in the preview, from tail to tip (Esc cancels)	Flecha: arrastra en la vista previa, de la cola a la punta (Esc cancela)
+Web 1080p	Web 1080p	Web 1080p
+Compact 720p	Compact 720p	Compacto 720p
+%@ · H.264	%@ · H.264	%@ · H.264
+Arhivă: proiect + media	Archive: project + media	Archivo: proyecto + medios
+fișiere media	media files	archivos multimedia
+Creează arhiva	Create archive	Crear archivo
+Conține	Contains	Contiene
+Proiectul și %@ fișiere media (%@)	The project and %@ media files (%@)	El proyecto y %@ archivos multimedia (%@)
+O copie: proiectul și media originale nu se schimbă. Arhiva se deschide ca orice proiect și își găsește media chiar dacă folderul e mutat.	A copy: the original project and media are not changed. The archive opens like any project and finds its media even if the folder is moved.	Una copia: el proyecto y los medios originales no cambian. El archivo se abre como cualquier proyecto y encuentra sus medios aunque se mueva la carpeta.
+%@ fișiere lipsesc și nu pot fi arhivate.	%@ files are missing and cannot be archived.	Faltan %@ archivos y no se pueden archivar.
+Există deja o arhivă cu acest nume. Alege alt nume.	An archive with this name already exists. Choose another name.	Ya existe un archivo con este nombre. Elige otro nombre.
+Nu este destul spațiu liber pentru arhivă.	Not enough free space for the archive.	No hay espacio libre suficiente para el archivo.
+Se arhivează…	Archiving…	Archivando…
+Poți anula oricând; arhiva parțială se șterge.	You can cancel any time; the partial archive is deleted.	Puedes cancelar en cualquier momento; el archivo parcial se elimina.
+Arhivă creată	Archive created	Archivo creado
+%@ · %@ fișiere lipsă nu au fost incluse	%@ · %@ missing files were not included	%@ · %@ archivos que faltaban no se incluyeron
+Arhiva nu s-a putut crea	The archive could not be created	No se pudo crear el archivo
+Arhivarea a fost oprită; nu a rămas nicio arhivă parțială.	Archiving was stopped; no partial archive was left.	El archivado se detuvo; no quedó ningún archivo parcial.
+Anulează arhivarea	Cancel archiving	Cancelar archivado
+Video (mix)	Video (mix)	Vídeo (mezcla)
+Audio: mix + surse separate	Audio: mix + separate sources	Audio: mezcla + fuentes separadas
+Setări	Settings	Ajustes
+Se aplică imediat	Applied immediately	Se aplica al instante
+Limba	Language	Idioma
+Numărătoare înainte de înregistrare	Countdown before recording	Cuenta atrás antes de grabar
+Folder de destinație	Destination folder	Carpeta de destino
+nealeasă	not chosen	sin elegir
+Alege…	Choose…	Elegir…
+Arhiva nu a fost creată.	The archive was not created.	No se creó el archivo.
+Latura lungă cel mult 1920 px; fișier mai mic, potrivit pentru web.	Long side at most 1920 px; a smaller file suited to the web.	Lado largo de 1920 px como máximo; un archivo más pequeño para la web.
+Latura lungă cel mult 1280 px; fișier mic pentru trimis sau previzualizat.	Long side at most 1280 px; a small file to send or preview.	Lado largo de 1280 px como máximo; un archivo pequeño para enviar o previsualizar.
+Suprapus	Overlay	Superpuesto
+Aldin	Bold	Negrita
+Cursiv	Italic	Cursiva
+Stil	Style	Estilo
+Fundal text	Text background	Fondo del texto
+Fundal în spatele textului	A box behind the text	Un fondo detrás del texto
+Opacitate fundal	Box opacity	Opacidad del fondo
+Spațiu între rânduri	Line spacing	Interlineado
+oprit	off	desactivado
+Enter începe un rând nou; textul se aplică la ieșirea din câmp	Return starts a new line; the text applies when you leave the field	Intro empieza otra línea; el texto se aplica al salir del campo
+Cadru dreptunghiular: doar conturul, fără întunecare; trage în previzualizare (Esc anulează)	Rectangular frame: outline only, no darkening; drag in the preview (Esc cancels)	Marco rectangular: solo el contorno, sin oscurecer; arrastra en la vista previa (Esc cancela)
+Cadru dreptunghiular	Rectangular frame	Marco rectangular
+Doar cadru	Frame only	Solo marco
+Tipul selecției	Selection type	Tipo de selección
+Mișcare	Motion	Movimiento
+Lin	Smooth	Suave
+Liniar	Linear	Lineal
+Intrare	Ease in	Entrada
+Ieșire	Ease out	Salida
+Curba mișcării	Motion curve	Curva del movimiento
+Cum trece mișcarea de la o stare la alta: lin, liniar, accelerat la început sau încetinit la sfârșit	How the motion goes from one state to the next: smooth, linear, speeding up at the start or slowing down at the end	Cómo pasa el movimiento de un estado al siguiente: suave, lineal, acelerado al principio o frenado al final
+Cheie la cursor	Keyframe at playhead	Clave en el cursor
+Mută cursorul în interiorul elementului (nu pe margini)	Move the playhead inside the item (not on its edges)	Mueve el cursor al interior del elemento (no en los bordes)
+Adaugă o stare intermediară la cursor; apoi o editezi cu câmpurile de transformare	Adds an intermediate state at the playhead; then edit it with the transform fields	Añade un estado intermedio en el cursor; luego lo editas con los campos de transformación
+Cheia de la %@ s	Keyframe at %@ s	Clave en %@ s
+editată	being edited	en edición
+Șterge cheia	Delete keyframe	Eliminar clave
+Fade la început	Fade in	Fundido de entrada
+Fade la sfârșit	Fade out	Fundido de salida
+Tranziție	Transition	Transición
+Dizolvare	Dissolve	Disolvencia
+Prea puțin material în clipuri pentru o dizolvare.	Not enough material in the clips for a dissolve.	No hay material suficiente en los clips para una disolvencia.
+Se suprapune cu clipul dinainte; sunetul se amestecă la fel, iar linia timpului se scurtează.	Overlaps the previous clip; the sound blends the same way and the timeline gets shorter.	Se superpone con el clip anterior; el sonido se mezcla igual y la línea de tiempo se acorta.
+Salvează mișcarea cursorului	Save the pointer movement	Guardar el movimiento del cursor
+Doar poziția și clicurile	Only position and clicks	Solo posición y clics
+Doar poziția și clicurile, doar cât înregistrezi; nu se citește tastatura	Only position and clicks, only while you record; the keyboard is not read	Solo posición y clics, solo mientras grabas; no se lee el teclado
+Doar poziția și clicurile cursorului, doar cât ține înregistrarea; nu se citește tastatura și nimic nu pornește la deschiderea aplicației. Le folosești apoi în editor: evidențiere, cercuri la clic, zoom care urmărește cursorul.	Only the pointer position and clicks, only while the recording runs; the keyboard is not read and nothing starts when the app opens. You then use them in the editor: highlight, click rings, zoom that follows the pointer.	Solo la posición y los clics del cursor, solo mientras dura la grabación; no se lee el teclado y nada se inicia al abrir la app. Luego los usas en el editor: resaltado, círculos al hacer clic, zoom que sigue al cursor.
+Cursor	Pointer	Cursor
+Evidențiază cursorul	Highlight the pointer	Resaltar el cursor
+Cerc la clic	Click ring	Círculo al hacer clic
+Zoom care urmărește cursorul	Zoom that follows the pointer	Zoom que sigue al cursor
+Mărește cadrul (×1,8) și îl mută după cursor; rezultatul sunt chei obișnuite, pe care le poți edita la Animație	Magnifies the frame (×1.8) and moves it with the pointer; the result is ordinary keys you can edit under Animation	Amplía el encuadre (×1,8) y lo mueve con el cursor; el resultado son claves normales que puedes editar en Animación
+Alunecare	Slide	Deslizamiento
+Apariția titlului	Title entrance	Entrada del título
+Apariție	Enter	Entrada
+Contur text	Text outline	Contorno del texto
+Contur în jurul literelor	Outline around the letters	Contorno alrededor de las letras
+Dispariția titlului	Title exit	Salida del título
+Dispariție	Exit	Salida
+Durata tranziției	Transition length	Duración de la transición
+Micșorare	Shrink	Encoger
+Subliniat	Underline	Subrayado
+Zoom	Zoom	Zoom
+Aspect	Appearance	Apariencia
+Aspectul aplicației	App appearance	Apariencia de la app
+Sistem	System	Sistema
+Întunecat	Dark	Oscuro
+Luminos	Light	Claro
+Transformare	Transform	Transformación
+Potrivire	Fit	Ajustar
+Titlu	Title	Título
+Suprapunere video	Video overlay	Vídeo superpuesto
+Detașează sunetul	Detach audio	Separar audio
+Reatașează sunetul	Reattach audio	Reunir audio
+Selectează doar sunetul detașat	Select only the detached audio	Seleccionar solo el audio separado
+Selectează imaginea legată	Select the linked picture	Seleccionar la imagen vinculada
+Sunetul e acum un element separat — poate fi mutat, tăiat sau șters independent.	The audio is now a separate item — it can be moved, cut or deleted independently.	El audio es ahora un elemento separado: se puede mover, cortar o borrar por separado.
+Nu pot detașa sunetul acestui clip.	Cannot detach this clip's audio.	No se puede separar el audio de este clip.
+Sunetul detașat a fost mutat sau tăiat — șterge-l sau pune-l înapoi la locul lui, apoi reatașează.	The detached audio was moved or cut — delete it or put it back in place, then reattach.	El audio separado se movió o cortó: bórralo o devuélvelo a su sitio y vuelve a reunirlo.
+Nu se poate muta acolo: se suprapune cu alt element de pe pista aceea.	It can't go there: it overlaps another item on that track.	No se puede mover ahí: se solapa con otro elemento de esa pista.
+Pista nu poate fi mutată acolo.	The track can't be moved there.	La pista no se puede mover ahí.
+Nu mai pot adăuga piste în această zonă.	No more tracks can be added in this area.	No se pueden añadir más pistas en esta zona.
+Pista are elemente sau este singura rămasă — golește-o înainte să o elimini.	The track holds items or is the only one left — empty it before removing it.	La pista tiene elementos o es la única — vacíala antes de eliminarla.
+Redenumește pista	Rename track	Renombrar pista
+Un nume gol readuce numele implicit.	An empty name restores the default name.	Un nombre vacío restaura el nombre predeterminado.
+Pista %@	Track %@	Pista %@
+Redenumește pista…	Rename track…	Renombrar pista…
+Adaugă o pistă	Add a track	Añadir una pista
+Elimină pista (goală)	Remove track (empty)	Eliminar pista (vacía)
+Urcă pista (în față)	Move track up (to the front)	Subir pista (al frente)
+Urcă pista	Move track up	Subir pista
+Coboară pista (în spate)	Move track down (to the back)	Bajar pista (al fondo)
+Coboară pista	Move track down	Bajar pista
+Mută pe pista de deasupra (în față)	Move to the track above (in front)	Mover a la pista superior (al frente)
+Mută pe pista de dedesubt	Move to the track below	Mover a la pista inferior
+Mută pe pista de deasupra	Move to the track above	Mover a la pista superior
+Sunet detașat → A2	Detached audio → A2	Audio separado → A2
+Legat de imagine	Linked to the picture	Vinculado a la imagen
+Sunet detașat din clip, încă sincron cu imaginea. Îl poți muta, tăia sau șterge separat.	Audio detached from the clip, still in sync with the picture. You can move, cut or delete it separately.	Audio separado del clip, aún sincronizado con la imagen. Puedes moverlo, cortarlo o borrarlo por separado.
+Sunet detașat din clip și mutat sau tăiat: nu mai este sincron cu imaginea.	Audio detached from the clip and moved or cut: it is no longer in sync with the picture.	Audio separado del clip y movido o cortado: ya no está sincronizado con la imagen.
+Imaginea de care era legat a fost ștearsă; sunetul rămâne independent.	The picture it was linked to was deleted; the audio stays independent.	La imagen a la que estaba vinculado se borró; el audio queda independiente.
+Selectează imaginea	Select the picture	Seleccionar la imagen
+Reatașează	Reattach	Reunir
+Sunet și imagine	Audio and picture	Audio e imagen
+Sunetul acestui clip este un element separat pe A2; imaginea rămâne aici.	This clip's audio is a separate item on A2; the picture stays here.	El audio de este clip es un elemento separado en A2; la imagen se queda aquí.
+Sunetul este legat de imagine: se mută, taie și șterge împreună.	The audio is tied to the picture: they move, cut and delete together.	El audio está ligado a la imagen: se mueven, cortan y borran juntos.
+Selectează sunetul	Select the audio	Seleccionar el audio
+Sunetul detașat are volum sau mute propriu — clipul nu le poate purta. Resetează-le sau păstrează sunetul separat.	The detached sound has its own volume or mute — the clip cannot carry them. Reset them or keep the sound separate.	El sonido separado tiene volumen o silencio propios: el clip no puede llevarlos. Restablécelos o mantén el sonido separado.
+Înregistrare nouă în acest proiect…	New recording in this project…	Nueva grabación en este proyecto…
+Importă video sau sunet…	Import video or audio…	Importar vídeo o sonido…
+Adaugă	Add	Añadir
+Adaugă o înregistrare nouă sau importă un fișier existent	Add a new recording or import an existing file	Añade una grabación nueva o importa un archivo existente
+Adaugă înregistrare sau fișier	Add recording or file	Añadir grabación o archivo
+Înregistrarea se adaugă în «%@», la sfârșitul proiectului. Proiectul rămâne salvat.	The recording is added to “%@”, at the end of the project. The project stays saved.	La grabación se añade a «%@», al final del proyecto. El proyecto sigue guardado.
+Înapoi la editor	Back to the editor	Volver al editor
+Sesiunea simulată nu a putut fi scrisă: %@	The simulated session could not be written: %@	No se pudo escribir la sesión simulada: %@
+Înregistrarea nu poate fi citită; rămâne în Recente.	The recording cannot be read; it stays in Recent.	No se puede leer la grabación; permanece en Recientes.
+Nu am putut adăuga înregistrarea în proiect; rămâne în Recente.	Could not add the recording to the project; it stays in Recent.	No se pudo añadir la grabación al proyecto; permanece en Recientes.
+Înregistrarea a fost adăugată la sfârșitul proiectului.	The recording was added at the end of the project.	La grabación se añadió al final del proyecto.
+Document nou…	New document…	Documento nuevo…
+Deschide proiect…	Open project…	Abrir proyecto…
+Deschide recent	Open recent	Abrir reciente
+Niciun proiect recent	No recent projects	Ningún proyecto reciente
+Importă video sau sunet…	Import video or audio…	Importar vídeo o sonido…
+Adaugă înregistrare…	Add recording…	Añadir grabación…
+Exportă…	Export…	Exportar…
+Ascunde biblioteca	Hide library	Ocultar biblioteca
+Arată biblioteca	Show library	Mostrar biblioteca
+Ascunde inspectorul	Hide inspector	Ocultar inspector
+Arată inspectorul	Show inspector	Mostrar inspector
+Mărește previzualizarea	Zoom in preview	Ampliar vista previa
+Micșorează previzualizarea	Zoom out preview	Reducir vista previa
+Șterge	Delete	Eliminar
+Taie la cursor	Split at playhead	Cortar en el cursor
+Pistă	Track	Pista
+Adaugă pistă video suprapusă	Add overlay video track	Añadir pista de vídeo superpuesta
+Adaugă pistă audio	Add audio track	Añadir pista de audio
+Adaugă pistă de efecte	Add effects track	Añadir pista de efectos
+Mută elementul pe rândul de deasupra	Move item to the row above	Mover el elemento a la fila superior
+Mută elementul pe rândul de dedesubt	Move item to the row below	Mover el elemento a la fila inferior
+Redenumește pista elementului…	Rename the item's track…	Renombrar la pista del elemento…
+copiat din sursă	copied from the source	copiado de la fuente
+Copierea fără procesare nu se poate pentru acest proiect.	Copying without processing is not possible for this project.	La copia sin procesar no es posible para este proyecto.
+PCM necomprimat	Uncompressed PCM	PCM sin comprimir
+ProRes este un master de calitate foarte înaltă, dar tot comprimat: nu este lossless.	ProRes is a very high quality master, but still compressed: it is not lossless.	ProRes es un máster de muy alta calidad, pero sigue comprimido: no es lossless.
+Identic cu cadrele procesate de SADROG (după scalare și efecte), nu cu sursa originală.	Identical to the frames SADROG processed (after scaling and effects), not to the original source.	Idéntico a los fotogramas procesados por SADROG (tras escalado y efectos), no a la fuente original.
+Mărire: imaginea este interpolată; nu apare detaliu nou.	Enlargement: the picture is interpolated; no new detail appears.	Ampliación: la imagen se interpola; no aparece detalle nuevo.
+Altă proporție decât documentul: imaginea se încadrează întreagă, cu margini; pozițiile relative ale elementelor se păstrează.	Different aspect from the document: the whole picture fits inside the frame with margins; the elements keep their relative positions.	Proporción distinta a la del documento: la imagen cabe entera con márgenes; los elementos conservan sus posiciones relativas.
+Cadență schimbată: %@ → %@ cadre/s (cadre repetate sau omise, fără interpolare).	Frame rate changed: %@ → %@ fps (frames repeated or dropped, no interpolation).	Frecuencia cambiada: %@ → %@ fps (fotogramas repetidos u omitidos, sin interpolación).
+Copierea fără procesare nu e posibilă: proiectul cere procesare. Alege un mod procesat.	Copying without processing is not possible: the project needs processing. Choose a processed mode.	La copia sin procesar no es posible: el proyecto requiere procesado. Elige un modo procesado.
+PNG fără pierderi, RGB 8 biți	Lossless PNG, 8-bit RGB	PNG sin pérdidas, RGB 8 bits
+Folder: secvență PNG + audio WAV	Folder: PNG sequence + WAV audio	Carpeta: secuencia PNG + audio WAV
+WAV 32 biți float	32-bit float WAV	WAV float de 32 bits
+Pe acest sistem nu există codec video lossless pentru fișier: rezultatul este un folder cu cadre PNG și audio.wav.	This system has no lossless video codec for a file: the result is a folder with PNG frames and audio.wav.	Este sistema no tiene un códec de vídeo lossless para archivo: el resultado es una carpeta con fotogramas PNG y audio.wav.
+Ca documentul	Same as document	Como el documento
+Ca documentul (%@)	Same as document (%@)	Como el documento (%@)
+Cadență	Frame rate	Fotogramas
+Calitate foarte înaltă, dar NU lossless.	Very high quality, but NOT lossless.	Calidad muy alta, pero NO sin pérdida.
+Codec	Codec	Códec
+Comprimat cu pierderi.	Lossy compressed.	Comprimido con pérdida.
+Copiază fluxurile existente; tăieturile urmează lista de editare. Doar pentru proiecte fără procesare.	Copies the existing streams; cuts follow the edit list. Only for projects without processing.	Copia los flujos existentes; los cortes siguen la lista de edición. Solo para proyectos sin procesado.
+Copierea nu se poate pentru acest proiect: %@. Alege un mod procesat.	Copy is not possible for this project: %@. Choose a processed mode.	La copia no es posible para este proyecto: %@. Elige un modo procesado.
+Fără pierderi: nimic nu se re-codifică.	No loss: nothing is re-encoded.	Sin pérdida: nada se recodifica.
+Lossless față de cadrele procesate (după scalare și efecte).	Lossless versus the processed frames (after scaling and effects).	Sin pérdida respecto a los fotogramas procesados (tras escalado y efectos).
+Lossless: cadre PNG + audio WAV	Lossless: PNG frames + WAV audio	Sin pérdida: fotogramas PNG + audio WAV
+Master ProRes (nu lossless)	ProRes master (not lossless)	Master ProRes (no sin pérdida)
+Medie, fișier mai mic	Medium, smaller file	Media, archivo más pequeño
+Mod	Mode	Modo
+Personalizat…	Custom…	Personalizado…
+ProRes	ProRes	ProRes
+Procesat, comprimat (H.264 / HEVC)	Processed, compressed (H.264 / HEVC)	Procesado, comprimido (H.264 / HEVC)
+Procesează imaginea și o comprimă cu pierderi; fișier mic, compatibil.	Processes the picture and compresses it with loss; small, compatible file.	Procesa la imagen y la comprime con pérdida; archivo pequeño y compatible.
+Procesează și scrie fiecare cadru fără pierderi (PNG) plus sunetul necomprimat; folder mare.	Processes and writes every frame losslessly (PNG) plus uncompressed audio; large folder.	Procesa y escribe cada fotograma sin pérdida (PNG) más audio sin comprimir; carpeta grande.
+Procesează și scrie un master de calitate foarte înaltă (ProRes); fișier mare, tot comprimat.	Processes and writes a very high quality master (ProRes); large file, still compressed.	Procesa y escribe un master de calidad muy alta (ProRes); archivo grande, aún comprimido.
+Rapid: copiere, fără procesare	Fast: copy, no processing	Rápido: copia, sin procesado
+Rezultat	Result	Resultado
+cadre/s	fps	fps
+Înaltă	High	Alta
+Aici nu se pot lăsa materiale: alege V1, V2 sau A2.	Materials cannot be dropped here: choose V1, V2 or A2.	Aquí no se pueden soltar materiales: elige V1, V2 o A2.
+Fișierul nu poate fi citit.	The file cannot be read.	No se puede leer el archivo.
+Importat în bibliotecă: %@ fișiere.	Imported into the library: %@ files.	Importado en la biblioteca: %@ archivos.
+Inserat: %@ elemente.	Inserted: %@ items.	Insertado: %@ elementos.
+Materialul nu se potrivește cu pista aceasta.	This material does not fit this track.	Este material no encaja en esta pista.
+Nu pot citi %@.	Cannot read %@.	No puedo leer %@.
+Nu s-a primit niciun fișier.	No file was received.	No se recibió ningún archivo.
+Nu s-a putut insera.	Could not insert.	No se pudo insertar.
+Pista este blocată.	The track is locked.	La pista está bloqueada.
+Pistă nouă + inserare	New track + insert	Pista nueva + inserción
+Pistă nouă creată și materialul inserat.	New track created and material inserted.	Pista nueva creada y material insertado.
+Se suprapune cu alt element de pe pistă.	Overlaps another item on the track.	Se solapa con otro elemento de la pista.
+Legat de clip	Linked to clip	Vinculado al clip
+Legat de suprapunere	Linked to overlay	Vinculado a superposición
+Schimbă ținta	Change target	Cambiar destino
+Independent	Independent	Independiente
+Inserat: 1 element.	Inserted: 1 item.	Insertado: 1 elemento.
+WAV PCM întreg, 32 biți	32-bit integer PCM WAV	WAV PCM entero de 32 bits
+Rezultatul este un folder: cadre PNG, audio.wav și sequence.json (cadență, dimensiuni, număr de cadre, interval, relația cu sunetul).	The result is a folder: PNG frames, audio.wav and sequence.json (frame rate, size, frame count, interval, relation to the sound).	El resultado es una carpeta: fotogramas PNG, audio.wav y sequence.json (cadencia, tamaño, número de fotogramas, intervalo, relación con el sonido).
+Fără pierderi față de cadrele procesate RGB pe 8 biți și mixul proiectului (după scalare și efecte), nu față de sursa originală.	Lossless relative to the processed 8-bit RGB frames and the project mix (after scaling and effects), not relative to the original source.	Sin pérdida respecto a los fotogramas RGB de 8 bits procesados y la mezcla del proyecto (tras escalado y efectos), no respecto a la fuente original.
+Efectul acționează acum asupra elementului ales.	The effect now acts on the chosen item.	El efecto actúa ahora sobre el elemento elegido.
+Nu pot lega efectul de elementul acela.	Cannot bind the effect to that item.	No puedo vincular el efecto a ese elemento.
+Efectul va acționa asupra acestui element	The effect will act on this item	El efecto actuará sobre este elemento
+Arată panoul de control	Show control panel	Mostrar el panel de control
+Ascunde panoul (rechemare din meniul SADROG din bara de meniuri)	Hide panel (recall it from the SADROG menu bar item)	Ocultar el panel (se recupera desde el menú SADROG de la barra de menús)
+Ascunde panoul de control	Hide control panel	Ocultar el panel de control
+Trage pentru a muta panoul	Drag to move the panel	Arrastra para mover el panel
+Adaugă la un proiect existent	Add to an existing project	Añadir a un proyecto existente
+Alege	Choose	Elegir
+Alt proiect…	Other project…	Otro proyecto…
+Document nou cu această înregistrare	New document with this recording	Documento nuevo con esta grabación
+Nume document	Document name	Nombre del documento
+Păstrează în Recente	Keep in Recent	Conservar en Recientes
+Înregistrare	Recording	Grabación
+Înregistrare salvată	Recording saved	Grabación guardada
+Înregistrarea rămâne pe disc; o găsești în Recente	The recording stays on disk; you will find it in Recent	La grabación permanece en el disco; la encontrarás en Recientes
+Efect în clip	Effect in clip	Efecto en el clip
+Alege sursa %@ în inspector	Choose source %@ in the inspector	Elegir la fuente %@ en el inspector
+Pistă în fișier	Track in file	Pista en el archivo
+Sursă aleasă	Chosen source	Fuente elegida
+aleasă	chosen	elegida
+microfon	microphone	micrófono
+sunet sistem	system sound	sonido del sistema
+sursă audio	audio source	fuente de audio
+SIMULARE	SIMULATION	SIMULACIÓN
+Avansat	Advanced	Avanzado
+Calitate maximă (ca documentul)	Maximum quality (like the document)	Calidad máxima (como el documento)
+Copierea nu se poate pentru acest proiect: %@. Alege alt preset.	Copying is not possible for this project: %@. Choose another preset.	No se puede copiar este proyecto: %@. Elige otro preset.
+Implicit	Default	Predeterminado
+Master ProRes	ProRes master	Máster ProRes
+Mod export	Export mode	Modo de exportación
+Mărime estimată: ≈ %@ (estimare, nu valoare garantată)	Estimated size: ≈ %@ (an estimate, not a guaranteed value)	Tamaño estimado: ≈ %@ (estimación, no valor garantizado)
+Renunță	Cancel	Cancelar
+Resetează	Reset	Restablecer
+Salvează	Save	Guardar
+Salvează ca preset…	Save as preset…	Guardar como preset…
+Setează ca implicit	Set as default	Establecer como predeterminado
+nume preset	preset name	nombre del preset
+Șterge presetul	Delete preset	Eliminar preset
+Cu ce preset pornește fereastra de export. Presetele personale se salvează din fereastra de export, în modul Avansat.	The preset the export window starts with. Personal presets are saved from the export window, in Advanced mode.	El preset con el que se abre la ventana de exportación. Los presets personales se guardan desde esa ventana, en modo Avanzado.
+Despre	About	Acerca de
+Export	Export	Exportar
+General	General	General
+Preset implicit	Default preset	Preset predeterminado
+Compactează pista	Compact track	Compactar pista
+Mută pista %@	Move track %@	Mover pista %@
+Mută pista mai jos	Move track down	Mover pista abajo
+Mută pista mai sus	Move track up	Mover pista arriba
+Mărește înălțimea pistei	Make track taller	Aumentar la altura de la pista
+Renunță: pista rămâne unde era	Cancel: the track stays where it was	Cancelar: la pista se queda donde estaba
+Resetează aspectul pistelor	Reset track layout	Restablecer el diseño de las pistas
+Resetează înălțimea pistei	Reset track height	Restablecer la altura de la pista
+Trage ca să muți pista mai sus sau mai jos; scoate cursorul în afara antetului ca să renunți	Drag to move the track up or down; move the pointer out of the header to cancel	Arrastra para mover la pista; saca el cursor de la cabecera para cancelar
+Trage ca să schimbi înălțimea pistei; dublu-clic = înălțime automată	Drag to change the track height; double-click = automatic height	Arrastra para cambiar la altura; doble clic = altura automática
+Înălțimea pistei %@	Track %@ height	Altura de la pista %@
+Înregistrare: %@	Recording: %@	Grabación: %@
+Pista %@ e blocată — deblochează-o ca să o muți	Track %@ is locked — unlock it to move it	La pista %@ está bloqueada: desbloquéala para moverla
+Pistele %@ se mută doar în interiorul benzii %@	%@ tracks only move inside the %@ lane	Las pistas %@ solo se mueven dentro de la banda %@
+Trage ca să muți pista; doar organizare, sunetul mixat nu se schimbă	Drag to move the track; organisation only, the mixed sound does not change	Arrastra para mover la pista; solo organización, el sonido mezclado no cambia
+Trage ca să muți pista; ordinea de suprapunere a imaginilor se schimbă (rândul de sus e în față)	Drag to move the track; the stacking order of the pictures changes (the top row is in front)	Arrastra para mover la pista; cambia el orden de superposición de las imágenes (la fila superior va delante)
+Nu am putut crea documentul cu înregistrarea; documentul temporar gol a fost mutat în Coș, înregistrarea rămâne în Recente.	Could not put the recording into the document; the empty temporary document was moved to the Trash and the recording stays in Recent.	No se pudo poner la grabación en el documento; el documento temporal vacío se movió a la Papelera y la grabación sigue en Recientes.
+Poziția ferestrei din față și numele aplicației, doar cât înregistrezi; fără titluri sau conținut	Position of the front window and the application name, only while you record; no titles or content	Posición de la ventana delantera y nombre de la aplicación, solo mientras grabas; sin títulos ni contenido
+Poziția și dimensiunea ferestrei aflate în față și aplicația ei, doar cât ține înregistrarea; titlul ferestrei și conținutul ei nu se citesc și nimic nu pornește la deschiderea aplicației. Se salvează lângă înregistrare; editorul nu le folosește încă.	Position and size of the front window and its application, only while the recording runs; the window title and its content are not read and nothing starts when the app opens. Saved next to the recording; the editor does not use it yet.	Posición y tamaño de la ventana delantera y su aplicación, solo mientras dura la grabación; no se lee el título de la ventana ni su contenido y nada arranca al abrir la aplicación. Se guarda junto a la grabación; el editor aún no lo usa.
+Salvează fereastra din prim-plan	Save the front window	Guardar la ventana delantera
+Alege modul camerei (mărime și cadre pe secundă)	Choose the camera mode (size and frames per second)	Elige el modo de la cámara (tamaño y fotogramas por segundo)
+Automat (modul curent al camerei)	Automatic (the camera's current mode)	Automático (el modo actual de la cámara)
+Mod ales: %@	Chosen mode: %@	Modo elegido: %@
+Modul camerei	Camera mode	Modo de la cámara
+modul %@ nu este oferit de această cameră	mode %@ is not offered by this camera	esta cámara no ofrece el modo %@
+Automat	Automatic	Automático
+Automată (AAC 128 kb/s)	Automatic (AAC 128 kb/s)	Automática (AAC 128 kb/s)
+Automată (setarea sistemului)	Automatic (system setting)	Automática (ajuste del sistema)
+Cadre cheie	Key frames	Fotogramas clave
+Rată audio	Audio bit rate	Tasa de audio
+Rată video	Video bit rate	Tasa de vídeo
+Rată video medie țintă: %@ Mb/s; encoderul o poate depăși sau subdepăși pe scene foarte simple sau foarte complexe.	Target average video bit rate: %@ Mb/s; the encoder may overshoot or undershoot on very simple or very complex scenes.	Tasa media de vídeo objetivo: %@ Mb/s; el codificador puede superarla o no alcanzarla en escenas muy simples o muy complejas.
+la fiecare %@ s	every %@ s	cada %@ s
+Compactează această pistă	Compact this track	Compactar esta pista
+Mărește această pistă	Enlarge this track	Ampliar esta pista
+Resetează înălțimea acestei piste	Reset this track's height	Restablecer la altura de esta pista
+Trage ca să schimbi înălțimea acestei piste; dublu-clic = înălțime automată	Drag to change this track's height; double-click = automatic height	Arrastra para cambiar la altura de esta pista; doble clic = altura automática
+Cea din față, pe rând	Whichever is in front	La que esté delante
+Fereastra aleasă nu apare în această parte a înregistrării.	The chosen window does not appear in this part of the recording.	La ventana elegida no aparece en esta parte de la grabación.
+Fereastra vine din metadatele înregistrate, nu dintr-o zonă desenată. Fără citire recentă, cadrul revine la imaginea întreagă.	The window comes from the recorded metadata, not from a drawn area. With no recent reading, the frame returns to the full picture.	La ventana viene de los metadatos grabados, no de un área dibujada. Sin lectura reciente, el encuadre vuelve a la imagen completa.
+Fereastră din prim-plan	Foreground window	Ventana en primer plano
+Fără nume	Unnamed	Sin nombre
+Mărește cadrul pe fereastra înregistrată și o urmărește; rezultatul sunt chei obișnuite, pe care le poți edita la Animație	Zooms the frame onto the recorded window and follows it; the result is ordinary keys you can edit under Animation	Amplía el encuadre sobre la ventana grabada y la sigue; el resultado son claves normales que puedes editar en Animación
+Zoom pe fereastră	Zoom to window	Zoom a la ventana
+din cea mai tare dintre %d înregistrări	from the loudest of %d recordings	de la más fuerte de %d grabaciones
+Această înregistrare nu are metadate de fereastră (citirea ferestrei era oprită sau fișierul nu îi aparține). Nu se poate urmări nicio fereastră; poți încadra manual la Animație.	This recording has no window metadata (window reading was off, or the file does not belong to it). No window can be followed; you can frame it by hand under Animation.	Esta grabación no tiene metadatos de ventana (la lectura de ventanas estaba desactivada o el archivo no le pertenece). No se puede seguir ninguna ventana; puedes encuadrar a mano en Animación.
