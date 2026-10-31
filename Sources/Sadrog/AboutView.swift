@@ -34,6 +34,7 @@ struct AboutView: View {
                 .font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
             HStack {
                 Button(T("Caută actualizări…")) { updates.checkManually() }.buttonStyle(.gloss(.secondary)).disabled(updates.status == .checking)
+                Button(T("Manual de utilizare…")) { NSWorkspace.shared.open(UserManual.url(.current)) }.buttonStyle(.gloss(.secondary))
                 if updates.status == .checking { ProgressView().controlSize(.small) }
                 Spacer()
                 Button(T("Licența GPL…")) { NSWorkspace.shared.open(URL(string: "https://www.gnu.org/licenses/gpl-3.0.html")!) }.buttonStyle(.gloss(.ghost))

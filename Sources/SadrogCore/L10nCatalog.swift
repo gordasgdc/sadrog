@@ -475,6 +475,8 @@ enum L10nCatalog {
         "Magnetism în timeline oprit (S)": ("Timeline snapping off (S)", "Imán en la línea de tiempo desactivado (S)"),
         "Mai multe": ("More", "Más"),
         "Mai târziu": ("Later", "Más tarde"),
+        "Manual de utilizare…": ("User Manual…", "Manual de usuario…"),
+        "Manualul în altă limbă": ("Manual in another language", "Manual en otro idioma"),
         "Marcaj": ("Marker", "Marcador"),
         "Marcajul anterior": ("Previous marker", "Marcador anterior"),
         "Marcajul următor": ("Next marker", "Marcador siguiente"),

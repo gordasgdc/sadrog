@@ -1,5 +1,8 @@
 # SADROG — changelog
 
+## 1.0.1
+- Help ▸ User Manual… (also in the About window): opens the manual PDF in the language chosen in SADROG — Romanian, English or Spanish — independent of the system language.
+
 ## 1.0.0 — first public release
 - Screen, window, camera and audio recording on macOS 15+ (Apple Silicon), with per-source tracks, optional pointer and foreground-window metadata, and a destination you choose.
 - Editor: timeline with tracks, trimming, cross-dissolves, titles, highlights, callouts, animation, per-recording audio with Audio Unit effects, and presets.

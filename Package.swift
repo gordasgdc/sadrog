@@ -11,6 +11,7 @@ let package = Package(
         // development tools for capture probes (not part of the app bundle)
         .executableTarget(name: "SadrogSyncProbe"),
         .executableTarget(name: "SadrogProbeGuard", dependencies: ["SadrogCore"]),
+        .testTarget(name: "SadrogCoreTests", dependencies: ["SadrogCore"]),
     ],
     swiftLanguageModes: [.v5]
 )

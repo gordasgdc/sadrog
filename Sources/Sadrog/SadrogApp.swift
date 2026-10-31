@@ -38,6 +38,7 @@ struct SadrogApp: App {
                     Button(T("Despre SADROG")) { openWindow(id: "about") }
                     Button(T("Caută actualizări…")) { UpdateChecker.shared.checkManually() }
                 }
+                CommandGroup(replacing: .help) { HelpMenuContent() }
             }
         Settings { SettingsView(m: recorder) }
         Window(T("Despre SADROG"), id: "about") { AboutView() }.windowResizability(.contentSize)
@@ -107,6 +108,16 @@ struct EditorClipMenu: View {
             ForEach([TrackLane.t, .c, .v2, .v1, .a2], id: \.self) { l in
                 Button((e.isLocked(l) ? "✓ " : "") + SadrogApp.laneName(l)) { e.toggleLock(l) }
             }
+        }
+    }
+}
+
+/// Help ▸ User Manual: opens the PDF of the language chosen in SADROG (not the system's); the other two stay one step away.
+struct HelpMenuContent: View {
+    var body: some View {
+        Button(T("Manual de utilizare…")) { NSWorkspace.shared.open(UserManual.url(.current)) }
+        Menu(T("Manualul în altă limbă")) {
+            ForEach(AppLanguage.allCases) { l in Button(l.name) { NSWorkspace.shared.open(UserManual.url(l)) } }
         }
     }
 }
