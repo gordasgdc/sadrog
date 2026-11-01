@@ -1,5 +1,11 @@
 # SADROG — changelog
 
+## 1.2.0
+- Timeline: mixed selection move — video clips from the main track, camera, titles, highlights and sounds selected together move as one: the clip block is re-inserted at the nearest boundary between clips, the other items shift by the same distance, detached sound travels with its clip, and the timing relationship between them stays identical. While dragging, a dashed outline shows where the block lands; an impossible destination (locked track, overlap, non-adjacent clips, a transition between them) is explained and nothing changes. One Undo step.
+- Export: the compressed export can no longer wait forever — each stream is finished as soon as it runs out and a writer that stops advancing is stopped with a clear message instead of leaving the export hanging.
+- Docs: the activation screenshot no longer shows the contribution amount (it appears only in the app); the manuals and pages were re-checked page by page.
+- Docs: manuals RO/EN/ES and the product page updated (mixed selection move, destination marker, refusals); README unchanged (no feature list); install and price text unchanged.
+
 ## 1.1.0
 - Timeline: rectangle selection — with the Select tool, drag from free space to select clips, titles, highlights and sounds across tracks (⇧/⌘ add, Esc cancels, a click in free space clears; the timeline scrolls at the edge). Selected items move together keeping distances and sync; “Cut selected items at the playhead” (⇧⌘K) cuts only the selection; locked tracks refuse the whole operation with an explanation; main-track clips are never moved in time together with other items.
 - Timeline: a cut clip from the main track can be moved to a video track (V2) keeping its properties and links; titles that overlap now sit on independent rows.

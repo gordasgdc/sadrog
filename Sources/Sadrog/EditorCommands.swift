@@ -66,9 +66,28 @@ extension EditorModel {
     func groupMoveIDs(primary: UUID) -> [UUID] {
         guard !extra.isEmpty, isSelected(primary) else { return [] }
         let t = ProjectEditor(project: project).timedItems(in: selectedIDs)
+        if project.clips.contains(where: { $0.id == primary }) { return t.isEmpty ? [] : selectedIDs }      // a main clip dragged inside a mixed selection: the whole selection moves (V1 block + the rest)
         return t.contains(primary) ? t : []
     }
-    func groupClamp(_ ids: [UUID], _ dx: Double) -> Double { ProjectEditor(project: project).clampedGroupDelta(ids, dx) }
+    func groupClamp(_ ids: [UUID], _ dx: Double) -> Double {
+        let e = ProjectEditor(project: project)
+        if project.clips.contains(where: { ids.contains($0.id) }) {          // mixed: the delta is the one of the nearest V1 boundary (or nothing if the move is refused)
+            let r = e.planMixedMove(ids, by: dx); mixedPlan = r.plan; mixedRefusal = r.refused
+            return r.plan?.dx ?? 0
+        }
+        mixedPlan = nil; mixedRefusal = nil
+        return e.clampedGroupDelta(ids, dx)
+    }
+    /// Plain-language reason a mixed move cannot land where the pointer is (shown live while dragging).
+    func moveRefusalText(_ r: GroupMove.Reason) -> String {
+        switch r {
+        case .locked: return T("Nu se poate muta: o pistă a selecției este blocată.")
+        case .overlap: return T("Nu se poate muta acolo: grupul s-ar suprapune cu un element care nu se mută.")
+        case .notAdjacent: return T("Clipurile selectate de pe pista principală nu sunt vecine, deci nu se pot muta ca un singur bloc. Selectează clipuri vecine; nu s-a modificat nimic.")
+        case .dissolve: return T("Un clip al blocului sau cel de după el are tranziție prin dizolvare: mutarea ar schimba tranziția. Scoate dizolvarea și încearcă din nou; nu s-a modificat nimic.")
+        case .nothing, .mainTrack: return ""
+        }
+    }
     var selectionHasMainClips: Bool { selectedIDs.contains { id in project.clips.contains { $0.id == id } } }
     /// True when moving these items would touch a locked lane.
     func anyLocked(_ ids: [UUID]) -> Bool { ids.contains { lockedLane(of: $0) } }
@@ -77,7 +96,9 @@ extension EditorModel {
         apply { r = $0.moveGroup(ids, by: dx) }
         switch r {
         case .moved: message = ""
-        case .refused(.mainTrack): message = T("Clipurile de pe pista principală sunt secvențiale și nu se mută în timp împreună cu alte elemente. Deselectează-le sau mută separat elementele celelalte; nu s-a modificat nimic.")
+        case .refused(.mainTrack): break
+        case .refused(.notAdjacent): message = T("Clipurile selectate de pe pista principală nu sunt vecine, deci nu se pot muta ca un singur bloc. Selectează clipuri vecine; nu s-a modificat nimic.")
+        case .refused(.dissolve): message = T("Un clip al blocului sau cel de după el are tranziție prin dizolvare: mutarea ar schimba tranziția. Scoate dizolvarea și încearcă din nou; nu s-a modificat nimic.")
         case .refused(.locked): message = T("Nu se poate muta: o pistă a selecției este blocată.")
         case .refused(.overlap): message = T("Nu se poate muta acolo: grupul s-ar suprapune cu un element care nu se mută.")
         case .refused(.nothing): break

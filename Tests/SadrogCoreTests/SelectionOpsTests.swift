@@ -23,10 +23,6 @@ final class SelectionOpsTests: XCTestCase {
         XCTAssertEqual(L.first { $0.id == cam }!.transform, before.layers.first { $0.id == cam }!.transform, "transform untouched")
         XCTAssertTrue(e.undo()); XCTAssertEqual(e.project, before, "one undo step restores everything")
     }
-    func testMixedSelectionWithMainClipIsRefusedWholeAndNothingMoves() throws {
-        let (e, clip, aud, _, txt, _) = setup(); let before = e.project
-        XCTAssertEqual(e.moveGroup([clip, aud, txt], by: 2), .refused(.mainTrack)); XCTAssertEqual(e.project, before)
-    }
     func testGroupMoveRefusedWhenALaneIsLocked() throws {
         let (e, _, aud, cam, txt, _) = setup(); e.setLock(.t, true); let before = e.project
         XCTAssertEqual(e.moveGroup([aud, cam, txt], by: 1), .refused(.locked)); XCTAssertEqual(e.project, before)

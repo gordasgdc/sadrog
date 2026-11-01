@@ -154,12 +154,6 @@ final class GroupMoveTests: XCTestCase {
         XCTAssertEqual(e.project.layers.map(\.start), [0, 4]); XCTAssertEqual(e.project.clips.count, 2)
         XCTAssertEqual(e.project.callouts[0].start, 4, accuracy: 1e-9)
     }
-    func testMixedSelectionWithMainClipsIsRefusedWholeAndNothingChanges() {
-        let (e, ids) = fixture()
-        let r = e.moveGroup(ids + [e.project.clips[0].id], by: -3)
-        XCTAssertEqual(r, .refused(.mainTrack))                                             // V1 is sequential: no partial move
-        XCTAssertEqual(e.project.layers.map(\.start), [1, 5]); XCTAssertEqual(e.project.callouts[0].start, 5, accuracy: 1e-9)
-    }
     func testBoundCalloutBecomesIndependentWhenMovedOutOfEveryClip() {
         let (e, ids) = fixture()
         _ = e.moveGroup([ids[2]], by: 6)                                                    // 11…13 is past the 8 s main track

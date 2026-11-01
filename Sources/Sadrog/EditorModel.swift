@@ -83,6 +83,8 @@ final class EditorModel: ObservableObject {
     @Published var editingEnd = false            // animation: which state the Inspector and the viewer frame edit (UI state, not in the project)
     @Published var movePreview: (id: UUID, delta: Double)?
     @Published var groupMoving: Set<UUID> = []
+    @Published var mixedPlan: ProjectEditor.MixedPlan?        // while dragging a selection that includes V1 clips: where the block will land
+    @Published var mixedRefusal: GroupMove.Reason?
     /// Crop handles are shown on the selected picture in the viewer (off whenever the selection changes).
     /// „Încadrează imaginea în cerc”: the circle is fixed and the whole camera rectangle is shown (faded outside the circle) — editor preview only.
     @Published var circleFraming = false

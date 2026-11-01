@@ -2089,6 +2089,18 @@ struct TimelinePanel: View {
                 Text(String(format: "%+.2f s", tp.delta)).font(Theme.F.monoSmall).foregroundStyle(Theme.C.bg0).padding(.horizontal, 5).padding(.vertical, 2)
                     .background(RoundedRectangle(cornerRadius: 4).fill(Theme.C.sel)).offset(x: ex + 6, y: rulerH + 4).allowsHitTesting(false)
             }
+            if m.movePreview != nil, m.selectionHasMainClips, !m.groupMoving.isEmpty {       // mixed selection with V1 clips: where the block lands, or why it cannot
+                if let pl = m.mixedPlan {
+                    let w = m.project.clips.filter { m.selectedIDs.contains($0.id) }.reduce(0) { $0 + $1.duration }
+                    RoundedRectangle(cornerRadius: 3).strokeBorder(Theme.C.sel, style: StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
+                        .frame(width: CGFloat(w) * pps, height: geo.v1).offset(x: CGFloat(pl.blockStart) * pps, y: geo.y(2)).allowsHitTesting(false)
+                    Text(T("Aici ajunge blocul de clipuri")).font(Theme.F.smallMedium).foregroundStyle(Theme.C.bg0).padding(.horizontal, 5).padding(.vertical, 2)
+                        .background(RoundedRectangle(cornerRadius: 3).fill(Theme.C.sel)).offset(x: CGFloat(pl.blockStart) * pps + 4, y: geo.y(2) + 4).allowsHitTesting(false)
+                } else if let r = m.mixedRefusal, !m.moveRefusalText(r).isEmpty {
+                    Text(m.moveRefusalText(r)).font(Theme.F.smallMedium).foregroundStyle(Theme.C.bg0).padding(.horizontal, 6).padding(.vertical, 3)
+                        .background(RoundedRectangle(cornerRadius: 4).fill(Theme.C.warn)).frame(maxWidth: 420, alignment: .leading).offset(x: CGFloat(m.time) * pps + 8, y: rulerH + 28).allowsHitTesting(false)
+                }
+            }
             if let mp = m.movePreview, abs(mp.delta) > 0.001 {
                 Text(String(format: "%+.2f s", mp.delta)).font(Theme.F.monoSmall).foregroundStyle(Theme.C.bg0).padding(.horizontal, 5).padding(.vertical, 2)
                     .background(RoundedRectangle(cornerRadius: 4).fill(Theme.C.sel)).offset(x: CGFloat(m.time) * pps + 8, y: rulerH + 4).allowsHitTesting(false)
@@ -2141,9 +2153,6 @@ struct TimelinePanel: View {
                 case .pending(let id, let lane)? where abs(v.location.x - v.startLocation.x) >= 4:
                     let grp = m.groupMoveIDs(primary: id)
                     if !grp.isEmpty && m.anyLocked(grp) { m.message = T("Nu se poate muta: o pistă a selecției este blocată."); drag = Drag.none; break }
-                    if lane == .main && !m.extra.isEmpty && m.selectionHasMainClips && m.selectedIDs.contains(where: { s in !m.project.clips.contains { $0.id == s } }) {
-                        m.message = T("Clipurile de pe pista principală sunt secvențiale și nu se mută în timp împreună cu alte elemente. Deselectează-le sau mută separat elementele celelalte; nu s-a modificat nimic."); drag = Drag.none; break      // refused whole, like GroupMove.refused(.mainTrack)
-                    }
                     drag = .move(id, lane); m.groupMoving = Set(grp)
                     if lane == .callout { m.effectDropTarget = effectTarget(at: v.location, pps: pps, geo: geo) }
                     let s = snappedMove(id, lane, raw, pps); m.movePreview = (id, grp.isEmpty ? s.dx : m.groupClamp(grp, s.dx)); m.snapGuide = s.guide

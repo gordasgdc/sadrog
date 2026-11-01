@@ -123,7 +123,7 @@ extension ProjectEditor {
 public enum GroupMove: Equatable, Sendable {
     case moved(dx: Double, mainStayed: Bool)
     case refused(Reason)
-    public enum Reason: Sendable { case locked, overlap, nothing, mainTrack }
+    public enum Reason: Sendable { case locked, overlap, nothing, mainTrack, notAdjacent, dissolve }
 }
 
 extension ProjectEditor {
@@ -141,9 +141,8 @@ extension ProjectEditor {
     }
     @discardableResult public func moveGroup(_ ids: [UUID], by dx: Double) -> GroupMove {
         let timed = Set(timedItems(in: ids)); let mainSel = project.clips.contains { ids.contains($0.id) }
+        if mainSel { return moveMixed(ids, by: dx) }
         guard !timed.isEmpty else { return .refused(.nothing) }
-        // main-track clips are sequential (they cannot be shifted in time), so a selection holding them AND other items cannot move as one: refused whole, nothing moves
-        if mainSel { return .refused(.mainTrack) }
         let d = clampedGroupDelta(ids, dx)
         guard abs(d) > 1e-9 else { return .refused(.nothing) }
         var result: GroupMove = .refused(.nothing)
@@ -168,6 +167,83 @@ extension ProjectEditor {
             for t in p.texts where timed.contains(t.id) { if p.texts.contains(where: { !timed.contains($0.id) && hit(($0.start, $0.end), (t.start, t.end)) }) { result = .refused(.overlap); return false } }
             for c in p.callouts where timed.contains(c.id) { if p.callouts.contains(where: { !timed.contains($0.id) && hit(($0.start, $0.end), (c.start, c.end)) }) { result = .refused(.overlap); return false } }
             result = .moved(dx: d, mainStayed: mainSel); return true
+        }
+        return result
+    }
+    /// Plan of a move of a selection that includes main-track (V1) clips. V1 is sequential, so the clips move as ONE block that is re-inserted between two other
+    /// clips: the block lands on the boundary nearest to the requested time, and every other selected item (overlays, camera, audio, titles, effects, and the
+    /// detached sound linked to a moved clip) moves by exactly the SAME effective delta — so all relations between them stay identical. The clips that were
+    /// displaced move to fill the gap (as in any reorder); nothing is converted, overwritten or dropped.
+    public struct MixedPlan: Equatable, Sendable {
+        public let dx: Double                 // effective delta applied to every selected item
+        public let order: [UUID]              // main-track order after the move
+        public let linked: [UUID]             // detached sounds linked to a moved clip, carried with it
+        public let insertBefore: UUID?        // the clip the block is placed in front of (nil = at the end)
+        public let blockStart: Double         // where the block starts after the move
+    }
+    public func planMixedMove(_ ids: [UUID], by dx: Double) -> (plan: MixedPlan?, refused: GroupMove.Reason?) {
+        let sel = Set(ids)
+        let idx = project.clips.indices.filter { sel.contains(project.clips[$0].id) }
+        guard let first = idx.first, let last = idx.last else { return (nil, .nothing) }
+        guard last - first + 1 == idx.count else { return (nil, .notAdjacent) }
+        if project.lockedLanes.contains(.v1) { return (nil, .locked) }
+        let block = Array(project.clips[first...last]); let blockIDs = Set(block.map(\.id))
+        let rest = Array(project.clips[..<first]) + Array(project.clips[(last + 1)...])
+        let spans = project.clipSpans; let s0 = spans[first].start
+        // a cross-dissolve ties a clip to its neighbour: moving would silently change it, so refuse instead of converting it
+        if block[0].dissolve > 0 { return (nil, .dissolve) }
+        let after = last + 1 < project.clips.count ? project.clips[last + 1] : nil
+        if (after?.dissolve ?? 0) > 0 { return (nil, .dissolve) }
+        let linked = project.layers.filter { $0.kind == .audio && $0.linkedClip.map(blockIDs.contains) == true && !sel.contains($0.id) }.map(\.id)
+        let timed = Set(timedItems(in: ids) + linked)
+        let starts = project.layers.filter { timed.contains($0.id) }.map(\.start) + project.texts.filter { timed.contains($0.id) }.map(\.start) + project.callouts.filter { timed.contains($0.id) }.map(\.start)
+        let minStart = starts.min() ?? 0
+        var best: (k: Int, d: Double, st: Double)? = nil
+        for k in 0...rest.count {
+            if k < rest.count && rest[k].dissolve > 0 { continue }
+            var t = project; t.clips = Array(rest[..<k]) + block + Array(rest[k...])
+            let st = t.clipSpans[k].start, d = st - s0
+            if d < -minStart - 1e-9 { continue }
+            if best == nil || abs(d - dx) < abs(best!.d - dx) - 1e-9 { best = (k, d, st) }
+        }
+        guard let b = best, abs(b.d) > 1e-9 else { return (nil, .nothing) }
+        let order = (Array(rest[..<b.k]) + block + Array(rest[b.k...])).map(\.id)
+        return (MixedPlan(dx: b.d, order: order, linked: linked, insertBefore: b.k < rest.count ? rest[b.k].id : nil, blockStart: b.st), nil)
+    }
+    func moveMixed(_ ids: [UUID], by dx: Double) -> GroupMove {
+        let pl = planMixedMove(ids, by: dx)
+        guard let plan = pl.plan else { return .refused(pl.refused ?? .nothing) }
+        let sel = Set(ids), d = plan.dx, old = project
+        let blockIDs = Set(project.clips.filter { sel.contains($0.id) }.map(\.id))
+        let timed = Set(timedItems(in: ids) + plan.linked)
+        var result: GroupMove = .refused(.nothing)
+        commit { p in
+            for l in p.layers where timed.contains(l.id) { if p.lockedLanes.contains(l.kind == .video ? .v2 : .a2) { result = .refused(.locked); return false } }
+            if p.texts.contains(where: { timed.contains($0.id) }) && p.lockedLanes.contains(.t) { result = .refused(.locked); return false }
+            if p.callouts.contains(where: { timed.contains($0.id) }) && p.lockedLanes.contains(.c) { result = .refused(.locked); return false }
+            let byID = Dictionary(p.clips.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+            p.clips = plan.order.compactMap { byID[$0] }
+            for i in p.layers.indices where timed.contains(p.layers[i].id) { p.layers[i].start += d }
+            for i in p.texts.indices where timed.contains(p.texts[i].id) { p.texts[i].start += d }
+            let nSpans = p.clipSpans, oStart = Dictionary(old.clipSpans.map { ($0.id, $0.start) }, uniquingKeysWith: { a, _ in a })
+            for i in p.callouts.indices where timed.contains(p.callouts[i].id) {
+                let c = p.callouts[i]
+                if let l = c.layerID, timed.contains(l) { continue }                          // carried by its overlay (reanchoring)
+                if let cid = c.clipID, blockIDs.contains(cid) { continue }                     // carried by its clip (reanchoring)
+                let target = c.start + d
+                if c.clipID == nil { p.callouts[i].start = target; continue }
+                // bound to a clip that is NOT moving: it follows the clip it now lies in; compensate the displacement reanchoring will add
+                if let sp = nSpans.first(where: { target >= $0.start - 1e-6 && target < $0.end - 1e-6 }), let os = oStart[sp.id] {
+                    p.callouts[i].clipID = sp.id; p.callouts[i].start = target - (sp.start - os)
+                    p.callouts[i].duration = max(SadrogProject.minCalloutLength, min(c.duration, sp.end - target))
+                } else { p.callouts[i].clipID = nil; p.callouts[i].start = target }
+            }
+            func hit(_ a: (Double, Double), _ b: (Double, Double)) -> Bool { a.0 < b.1 - 1e-6 && b.0 < a.1 - 1e-6 }
+            for l in p.layers where timed.contains(l.id) {
+                if p.layers.contains(where: { !timed.contains($0.id) && $0.kind == l.kind && $0.row == l.row && hit(($0.start, $0.end), (l.start, l.end)) }) { result = .refused(.overlap); return false }
+            }
+            for t in p.texts where timed.contains(t.id) { if p.texts.contains(where: { !timed.contains($0.id) && hit(($0.start, $0.end), (t.start, t.end)) }) { result = .refused(.overlap); return false } }
+            result = .moved(dx: d, mainStayed: false); return true
         }
         return result
     }
