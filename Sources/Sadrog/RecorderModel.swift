@@ -51,12 +51,16 @@ final class RecorderModel: ObservableObject {
     @Published var audio: [AudioSourceSpec] = []
     @Published var monitoring: Set<String> = []
     @Published var levels: [String: Float] = [:]
+    /// What the audio meters show: held digital peak (dBFS) and the clipping flag, per source (see AudioLevelMath).
+    @Published var readings: [String: MeterReading] = [:]
     @Published var lost: [String: String] = [:]
     @Published var previewOn = false { didSet { previewChanged() } }
     @Published var previewImage: NSImage?
+    /// The still preview could not get a picture (permission, source gone): said in the popover instead of an endless spinner.
+    @Published var previewFailed = false
     @Published var countdownSeconds = UserDefaults.standard.object(forKey: "countdown") as? Int ?? 3 { didSet { UserDefaults.standard.set(countdownSeconds, forKey: "countdown") } }
     // state
-    @Published var phase: RecPhase = .idle
+    @Published var phase: RecPhase = .idle { didSet { if phase != .idle { stopAllCameraPreviews() } } }   // the recording opens the cameras itself: a preview never competes with it
     @Published var destination: URL? = UserDefaults.standard.string(forKey: "destination").map { URL(fileURLWithPath: $0) }
     @Published var elapsed: TimeInterval = 0
     @Published var message = ""
@@ -121,21 +125,55 @@ final class RecorderModel: ObservableObject {
     func addExtraScreen(_ mode: VideoMode) { extraScreens.append(ExtraScreenRow(mode: mode)) }
     func removeExtraScreen(_ id: String) { extraScreens.removeAll { $0.id == id } }
     func addCameraRow() { cameraRows.append(CameraRow()) }
-    func removeCameraRow(_ id: String) { cameraRows.removeAll { $0.id == id } }
+    func removeCameraRow(_ id: String) { stopCameraPreview(id); cameraRows.removeAll { $0.id == id } }
     /// Choosing a camera is the explicit action that asks macOS for camera access (once); nothing asks for it at launch.
     func setCamera(_ rowID: String, _ uid: String?) async {
         guard let i = cameraRows.firstIndex(where: { $0.id == rowID }) else { return }
+        stopCameraPreview(rowID)
         cameraRows[i].uid = uid; cameraRows[i].format = nil      // another camera: its own modes
         if uid != nil, CameraCapture.authorization == .notDetermined { _ = await CameraCapture.requestAccess() }
         cameraAuth = CameraCapture.authorization
     }
-    func setCameraFormat(_ rowID: String, _ f: CameraFormatOption?) { if let i = cameraRows.firstIndex(where: { $0.id == rowID }) { cameraRows[i].format = f } }
+    func setCameraFormat(_ rowID: String, _ f: CameraFormatOption?) {
+        guard let i = cameraRows.firstIndex(where: { $0.id == rowID }) else { return }
+        cameraRows[i].format = f
+        if cameraPreviews[rowID]?.isRunning == true { stopCameraPreview(rowID); Task { await toggleCameraPreview(rowID) } }    // the preview shows the mode that was just chosen
+    }
+    // MARK: camera preview on request (no recording, no file; released when stopped, when leaving the page or when a recording starts)
+    @Published var cameraPreviews: [String: CameraPreviewState] = [:]
+    private var previewSessions: [String: CameraPreviewSession] = [:]
+    func cameraPreviewSession(_ rowID: String) -> AVCaptureSession? { previewSessions[rowID]?.session }
+    func toggleCameraPreview(_ rowID: String) async {
+        if cameraPreviews[rowID]?.isRunning == true { stopCameraPreview(rowID); return }
+        guard phase == .idle, let row = cameraRows.first(where: { $0.id == rowID }), let uid = row.uid else { return }
+        cameraAuth = CameraCapture.authorization
+        if let blocked = CameraPreviewState.gate(auth: cameraAuth, present: cameras.contains { $0.uid == uid }) { cameraPreviews[rowID] = blocked; return }
+        cameraPreviews[rowID] = .loading
+        if cameraAuth == .notDetermined {      // the user asked for the preview: this is the moment macOS asks
+            _ = await CameraCapture.requestAccess(); cameraAuth = CameraCapture.authorization
+            if let blocked = CameraPreviewState.gate(auth: cameraAuth, present: true) { cameraPreviews[rowID] = blocked; return }
+        }
+        guard cameraPreviews[rowID] == .loading, phase == .idle else { return }      // cancelled while the question was open
+        do {
+            let p = try CameraPreviewSession(uid: uid, format: row.format)
+            p.onState = { [weak self] st in Task { @MainActor in self?.cameraPreviewReported(rowID, st) } }
+            previewSessions[rowID] = p; p.start()
+        } catch { cameraPreviews[rowID] = .failed(error.localizedDescription); DiagnosticLog("camera-preview").error("nu pornește: \(error.localizedDescription)") }
+    }
+    private func cameraPreviewReported(_ rowID: String, _ st: CameraPreviewState) {
+        guard previewSessions[rowID] != nil else { return }
+        cameraPreviews[rowID] = st
+        if case .failed = st { releasePreview(rowID) } else if st == .absent { releasePreview(rowID) }
+    }
+    private func releasePreview(_ rowID: String) { let p = previewSessions.removeValue(forKey: rowID); p?.stop() }
+    func stopCameraPreview(_ rowID: String) { releasePreview(rowID); cameraPreviews[rowID] = nil }
+    func stopAllCameraPreviews() { for k in Array(previewSessions.keys) { releasePreview(k) }; cameraPreviews = [:] }
     /// The camera's REAL current format (size and maximum frame rate), read from the device without starting it.
     func cameraFormat(_ uid: String) -> String? {
         guard let d = AVCaptureDevice(uniqueID: uid) else { return nil }
         let dim = CMVideoFormatDescriptionGetDimensions(d.activeFormat.formatDescription)
         let fps = d.activeFormat.videoSupportedFrameRateRanges.map(\.maxFrameRate).max() ?? 0
-        return "\(dim.width)×\(dim.height) · \(Int(fps.rounded())) cadre/s"
+        return "\(dim.width)×\(dim.height) · \(Int(fps.rounded())) \(T("cadre/s"))"
     }
     // MARK: pause
     private var pausedAt: Date?
@@ -173,6 +211,9 @@ final class RecorderModel: ObservableObject {
         if simulatedCapture {          // development only: one synthetic display, nothing of the real screen is read
             sources = [SourceInfo(id: 9_000_001, kind: .display, title: "Display simulat", width: 1280, height: 720, pointsWidth: 1280, pointsHeight: 720, scale: 1, frame: CGRect(x: 0, y: 0, width: 1280, height: 720))]
             if displayID == nil { restoring = true; displayID = 9_000_001; restoring = false }
+            // verification only (never reachable without the simulated capture): a camera row already bound to the first listed camera, so the row can be shown without asking macOS for camera access
+            if ProcessInfo.processInfo.environment["SADROG_VERIFY_CAMERA_ROW"] == "1", cameraRows.isEmpty, let c = cameras.first { cameraRows = [CameraRow(uid: c.uid)] }
+            if ProcessInfo.processInfo.environment["SADROG_VERIFY_CAMERA_ROW"] == "absent" { cameraRows = [CameraRow(uid: "unplugged-camera")] }
         } else if hasPermission {
             do { sources = try await ScreenCapturer.listSources() } catch { message = L10n.f("Nu pot lista sursele: %@", "\(error.localizedDescription)") }
         }
@@ -216,7 +257,7 @@ final class RecorderModel: ObservableObject {
         RedFrame.shared.show(globalFrame: s.frame, seconds: 6, reason: "pointer pe listă phase=\(phase)")
     }
     /// Leaves the capture context (editor, window closed): no identification frame, no preview stream, no level meters keep running.
-    func leaveContext() { RedFrame.shared.close(); previewOn = false; stopAllMonitors() }
+    func leaveContext() { RedFrame.shared.close(); previewOn = false; stopAllMonitors(); stopAllCameraPreviews() }
     func identifyWindowFrame() { identify() }
 
     func drawRegion() {
@@ -231,11 +272,11 @@ final class RecorderModel: ObservableObject {
     // MARK: eye preview (single stills at ~1.4 fps, nothing recorded)
     private func previewChanged() {
         previewTask?.cancel(); previewTask = nil
-        guard previewOn else { previewImage = nil; return }
+        guard previewOn else { previewImage = nil; previewFailed = false; return }
         previewTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self, let s = self.selectedSource else { break }
-                if let img = await ScreenCapturer.snapshot(source: s, region: self.mode == .region ? self.regionSpec : nil) { self.previewImage = NSImage(cgImage: img, size: NSSize(width: img.width, height: img.height)) }
+                if let img = await ScreenCapturer.snapshot(source: s, region: self.mode == .region ? self.regionSpec : nil) { self.previewImage = NSImage(cgImage: img, size: NSSize(width: img.width, height: img.height)); self.previewFailed = false } else { self.previewFailed = true }
                 try? await Task.sleep(nanoseconds: 700_000_000)
             }
         }
@@ -263,8 +304,9 @@ final class RecorderModel: ObservableObject {
     func stopMonitor(_ id: String) {
         monitors[id]?.stop(); monitors[id] = nil
         if audio.first(where: { $0.id == id })?.kind == .system { let m = systemMonitor; systemMonitor = nil; Task { await m?.stop() } }
-        monitoring.remove(id); levels[id] = 0
+        monitoring.remove(id); levels[id] = 0; readings[id] = nil
     }
+    func clearClip(_ id: String) { readings[id]?.clearClip() }
     func stopAllMonitors() { for id in monitoring { stopMonitor(id) } }
     private func ensureMeterTimer() {
         guard meterTimer == nil else { return }
@@ -272,6 +314,8 @@ final class RecorderModel: ObservableObject {
             Task { @MainActor in
                 guard let self else { return }
                 let fresh = self.levelBox.take()
+                for k in self.monitoring.union(Set(fresh.keys)) { var r = self.readings[k] ?? MeterReading(); r.update(peak: fresh[k] ?? 0); self.readings[k] = r }
+                for (k, r) in self.readings where r.heldPeak == 0 && !r.clipped && !self.monitoring.contains(k) && fresh[k] == nil { self.readings[k] = nil }
                 for (k, p) in fresh { self.levels[k] = max(p, (self.levels[k] ?? 0) * 0.8) }
                 for k in self.levels.keys where fresh[k] == nil { self.levels[k] = (self.levels[k] ?? 0) * 0.8 }
             }

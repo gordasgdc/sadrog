@@ -1,5 +1,12 @@
 # SADROG — changelog
 
+## 1.3.0
+- Recording screen: redesigned. Each source (screen, camera, microphone) has its own card with its real settings; “Add source” and a ruby “Start recording” button sit in a footer that always stays visible, with the folder and the countdown beside it. The window keeps everything reachable at its minimum size, in the three languages and in both themes.
+- Camera: a Format menu (Automatic or a specific format) with the current mode shown next to it; an on-demand preview that explains each state (waiting, permission needed, camera missing, ready) and never starts the recording; a missing camera is shown once, by its name.
+- Microphone and interface: an on-demand input level meter with a dBFS readout and the selected channels; channel choice never changes the audio interface settings.
+- Screen: the capture size is shown on the card, with “Resolution details” (logical size, internal macOS rendering, effective capture size) one click away; display, window or region is chosen from the ⋯ menu; the main source is marked.
+- Docs: manuals and product page (RO/EN/ES) — recording-screen steps and the source-details section rewritten; the recording, source details, activation, permissions and new-document screenshots were retaken in the three languages; README unchanged; install and price text unchanged.
+
 ## 1.2.1
 - Timeline: the Blade tool cuts the whole selection — with several items selected, one click on one of them cuts every selected item that crosses that instant (V1, camera, detached sound, titles…), at exactly the same time, as one Undo step; a click on an item outside the selection cuts only that item; a locked track refuses the cut as a whole. The vertical guide turns yellow and shows how many items will be cut.
 - Timeline: selected items have a clear yellow outline with a dark edge (it turned brown in the Light theme), visible over thumbnails, waveforms and any track colour; hover and the drop destination (blue) are distinct from the selection.

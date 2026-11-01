@@ -58,7 +58,7 @@ struct StartView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            sidebar.frame(width: 196)
+            sidebar.frame(width: 204)
             HairlineDivider(vertical: true)
             VStack(spacing: 0) {
                 switch page {
@@ -80,10 +80,10 @@ struct StartView: View {
     // MARK: sidebar
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 10) {
-                LogoMark().frame(width: 26, height: 16).foregroundStyle(Theme.C.text)
-                Text(T("SADROG")).font(.system(size: 13, weight: .semibold)).tracking(1.0).foregroundStyle(Theme.C.text)
-            }.padding(.horizontal, 16).padding(.top, 34).padding(.bottom, 16)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(T("SADROG")).font(.system(size: 21, weight: .bold)).tracking(3).foregroundStyle(Theme.C.text)
+                Text(T("Capturează. Explică. Creează.")).font(CM.small).foregroundStyle(Theme.C.textDim).fixedSize(horizontal: false, vertical: true)
+            }.padding(.leading, 26).padding(.trailing, 8).padding(.top, 30).padding(.bottom, 26)
             ForEach([StartPage.record, .document, .recent], id: \.self) { sideItem($0) }
             Spacer()
             sideItem(.activation, badge: act.allowsRecordAndExport ? nil : Theme.C.warn)
@@ -98,21 +98,22 @@ struct StartView: View {
                 Spacer(minLength: 2)
                 LanguagePicker()
             }.padding(.horizontal, 14).padding(.vertical, 8)
-        }.frame(maxHeight: .infinity, alignment: .top).background(Theme.C.bg1)
+        }.frame(maxHeight: .infinity, alignment: .top).background(CM.sidebar)
     }
     private func sideItem(_ p: StartPage, badge: Color? = nil) -> some View {
         Button { page = p } label: {
-            HStack(spacing: 9) {
-                Image(systemName: p.symbol).font(Theme.F.icon).frame(width: 18)
-                Text(p.title).font(Theme.F.body)
+            HStack(spacing: 8) {
+                Image(systemName: p.symbol).font(.system(size: 14)).frame(width: 18)
+                Text(p.title).font(.system(size: 14, weight: page == p ? .semibold : .regular)).lineLimit(1)
                 Spacer(minLength: 0)
                 if let b = badge { Circle().fill(b).frame(width: 7, height: 7) }
             }
             .foregroundStyle(page == p ? Theme.C.text : Theme.C.textDim)
-            .padding(.horizontal, 10).frame(height: 28)
-            .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(page == p ? Theme.C.bg3 : .clear))
+            .padding(.horizontal, 10).frame(height: 44)
+            .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(page == p ? CM.navSel : .clear))
+            .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(page == p ? CM.navSelStroke : .clear, lineWidth: 1))
             .contentShape(Rectangle())
-        }.buttonStyle(.plain).padding(.horizontal, 8)
+        }.buttonStyle(.plain).padding(.horizontal, 14)
         .accessibilityLabel(p.title).accessibilityAddTraits(page == p ? .isSelected : [])
     }
 
@@ -129,8 +130,8 @@ struct StartView: View {
             c().frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-    private func pageScroll<C: View>(@ViewBuilder _ c: () -> C) -> some View {
-        ScrollView { VStack(alignment: .leading, spacing: 22) { c() }.padding(.horizontal, 24).padding(.vertical, 22).frame(maxWidth: 560, alignment: .leading).frame(maxWidth: .infinity) }
+    private func pageScroll<C: View>(wide: Bool = false, @ViewBuilder _ c: () -> C) -> some View {
+        ScrollView { VStack(alignment: .leading, spacing: wide ? 20 : 22) { c() }.padding(.leading, wide ? 46 : 24).padding(.trailing, wide ? 48 : 24).padding(.top, wide ? 32 : 22).padding(.bottom, wide ? 40 : 22).frame(maxWidth: wide ? 1172 : 560, alignment: .leading).frame(maxWidth: .infinity) }
     }
 
     // MARK: record page
@@ -163,189 +164,202 @@ struct StartView: View {
 
     private var recordPage: some View {
         VStack(spacing: 0) {
-            pageScroll {
+            pageScroll(wide: true) {
                 if let t = m.addTarget {
                     Notice(symbol: "plus.rectangle.on.rectangle", text: L10n.f("Înregistrarea se adaugă în «%@», la sfârșitul proiectului. Proiectul rămâne salvat.", t.editor.project.name), action: T("Înapoi la editor")) { m.cancelAddRecording() }
                 }
-                PageHeader(title: T("Înregistrare nouă"), subtitle: recordContext, tone: m.canRecord ? Theme.C.ok : Theme.C.textFaint)
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: 12) { recordTitle(); permissionChip }
+                    VStack(alignment: .leading, spacing: 8) { recordTitle(compact: true); permissionChip }
+                }
                 finishedCard
                 if !m.hasPermission { Notice(symbol: "lock.shield", text: T("Lipsește permisiunea „Înregistrare ecran”."), action: T("Permisiuni…")) { page = .permissions } }
                 else if !act.allowsRecordAndExport { Notice(symbol: "key", text: T("Înregistrarea și exportul cer activare. Editarea rămâne liberă."), action: T("Activare")) { page = .activation } }
                 sourcesSection
+                AddSourceButton(disabled: m.phase != .idle) { addSourceItems }.padding(.top, 10)
                 if !m.unfinished.isEmpty { unfinishedSection }
             }
             recordBar
-        }
+        }.background(LinearGradient(colors: [CM.pageTop, CM.pageBottom], startPoint: .top, endPoint: .bottom))
+    }
+
+    private func recordTitle(compact: Bool = false) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(T("Pregătește înregistrarea")).font(.system(size: compact ? 22 : 29, weight: .semibold)).foregroundStyle(Theme.C.text).lineLimit(2).fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
+            if !compact { Text(T("Alege sursele. Verifică imaginea și sunetul. Înregistrează.")).font(.system(size: 15)).foregroundStyle(Theme.C.textDim).fixedSize(horizontal: false, vertical: true) }
+        }.frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Screen-recording permission at a glance; the tooltip lists the three permissions and a click opens their page.
+    private var permissionChip: some View {
+        let ok = m.hasPermission
+        let mic = m.micAuth == .authorized ? T("acordat") : (m.micAuth == .denied ? T("refuzat") : T("se cere la prima folosire"))
+        let cam = m.cameraAuth == .authorized ? T("acordată") : (m.cameraAuth == .denied || m.cameraAuth == .restricted ? T("refuzată") : T("se cere la prima folosire"))
+        return Button { page = .permissions } label: {
+            HStack(spacing: 8) {
+                Circle().fill(ok ? CM.chipDot : Theme.C.warn).frame(width: 8, height: 8)
+                Text(ok ? T("Permisiuni disponibile") : T("Permisiune lipsă")).font(CM.note).foregroundStyle(ok ? CM.chipText : Theme.C.warn)
+            }.padding(.horizontal, 16).frame(height: 34).background(Capsule().fill(ok ? CM.chipFill : Theme.C.warn.opacity(0.12))).overlay(Capsule().strokeBorder(ok ? CM.chipStroke : Theme.C.warn.opacity(0.4), lineWidth: 1))
+        }.buttonStyle(.plain)
+            .help(L10n.f("Înregistrare ecran: %@ · Microfon: %@ · Cameră: %@. Clic pentru detalii.", ok ? T("acordată") : T("lipsește"), mic, cam))
+            .accessibilityLabel(T("Permisiuni")).accessibilityValue(ok ? T("disponibile") : T("lipsă"))
     }
 
     /// What the next recording would contain, in one line (also the state: ready / why not).
     private var recordContext: String {
-        let video = (m.selectedSource != nil ? 1 : 0) + m.extraScreens.count + m.cameraRows.count
+        let video = (m.selectedSource != nil ? 1 : 0) + m.extraScreens.filter(\.enabled).count + m.cameraRows.filter(\.enabled).count
         let audio = m.audio.filter { $0.enabled }.count
-        let what = L10n.f("%@ video · %@ audio", "\(video)", "\(audio)")
+        let what = L10n.f("%@ video · %@ audio", "\(video)", "\(audio)") + " · " + T("fișiere separate")
         if m.canRecord { return what + " · " + T("gata de înregistrare") }
         if !m.hasPermission { return what + " · " + T("permisiune lipsă") }
-        if !ActivationModel.shared.allowsRecordAndExport { return what + " · " + T("înregistrarea cere activare") }
         return what
     }
 
     private var sourcesSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack { SectionLabel(T("Surse")); Spacer(); addSourceMenu }
+        VStack(alignment: .leading, spacing: 18) {
+            HStack { Text(T("Sursele înregistrării").uppercased()).font(CM.label).tracking(1.8).foregroundStyle(Theme.C.textDim).accessibilityAddTraits(.isHeader); Spacer(); Text(recordContext).font(CM.small).foregroundStyle(m.canRecord ? Theme.C.ok : Theme.C.textDim).lineLimit(1) }
             SourceList {
                 mainVideoRow
                 ForEach(m.extraScreens) { ExtraScreenRowView(m: m, r: $0) }
                 ForEach(m.cameraRows) { CameraRowView(m: m, r: $0) }
                 ForEach(m.audio) { audioRow($0) }
-                if m.extraScreens.isEmpty && m.cameraRows.isEmpty && m.audio.isEmpty { quickAdd }
+                if m.extraScreens.isEmpty && m.cameraRows.isEmpty && m.audio.isEmpty { EmptyHint(text: T("Nicio altă sursă. Adaugă o cameră, un microfon sau sunetul calculatorului cu «Adaugă sursă».")) }
             }
         }
     }
 
-    /// Empty list: the three most common additions as direct actions (the menu above has everything).
-    private var quickAdd: some View {
-        HStack(spacing: 8) {
-            Button { m.addExtraScreen(.window) } label: { Label(T("Fereastră"), systemImage: "macwindow") }
-            Button { m.addCameraRow() } label: { Label(T("Cameră"), systemImage: "video") }.disabled(m.cameras.isEmpty)
-            Button { m.addSystemAudio() } label: { Label(T("Sunetul calculatorului"), systemImage: "speaker.wave.2") }
-            Spacer(minLength: 0)
-        }.buttonStyle(.gloss(.ghost, compact: true)).disabled(m.phase != .idle).padding(.horizontal, 8).padding(.vertical, 8)
-    }
-
-    private var mainKindName: String { m.mode == .window ? T("Fereastră") : (m.mode == .region ? T("Regiune") : T("Monitor")) }
+    private var mainKindName: String { m.mode == .window ? T("Fereastră") : (m.mode == .region ? T("Regiune") : T("Ecran · întregul monitor")) }
     private var mainSubtitle: String {
-        var parts = [mainKindName]
-        if let z = m.sizes { parts.append("\(z.src.w)×\(z.src.h) px") }
-        if m.restoredDisplay, m.mode != .window, m.displayID != nil { parts.append(T("ultima folosită")) }
-        return parts.joined(separator: " · ")
+        var t = mainKindName
+        if m.restoredDisplay, m.mode != .window, m.displayID != nil { t += " · " + T("ultima folosită") }
+        return t
     }
+    private var fpsText: String { "\(ScreenCapturer.defaultFPS) \(T("cadre/s"))" }
     private var mainVideoRow: some View {
         let list = m.mode == .window ? m.windows : m.displays
         let current = m.mode == .window ? m.windowID : m.displayID
         let title = list.first { $0.id == current }?.title ?? (m.selectedSource?.title ?? (m.mode == .window ? T("Alege fereastra…") : T("Alege monitorul…")))
-        return SourceRow(symbol: m.mode == .window ? "macwindow" : (m.mode == .region ? "rectangle.dashed" : "display"), subtitle: mainSubtitle, hasDetail: true) {
-            SourceMenu(title: title, placeholder: m.selectedSource == nil, items: list.map { (String($0.id), $0.title, $0.id == current) }, disabled: m.phase != .idle,
+        let z = m.sizes, s = m.selectedSource
+        return SourceRow(symbol: m.mode == .window ? "macwindow" : (m.mode == .region ? "rectangle.dashed" : "display"), principal: true, subtitle: mainSubtitle, hasDetail: s != nil,
+            preview: AnyView(RowTextButton(title: m.previewOn ? T("Oprește imaginea") : T("Previzualizare"), symbol: m.previewOn ? "eye.fill" : "eye", active: m.previewOn,
+                                           help: m.previewOn ? T("Oprește previzualizarea") : T("Previzualizare: imagini statice la cerere; nu înregistrează")) { m.previewOn.toggle() }
+                .disabled(s == nil).popover(isPresented: $m.previewOn, arrowEdge: .bottom) { stillPreview }),
+            config: AnyView(sizeMenu),
+            more: AnyView(RowMenu {
+                Button { m.identify() } label: { Label(T("Identifică: ramă roșie pe sursă timp de 2 s (nu intră în înregistrare)"), systemImage: "scope") }.disabled(s == nil || m.phase != .idle)
+                Divider()
+                Picker(T("Captură"), selection: $m.mode) { Text(T("Monitor")).tag(VideoMode.display); Text(T("Fereastră")).tag(VideoMode.window); Text(T("Regiune")).tag(VideoMode.region) }.disabled(m.phase != .idle)
+                if m.mode == .region { Button(m.regionSpec == nil ? T("Trasează regiunea…") : T("Retrasează…")) { m.drawRegion() }.disabled(m.displayID == nil || m.phase != .idle) }
+            }),
+            extra: m.mode == .region ? AnyView(regionHint) : nil) {
+            SourceMenu(title: title, placeholder: s == nil, items: list.map { (String($0.id), $0.title, $0.id == current) }, disabled: m.phase != .idle,
                        onHover: m.mode == .region ? nil : { id in m.previewCandidate(id.flatMap(UInt32.init)) }) { id in
                 let v = UInt32(id)
                 if m.mode == .window { m.windowID = v } else { m.displayID = v }
             }
-        } actions: {
-            IconButton(symbol: "scope", label: T("Identifică: ramă roșie pe sursă timp de 2 s (nu intră în înregistrare)")) { m.identify() }.disabled(m.selectedSource == nil || m.phase != .idle).accessibilityIdentifier("sadrog.identify")
-            IconButton(symbol: m.previewOn ? "eye.fill" : "eye", label: m.previewOn ? T("Oprește previzualizarea") : T("Previzualizare (imagini statice; nu înregistrează)"), active: m.previewOn) { m.previewOn.toggle() }.disabled(m.selectedSource == nil)
-                .popover(isPresented: $m.previewOn, arrowEdge: .bottom) {
-                    if let img = m.previewImage { Image(nsImage: img).resizable().scaledToFit().frame(maxWidth: 380, maxHeight: 240).padding(8) } else { ProgressView().padding(24) }
-                }
+        } primary: {
+            if let z { Text(verbatim: "\(T("Fișier")): \(z.out.w) × \(z.out.h) px · \(fpsText)").font(CM.small).foregroundStyle(Theme.C.text).lineLimit(1) }
+            else { Text(T("Alege sursa ca să vezi dimensiunea fișierului")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).lineLimit(1) }
         } detail: {
-            VStack(alignment: .leading, spacing: 10) {
-                Picker(T("Captură"), selection: $m.mode) { Text(T("Monitor")).tag(VideoMode.display); Text(T("Fereastră")).tag(VideoMode.window); Text(T("Regiune")).tag(VideoMode.region) }
-                    .pickerStyle(.segmented).labelsHidden().frame(width: 250).disabled(m.phase != .idle)
-                if m.mode == .region {
-                    HStack(spacing: 8) {
-                        Button(m.regionSpec == nil ? T("Trasează regiunea…") : T("Retrasează…")) { m.drawRegion() }.buttonStyle(.gloss(.secondary, compact: true)).disabled(m.displayID == nil || m.phase != .idle)
-                        if m.regionSpec == nil { Text(T("Trage pe monitor, în orice direcție; Esc anulează.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint) }
-                    }
-                }
-                if let s = m.selectedSource, let z = m.sizes { sizeRows(s, z) }
-                if m.restoredDisplay, m.mode != .window, m.displayID != nil {
-                    Text(T("Monitorul folosit data trecută. Nimic nu se înregistrează sau monitorizează până nu pornești tu.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
-                }
-            }
+            if let s, let z { sizeDetail(s, z) }
+        }
+    }
+    @ViewBuilder private var regionHint: some View {
+        HStack(spacing: 8) {
+            Button(m.regionSpec == nil ? T("Trasează regiunea…") : T("Retrasează…")) { m.drawRegion() }.buttonStyle(.gloss(.secondary, compact: true)).disabled(m.displayID == nil || m.phase != .idle)
+                .help(T("Trage pe monitor, în orice direcție; Esc anulează."))
+            if m.regionSpec == nil { Text(T("Trage pe monitor, în orice direcție; Esc anulează.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint) }
+        }
+    }
+    @ViewBuilder private var stillPreview: some View {
+        if let img = m.previewImage { Image(nsImage: img).resizable().scaledToFit().frame(maxWidth: 380, maxHeight: 240).padding(8) }
+        else if m.previewFailed { Text(T("Nu s-a putut obține imaginea. Verifică permisiunea „Înregistrare ecran” și că sursa încă există.")).font(Theme.F.caption).frame(width: 260).padding(12) }
+        else { ProgressView().padding(24) }
+    }
+
+    /// The size of the recorded file, chosen explicitly: 1:1 with the macOS render, the physical panel, or capped at 1920 px. Each choice shows the size it gives.
+    private var sizeMenu: some View {
+        let s = m.selectedSource
+        func px(_ cap: RecorderModel.OutCap) -> String? {
+            guard let s else { return nil }
+            var src = s.pixels
+            if m.mode == .region, let r = m.regionSpec, r.isValid { let p = RegionMath.pixels(points: RegionMath.sourceRect(r, displayPoints: CGSize(width: s.pointsWidth, height: s.pointsHeight)).size, scale: s.scale); src = (p.w, p.h) }
+            let cap: Int? = { switch cap { case .source: return nil; case .hd: return 1920; case .panel: return s.panelWidth > 0 ? max(s.panelWidth, s.panelHeight) : nil } }()
+            let o = RegionMath.output(source: src, maxLongSide: cap); return "\(o.w)×\(o.h)"
+        }
+        func item(_ cap: RecorderModel.OutCap, _ name: String) -> some View {
+            Button { m.outCap = cap } label: { if m.outCap == cap { Label("\(name) · \(px(cap) ?? "")", systemImage: "checkmark") } else { Text("\(name) · \(px(cap) ?? "")") } }
+        }
+        return RowMenuButton(title: T("Dimensiune"), help: T("Dimensiunea fișierului înregistrat: 1:1 cu randarea macOS, panoul fizic sau maxim 1920 px"), disabled: s == nil || m.phase != .idle) {
+            item(.source, T("1:1 cu sursa"))
+            if let s, s.panelWidth > 0, m.mode != .window { item(.panel, T("Panoul fizic")) }
+            item(.hd, T("Maxim 1920 px"))
         }
     }
 
-    /// Source size, physical panel and capture-file size, each named for what it is (points ≠ pixels; the backing store of a scaled mode ≠ the panel).
-    @ViewBuilder private func sizeRows(_ s: SourceInfo, _ z: (src: (w: Int, h: Int), out: (w: Int, h: Int))) -> some View {
-        row(T("Sursa")) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(verbatim: sourcePoints(s).map { "\($0) · \(z.src.w)×\(z.src.h) px" } ?? "\(z.src.w)×\(z.src.h) px").font(Theme.F.mono)
-                    Button { showSizeDetail.toggle() } label: { Image(systemName: showSizeDetail ? "info.circle.fill" : "info.circle").font(Theme.F.iconSmall).foregroundStyle(Theme.C.textFaint).frame(width: 24, height: 22).contentShape(Rectangle()) }
-                        .buttonStyle(.plain).help(showSizeDetail ? T("Ascunde detaliile") : T("Detalii: puncte, scară și panoul fizic")).accessibilityLabel(T("Detalii rezoluție"))
-                }
-                if showSizeDetail { Text(sourceDetail(s)).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true) }
-            }
-        }
-        row(T("Fișier captură")) {
-            HStack(spacing: 8) {
-                Picker(T("Fișier captură"), selection: $m.outCap) {
-                    Text(T("1:1 cu sursa")).tag(RecorderModel.OutCap.source)
-                    if s.panelWidth > 0, m.mode != .window { Text(verbatim: "Panoul fizic (\(s.panelWidth)×\(s.panelHeight))").tag(RecorderModel.OutCap.panel) }
-                    Text(T("Maxim 1920 px")).tag(RecorderModel.OutCap.hd)
-                }.labelsHidden().fixedSize().disabled(m.phase != .idle)
-                Text(verbatim: "→ \(z.out.w)×\(z.out.h) px").font(Theme.F.mono).foregroundStyle(Theme.C.text)
-            }
-        }
-    }
-    /// Size of the source in logical points (window or region), shown next to its pixels; nil for a whole monitor (its points are in the detail).
-    private func sourcePoints(_ s: SourceInfo) -> String? {
-        if m.mode == .window { return "\(s.width)×\(s.height) pt" }
-        if m.mode == .region, let r = m.regionSpec, r.isValid { let q = RegionMath.sourceRect(r, displayPoints: CGSize(width: s.pointsWidth, height: s.pointsHeight)); return "\(Int(q.width))×\(Int(q.height)) pt" }
-        return nil
-    }
-    private func sourceDetail(_ s: SourceInfo) -> String {
-        let pts = m.mode == .window ? "\(s.width)×\(s.height) pt" : "\(Int(s.pointsWidth))×\(Int(s.pointsHeight)) pt"
-        var t = L10n.f("%@%@ la scara %@× (pixeli de randare macOS)", "\(m.mode == .region ? "regiune pe " : "")", "\(pts)", "\(String(format: "%g", s.scale))")
-        if m.mode != .window, s.panelWidth > 0 {
-            t += s.panelWidth == s.pixels.w ? T(" · panoul fizic are aceeași rezoluție") : L10n.f(" · panoul fizic: %@×%@ px (mod nativ raportat de macOS)", "\(s.panelWidth)", "\(s.panelHeight)")
-        }
-        return t
-    }
-
-    private var audioSection: some View {
-        section(T("Audio")) {
-            if m.audio.isEmpty {
-                Text(T("Fără sunet. Adaugă sunetul calculatorului, un microfon sau canalele unui echipament extern; fiecare sursă devine o pistă separată în editor."))
+    /// The four sizes, each named for what it is (points ≠ render pixels ≠ physical panel ≠ recorded file).
+    @ViewBuilder private func sizeDetail(_ s: SourceInfo, _ z: (src: (w: Int, h: Int), out: (w: Int, h: Int))) -> some View {
+        let b = SizeBreakdown.make(source: s, sourcePixels: z.src, file: z.out)
+        VStack(alignment: .leading, spacing: 5) {
+            detailLine(T("Dimensiune logică"), "\(b.logicalW) × \(b.logicalH) pt", T("puncte macOS: cât „încape” pe ecran"))
+            detailLine(T("Randare internă macOS"), "\(b.renderW) × \(b.renderH) px", L10n.f("scară %@× — pixeli de randare, nu panoul", "\(String(format: "%g", b.scale))"))
+            detailLine(T("Rezoluție fizică raportată"), b.panelW > 0 ? "\(b.panelW) × \(b.panelH) px" : T("nu este raportată"), b.panelW > 0 ? T("modul nativ al panoului, raportat de macOS") : T("fereastra nu are panou propriu"))
+            detailLine(T("Rezoluție efectivă de captură"), "\(b.fileW) × \(b.fileH) px", b.fileIsRender ? T("fișierul înregistrat, egal cu randarea internă") : T("fișierul înregistrat"))
+            if b.renderExceedsPanel && b.fileIsRender {
+                Text(L10n.f("Randarea internă (%@×%@) este mai mare decât panoul fizic (%@×%@): fișierul 1:1 este mai mare decât imaginea pe care o poate afișa panoul. «Dimensiune» → «Panoul fizic» îl aduce la rezoluția panoului.", "\(b.renderW)", "\(b.renderH)", "\(b.panelW)", "\(b.panelH)"))
                     .font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
             }
-            VStack(spacing: 0) { ForEach(m.audio) { a in audioRow(a); if a.id != m.audio.last?.id { HairlineDivider().opacity(0.6) } } }
-            if let b = m.blocker, m.phase == .idle, m.video != nil || !m.audio.isEmpty, m.destination != nil, m.hasPermission { Text(b).font(Theme.F.caption).foregroundStyle(Theme.C.warn) }
+            if m.restoredDisplay, m.mode != .window, m.displayID != nil {
+                Text(T("Monitorul folosit data trecută. Nimic nu se înregistrează sau monitorizează până nu pornești tu.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
-    /// One menu for every kind of source, usable again and again.
-    private var addSourceMenu: some View {
-        Menu {
-            Section(T("Video")) {
-                Button { m.addExtraScreen(.display) } label: { Label(T("Monitor"), systemImage: "display") }
-                Button { m.addExtraScreen(.window) } label: { Label(T("Fereastră"), systemImage: "macwindow") }
-                Button { m.addCameraRow() } label: { Label(T("Cameră sau dispozitiv video"), systemImage: "video") }.disabled(m.cameras.isEmpty)
-            }
-            Section(T("Audio")) {
-                Button { m.addSystemAudio() } label: { Label(T("Sunetul calculatorului"), systemImage: "speaker.wave.2") }.disabled(m.audio.contains { $0.kind == .system })
-                ForEach(m.devices, id: \.uid) { d in
-                    Button("\(d.name) — \(d.inputChannels == 1 ? "mono" : "\(d.inputChannels) canale")") { m.addInput(d) }
-                    if d.inputChannels > 2 { Button(L10n.f("%@ — fiecare canal pe pistă separată (%@)", "\(d.name)", "\(d.inputChannels)")) { m.addInputSplit(d) } }
-                }
-                if m.devices.isEmpty { Text(T("Nicio intrare audio detectată")) }
-            }
-        } label: { Label(T("Adaugă sursă"), systemImage: "plus").font(Theme.F.body.weight(.medium)) }
-        .menuStyle(.button).buttonStyle(.gloss(.secondary, compact: true)).menuIndicator(.hidden).fixedSize().disabled(m.phase != .idle).accessibilityLabel(T("Adaugă sursă"))
+    private func detailLine(_ label: String, _ value: String, _ note: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text(label).font(Theme.F.caption).foregroundStyle(Theme.C.textDim).frame(width: 178, alignment: .leading)
+            Text(verbatim: value).font(Theme.F.mono).foregroundStyle(Theme.C.text)
+            Text(note).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).lineLimit(2)
+        }
     }
+
+    /// One menu for every kind of source, usable again and again.
+    @ViewBuilder private var addSourceItems: some View {
+        Section(T("Video")) {
+            Button { m.addExtraScreen(.display) } label: { Label(T("Monitor"), systemImage: "display") }
+            Button { m.addExtraScreen(.window) } label: { Label(T("Fereastră"), systemImage: "macwindow") }
+            Button { m.addCameraRow() } label: { Label(T("Cameră sau dispozitiv video"), systemImage: "video") }.disabled(m.cameras.isEmpty)
+        }
+        Section(T("Audio")) {
+            Button { m.addSystemAudio() } label: { Label(T("Sunetul calculatorului"), systemImage: "speaker.wave.2") }.disabled(m.audio.contains { $0.kind == .system })
+            ForEach(m.devices, id: \.uid) { d in
+                Button("\(d.name) — \(d.inputChannels == 1 ? "mono" : "\(d.inputChannels) canale")") { m.addInput(d) }
+                if d.inputChannels > 2 { Button(L10n.f("%@ — fiecare canal pe pistă separată (%@)", "\(d.name)", "\(d.inputChannels)")) { m.addInputSplit(d) } }
+            }
+            if m.devices.isEmpty { Text(T("Nicio intrare audio detectată")) }
+        }
+    }
+
     private func audioRow(_ a: AudioSourceSpec) -> some View {
         let dev = m.devices.first { $0.uid == a.deviceUID }
-        let multi = a.kind == .input && (dev?.inputChannels ?? 0) > 1 && (a.channels.count != 1 || !a.deviceName.contains("· canal"))
-        var sub = a.kind == .system ? T("Sunetul aplicațiilor · stereo") : L10n.f("Canale %@ din %@", "\(a.channels.map(String.init).joined(separator: ", "))", "\(dev?.inputChannels ?? 0)")
+        let total = dev?.inputChannels ?? 0
+        var sub = a.kind == .system ? T("Sunetul aplicațiilor") : T("Microfon / interfață audio")
         var tone = Theme.C.textFaint
         if let w = m.lost[a.id] { sub = L10n.f("%@. Nu se folosește alt dispozitiv în loc.", "\(w)"); tone = Theme.C.warn }
         else if a.kind == .input && m.micAuth == .denied { sub = T("Acces la microfon refuzat (Setări → Confidențialitate și securitate)."); tone = Theme.C.warn }
-        return SourceRow(symbol: a.kind == .system ? "speaker.wave.2" : "mic", enabled: Binding(get: { a.enabled }, set: { m.setEnabled(a.id, $0) }), toggleLocked: m.phase != .idle, dimmed: !a.enabled, subtitle: sub, subtitleTone: tone, hasDetail: multi) {
-            Text(a.deviceName).font(Theme.F.body.weight(.medium)).foregroundStyle(Theme.C.text).lineLimit(1)
-        } actions: {
-            LevelMeter(level: m.levels[a.id] ?? 0, live: m.monitoring.contains(a.id) || m.phase == .recording).frame(width: 84, height: 5)
-            IconButton(symbol: m.monitoring.contains(a.id) ? "waveform.circle.fill" : "waveform.circle", label: m.monitoring.contains(a.id) ? T("Oprește afișarea nivelului") : T("Arată nivelul real (fără redare pe difuzoare)"), active: m.monitoring.contains(a.id)) { m.toggleMonitor(a.id) }
-            RowMenu { Button(role: .destructive) { m.remove(a.id) } label: { Label(T("Elimină sursa"), systemImage: "trash") }.disabled(m.phase != .idle) }
-        } detail: {
-            if let d = dev {
-                HStack(spacing: 3) {
-                    Text(T("Canale")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).padding(.trailing, 4)
-                    ForEach(1...min(d.inputChannels, 16), id: \.self) { c in
-                        let on = a.channels.contains(c)
-                        Button("\(c)") { m.toggleChannel(a.id, c) }.buttonStyle(.plain).font(Theme.F.monoSmall).frame(width: 22, height: 18)
-                            .background(RoundedRectangle(cornerRadius: 4).fill(on ? Theme.C.accent.opacity(0.85) : Theme.C.field)).foregroundStyle(on ? Theme.C.accentInk : Theme.C.textDim)
-                            .disabled(m.phase != .idle).accessibilityLabel("Canal \(c)").accessibilityValue(on ? "ales" : "neales")
-                    }
-                }
-            }
-        }
+        else if a.kind == .input && dev == nil { sub = T("Dispozitivul lipsește"); tone = Theme.C.warn }
+        let mon = m.monitoring.contains(a.id)
+        return SourceRow(symbol: a.kind == .system ? "speaker.wave.2" : "mic", enabled: Binding(get: { a.enabled }, set: { m.setEnabled(a.id, $0) }), toggleLocked: m.phase != .idle, dimmed: !a.enabled, subtitle: sub, subtitleTone: tone,
+            preview: AnyView(RowTextButton(title: mon ? T("Oprește nivelul") : T("Arată nivelul"), symbol: mon ? "waveform.circle.fill" : "waveform.circle", active: mon,
+                                           help: mon ? T("Oprește afișarea nivelului") : T("Arată nivelul real al sursei (fără redare pe difuzoare)")) { m.toggleMonitor(a.id) }.disabled(m.phase != .idle && !mon)),
+            config: a.kind == .input && total > 1 ? AnyView(ChannelPicker(m: m, spec: a, total: total)) : nil,
+            more: AnyView(RowMenu { Button(role: .destructive) { m.remove(a.id) } label: { Label(T("Elimină sursa"), systemImage: "trash") }.disabled(m.phase != .idle) }),
+            side: AnyView(LevelReadout(reading: m.readings[a.id], live: mon || m.phase == .recording) { m.clearClip(a.id) }),
+            notes: a.kind == .input && total > 1 ? AnyView(Text(T("Alegerea canalelor nu modifică setările interfeței audio.")).font(CM.note).foregroundStyle(Theme.C.textDim).fixedSize(horizontal: false, vertical: true)) : nil) {
+            Text(a.deviceName).font(CM.title).foregroundStyle(Theme.C.text).lineLimit(1)
+        } primary: {
+            if a.kind == .system { Text(T("Stereo · toate aplicațiile")).font(CM.small).foregroundStyle(Theme.C.text).lineLimit(1) }
+            else { Text(L10n.f("Canale selectate: %@ din %@", a.channels.map(String.init).joined(separator: ", "), "\(total)")).font(CM.small).foregroundStyle(Theme.C.text).lineLimit(1) }
+        } detail: { EmptyView() }
     }
 
     private var unfinishedSection: some View {
@@ -357,55 +371,78 @@ struct StartView: View {
         }
     }
 
+    private var pillText: String {
+        switch m.phase {
+        case .idle: return T("Începe înregistrarea")
+        case .preparing: return T("Se pregătește…")
+        case .countdown(let n): return L10n.f("Anulează · %@", "\(n)")
+        case .starting: return T("Pornește…")
+        case .recording, .paused: return T("Oprește înregistrarea")
+        case .stopping: return T("Se salvează…")
+        }
+    }
+    /// Footer: always visible under the scrolling list. Wide: folder | Record | countdown. Narrow: Record first, then folder and countdown on one line.
     private var recordBar: some View {
-        HStack(spacing: 14) {
-            Button { Task { await m.toggle() } } label: { Color.clear.frame(width: 60, height: 60) }
-                .buttonStyle(RecordButtonStyle(phase: m.phase)).keyboardShortcut(.return)
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .top, spacing: 16) {
+                destinationBlock.frame(width: 230, alignment: .leading).padding(.top, 2)
+                Spacer(minLength: 0)
+                recordCenter()
+                Spacer(minLength: 0)
+                sideControls.frame(width: 230, alignment: .trailing)
+            }.padding(.horizontal, 46).padding(.top, 26).padding(.bottom, 20).frame(minHeight: 143, alignment: .top)
+            VStack(spacing: 8) {
+                recordCenter(compact: true)
+                HStack(alignment: .bottom) { destinationBlock; Spacer(minLength: 8); sideControls }
+            }.padding(.horizontal, 24).padding(.vertical, 10)
+        }
+        .overlay(alignment: .top) { Rectangle().fill(Color(dark: 0x5B5E66, light: 0xC2C5CC).opacity(0.5)).frame(height: 1) }
+    }
+    private func recordCenter(compact: Bool = false) -> some View {
+        VStack(spacing: compact ? 6 : 14) {
+            Button { Task { await m.toggle() } } label: { Text(pillText).lineLimit(1) }
+                .buttonStyle(RecordPillStyle(phase: m.phase, compact: compact)).keyboardShortcut(.return)
                 .disabled(m.phase == .idle && !m.canRecord || m.phase == .stopping || m.phase == .starting)
                 .help(m.phase == .idle ? T("Înregistrează (↩)") : T("Oprește"))
-                .accessibilityIdentifier("sadrog.record").accessibilityValue(phaseName)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(timeString(m.elapsed)).font(.system(size: 22, weight: .light, design: .monospaced)).foregroundStyle(m.recording ? Theme.C.text : Theme.C.textDim).lineLimit(1).fixedSize()
-                statusLine
-            }
-            if m.simulatedCapture {
-                ViewThatFits(in: .horizontal) {         // the full notice when there is room, the short one otherwise: the timer never wraps
-                    Chip(text: T("SIMULARE — nu se înregistrează"), tone: .warn).fixedSize()
-                    Chip(text: T("SIMULARE"), tone: .warn).fixedSize()
-                }.accessibilityIdentifier("sadrog.simulated")
-            }
-            Spacer(minLength: 6)
-            if m.phase == .recording || m.phase == .paused {
-                Button { m.togglePause() } label: { Label(m.phase == .paused ? "Reia" : T("Pauză"), systemImage: m.phase == .paused ? "play.fill" : "pause.fill") }
-                    .buttonStyle(.gloss(.secondary, compact: true)).fixedSize().keyboardShortcut("p", modifiers: [.command, .shift])
-                    .help(T("Pauză sau reluare pentru TOATE sursele în același moment (⇧⌘P)"))
-            }
-            if m.phase == .idle {
-                HStack(spacing: 4) {
-                    Image(systemName: "timer").font(Theme.F.iconSmall).foregroundStyle(Theme.C.textFaint)
-                    Picker("", selection: $m.countdownSeconds) { ForEach([0, 3, 5, 10, 15], id: \.self) { Text($0 == 0 ? T("fără") : "\($0) s").tag($0) } }
-                        .labelsHidden().pickerStyle(.menu).fixedSize().accessibilityLabel(T("Numărătoare"))
-                }.help(T("Numărătoare înainte de start"))
-            }
-            destinationButton
-        }
-        .padding(.horizontal, 18).frame(height: 80).background(Theme.C.bg1).overlay(alignment: .top) { HairlineDivider().opacity(0.6) }
-    }
-    /// Where recordings go and how much room is left: a compact summary, the full path on hover, the folder panel on click.
-    private var destinationButton: some View {
-        Button { m.chooseDestination() } label: {
+                .accessibilityLabel(pillText).accessibilityIdentifier("sadrog.record").accessibilityValue(phaseName)
             HStack(spacing: 8) {
-                Image(systemName: "folder").font(Theme.F.icon).foregroundStyle(m.destination == nil ? Theme.C.warn : Theme.C.textDim)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(m.destination?.lastPathComponent ?? T("Destinație nealeasă")).font(Theme.F.body).lineLimit(1).truncationMode(.middle).foregroundStyle(m.destination == nil ? Theme.C.warn : Theme.C.text)
-                    if let f = m.freeGB { Text(L10n.f("%.0f GB liberi", f)).font(Theme.F.caption).foregroundStyle(f < 10 ? Theme.C.warn : Theme.C.textFaint) }
+                if m.phase == .recording || m.phase == .paused { Text(timeString(m.elapsed)).font(Theme.F.mono).foregroundStyle(Theme.C.text) }
+                statusLine
+                if m.simulatedCapture {
+                    Chip(text: T("SIMULARE"), tone: .warn).fixedSize().accessibilityIdentifier("sadrog.simulated").help(T("SIMULARE — nu se înregistrează"))
                 }
+            }.frame(minHeight: 16)
+        }.fixedSize(horizontal: true, vertical: false)
+    }
+    @ViewBuilder private var sideControls: some View {
+        if m.phase == .recording || m.phase == .paused {
+            Button { m.togglePause() } label: { Label(m.phase == .paused ? T("Reia") : T("Pauză"), systemImage: m.phase == .paused ? "play.fill" : "pause.fill") }
+                .buttonStyle(CMButtonStyle()).fixedSize().keyboardShortcut("p", modifiers: [.command, .shift])
+                .help(T("Pauză sau reluare pentru TOATE sursele în același moment (⇧⌘P)"))
+        } else if m.phase == .idle {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(T("Numărătoare")).font(CM.small).foregroundStyle(Theme.C.textDim)
+                Menu {
+                    Picker(T("Numărătoare"), selection: $m.countdownSeconds) { ForEach([0, 3, 5, 10, 15], id: \.self) { Text($0 == 0 ? T("fără") : "\($0) s").tag($0) } }.pickerStyle(.inline).labelsHidden()
+                } label: {
+                    HStack(spacing: 6) { Text(m.countdownSeconds == 0 ? T("fără") : "\(m.countdownSeconds) s").font(CM.button); Image(systemName: "chevron.down").font(Theme.F.glyph) }.frame(maxWidth: .infinity)
+                }.menuStyle(.button).buttonStyle(CMButtonStyle(width: 148)).menuIndicator(.hidden).fixedSize()
+                    .accessibilityLabel(T("Numărătoare")).accessibilityValue(m.countdownSeconds == 0 ? T("fără") : "\(m.countdownSeconds) s").help(T("Numărătoare înainte de start"))
             }
-            .padding(.horizontal, 10).frame(maxWidth: 190, minHeight: 40, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Theme.C.bg2)).contentShape(Rectangle())
-        }.buttonStyle(.plain).disabled(m.recording)
-        .help((m.destination?.path ?? T("Alege folderul în care se salvează înregistrările")) + " — " + T("Schimbă…"))
-        .accessibilityLabel(T("Destinația înregistrărilor"))
+        } else { Color.clear.frame(width: 1, height: 1) }
+    }
+    /// Where recordings go and how much room is left: the folder name, the free space, and the action to change it.
+    private var destinationBlock: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(T("Salvare în")).font(CM.small).foregroundStyle(Theme.C.textDim)
+            Text(m.destination?.lastPathComponent ?? T("Destinație nealeasă")).font(.system(size: 15)).lineLimit(1).truncationMode(.middle)
+                .foregroundStyle(m.destination == nil ? Theme.C.warn : Theme.C.text).help(m.destination?.path ?? T("Alege folderul în care se salvează înregistrările"))
+            HStack(spacing: 6) {
+                Button(T("Schimbă folderul…")) { m.chooseDestination() }.buttonStyle(.plain).font(Theme.F.caption).foregroundStyle(Theme.C.accent).disabled(m.recording)
+                    .help((m.destination?.path ?? T("Alege folderul în care se salvează înregistrările")) + " — " + T("Schimbă…")).accessibilityLabel(T("Destinația înregistrărilor"))
+                if let f = m.freeGB { Text(L10n.f("%.0f GB liberi", f)).font(Theme.F.caption).foregroundStyle(f < 10 ? Theme.C.warn : Theme.C.textFaint) }
+            }
+        }.frame(maxWidth: 210, alignment: .leading)
     }
     /// Current state of the Record button for accessibility (checked before acting on it).
     private var phaseName: String { switch m.phase { case .idle: return T("repaus"); case .preparing: return T("pregătire"); case .countdown(let n): return L10n.f("numărătoare %@", "\(n)"); case .starting: return T("pornire"); case .recording: return T("înregistrare"); case .paused: return T("pauză"); case .stopping: return T("salvare") } }
@@ -525,81 +562,145 @@ struct StartView: View {
     private func timeString(_ t: TimeInterval) -> String { String(format: "%02d:%02d:%02d", Int(t) / 3600, Int(t) / 60 % 60, Int(t) % 60) }
 }
 
-/// Peak meter driven by real samples (`live` false = meter off, drawn dimmed).
-struct LevelMeter: View {
-    let level: Float; let live: Bool
-    var body: some View {
-        GeometryReader { g in
-            ZStack(alignment: .leading) {
-                Capsule().fill(Theme.C.field)
-                Capsule().fill(LinearGradient(colors: [Theme.C.ok, Theme.C.ok, Theme.C.warn, Theme.C.record], startPoint: .leading, endPoint: .trailing))
-                    .frame(width: max(0, g.size.width * CGFloat(min(1, pow(max(level, 0), 0.5)))))   // sqrt scale: quiet signals stay visible
-                    .opacity(live ? 1 : 0.15)
-            }
-        }
-        .overlay(Capsule().stroke(Theme.C.line, lineWidth: 0.5))
-        .accessibilityLabel(live ? T("Nivel audio") : T("Nivel audio oprit"))
-    }
-}
-
 /// One additional screen: monitor or window, its real size, on/off, preview on demand, remove.
 struct ExtraScreenRowView: View {
     @ObservedObject var m: RecorderModel
     let r: ExtraScreenRow
     @State private var preview: NSImage?
+    @State private var previewFailed = false
     @State private var showPreview = false
     private var list: [SourceInfo] { r.mode == .window ? m.windows : m.displays }
     private var chosen: SourceInfo? { list.first { $0.id == r.sourceID } }
     private func set(_ f: (inout ExtraScreenRow) -> Void) { if let i = m.extraScreens.firstIndex(where: { $0.id == r.id }) { f(&m.extraScreens[i]) } }
+    private var fileSize: (w: Int, h: Int)? { chosen.map { RegionMath.output(source: $0.pixels, maxLongSide: m.maxLong) } }
     var body: some View {
         SourceRow(symbol: r.mode == .window ? "macwindow" : "display", enabled: Binding(get: { r.enabled }, set: { v in set { $0.enabled = v } }), toggleLocked: m.phase != .idle, dimmed: !r.enabled,
-                  subtitle: (r.mode == .window ? T("Fereastră") : T("Monitor")) + (chosen.map { " · \($0.pixels.w)×\($0.pixels.h) px" } ?? "")) {
+                  subtitle: r.mode == .window ? T("Fereastră") : T("Ecran · întregul monitor"), subtitleTone: chosen == nil && r.sourceID != nil ? Theme.C.warn : Theme.C.textFaint, hasDetail: chosen != nil,
+                  preview: AnyView(RowTextButton(title: T("Previzualizare"), symbol: "eye", help: T("Previzualizare: o imagine statică, la cerere; nu înregistrează")) {
+                      guard let c = chosen else { return }
+                      previewFailed = false; preview = nil; showPreview = true
+                      Task { if let img = await ScreenCapturer.snapshot(source: c, maxWidth: 360) { preview = NSImage(cgImage: img, size: .zero) } else { previewFailed = true } }
+                  }.disabled(chosen == nil).popover(isPresented: $showPreview) {
+                      if let p = preview { Image(nsImage: p).resizable().scaledToFit().frame(maxWidth: 360, maxHeight: 220).padding(8) }
+                      else if previewFailed { Text(T("Nu s-a putut obține imaginea. Verifică permisiunea „Înregistrare ecran” și că sursa încă există.")).font(Theme.F.caption).frame(width: 260).padding(12) }
+                      else { ProgressView().padding(24) }
+                  }),
+                  more: AnyView(RowMenu { Button(role: .destructive) { m.removeExtraScreen(r.id) } label: { Label(T("Elimină sursa"), systemImage: "trash") }.disabled(m.phase != .idle) })) {
             SourceMenu(title: chosen?.title ?? (r.mode == .window ? T("Alege fereastra…") : T("Alege monitorul…")), placeholder: chosen == nil, items: list.map { (String($0.id), $0.title, $0.id == r.sourceID) }, disabled: m.phase != .idle,
                        onHover: { id in m.previewCandidate(id.flatMap(UInt32.init), window: r.mode == .window) }) { id in set { $0.sourceID = UInt32(id) } }
-        } actions: {
-            IconButton(symbol: "eye", label: T("Previzualizare (o imagine, la cerere)")) {
-                guard let c = chosen else { return }
-                Task { if let img = await ScreenCapturer.snapshot(source: c, maxWidth: 360) { preview = NSImage(cgImage: img, size: .zero); showPreview = true } }
-            }.disabled(chosen == nil)
-            .popover(isPresented: $showPreview) { if let p = preview { Image(nsImage: p).resizable().scaledToFit().frame(maxWidth: 360, maxHeight: 220).padding(8) } }
-            RowMenu { Button(role: .destructive) { m.removeExtraScreen(r.id) } label: { Label(T("Elimină sursa"), systemImage: "trash") }.disabled(m.phase != .idle) }
-        } detail: { EmptyView() }
+        } primary: {
+            if let f = fileSize { Text(verbatim: "\(T("Fișier")): \(f.w) × \(f.h) px · \(ScreenCapturer.defaultFPS) \(T("cadre/s"))").font(Theme.F.mono).foregroundStyle(Theme.C.text).lineLimit(1) }
+            else { Text(T("Alege sursa ca să vezi dimensiunea fișierului")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).lineLimit(1) }
+        } detail: {
+            if let c = chosen, let f = fileSize {
+                let b = SizeBreakdown.make(source: c, sourcePixels: c.pixels, file: f)
+                VStack(alignment: .leading, spacing: 5) {
+                    detailLine(T("Dimensiune logică"), "\(b.logicalW) × \(b.logicalH) pt")
+                    detailLine(T("Randare internă macOS"), "\(b.renderW) × \(b.renderH) px")
+                    detailLine(T("Rezoluție fizică raportată"), b.panelW > 0 ? "\(b.panelW) × \(b.panelH) px" : T("nu este raportată"))
+                    detailLine(T("Rezoluție efectivă de captură"), "\(b.fileW) × \(b.fileH) px")
+                    Text(T("Dimensiunea fișierului urmează setarea «Dimensiune» a sursei principale.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint)
+                }
+            }
+        }
+    }
+    private func detailLine(_ label: String, _ value: String) -> some View {
+        HStack(spacing: 10) { Text(label).font(Theme.F.caption).foregroundStyle(Theme.C.textDim).frame(width: 178, alignment: .leading); Text(verbatim: value).font(Theme.F.mono).foregroundStyle(Theme.C.text) }
     }
 }
 
-/// One camera (or other compatible video device): real format, access state, on/off, remove.
+/// Explicit channel choice for an input device: which channels of the device go into this track. It changes only what SADROG records;
+/// the device's own settings (for example a MixPre's routing) are never written.
+struct ChannelPicker: View {
+    @ObservedObject var m: RecorderModel
+    let spec: AudioSourceSpec
+    let total: Int
+    @State private var open = false
+    var body: some View {
+        Button { open.toggle() } label: {
+            HStack(spacing: 6) { Text(T("Canale")).lineLimit(1); Image(systemName: "chevron.down").font(Theme.F.glyph) }.frame(maxWidth: .infinity)
+        }.buttonStyle(CMButtonStyle(width: CM.configW, hPad: 8)).disabled(m.phase != .idle)
+            .help(T("Alege canalele dispozitivului care intră în această pistă")).accessibilityLabel(T("Alege canalele")).accessibilityValue(spec.channels.map(String.init).joined(separator: ", "))
+            .popover(isPresented: $open, arrowEdge: .bottom) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(L10n.f("Canalele dispozitivului (%@)", "\(total)")).font(Theme.F.smallMedium)
+                    LazyVGrid(columns: Array(repeating: GridItem(.fixed(48), spacing: 6), count: 4), alignment: .leading, spacing: 6) {
+                        ForEach(1...min(total, 32), id: \.self) { c in
+                            let on = spec.channels.contains(c)
+                            Button { m.toggleChannel(spec.id, c) } label: { Text("\(c)").font(Theme.F.monoSmall).frame(width: 44, height: 24) }
+                                .buttonStyle(.plain).background(RoundedRectangle(cornerRadius: 5).fill(on ? Theme.C.accent.opacity(0.85) : Theme.C.field)).foregroundStyle(on ? Theme.C.accentInk : Theme.C.textDim)
+                                .help(on ? L10n.f("Canalul %@ este în înregistrare; clic pentru a-l scoate", "\(c)") : L10n.f("Adaugă canalul %@ în înregistrare", "\(c)"))
+                                .accessibilityLabel(L10n.f("Canalul %@", "\(c)")).accessibilityValue(on ? T("ales") : T("neales"))
+                        }
+                    }
+                    Text(T("Alegerea canalelor se aplică doar înregistrării SADROG. Nu modifică setările interfeței audio (de exemplu MixPre).")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint)
+                        .fixedSize(horizontal: false, vertical: true).frame(width: 240, alignment: .leading)
+                }.padding(12)
+            }
+    }
+}
+
+/// One camera (or other compatible video device): format and frame rate, preview on demand, access state, on/off, remove.
 struct CameraRowView: View {
     @ObservedObject var m: RecorderModel
     let r: CameraRow
+    private var present: Bool { r.uid.map { u in m.cameras.contains { $0.uid == u } } ?? true }
     private var sub: (String, Color) {
-        guard let u = r.uid else { return (T("Cameră"), Theme.C.textFaint) }
-        if !m.cameras.contains(where: { $0.uid == u }) { return (T("Camera lipsește"), Theme.C.warn) }
+        guard r.uid != nil else { return (T("Cameră"), Theme.C.textFaint) }
+        if !present { return (T("Camera lipsește"), Theme.C.warn) }
         switch m.cameraAuth {
-        case .denied, .restricted: return (T("Acces refuzat"), Theme.C.warn)
-        case .authorized: return ([T("Cameră"), m.cameraFormat(u)].compactMap { $0 }.joined(separator: " · "), Theme.C.textFaint)
-        default: return ([T("Cameră"), m.cameraFormat(u)].compactMap { $0 }.joined(separator: " · ") + " · " + T("acces necerut"), Theme.C.textFaint)
+        case .denied, .restricted: return (T("Cameră · acces refuzat"), Theme.C.warn)
+        case .authorized: return (T("Cameră · prezentator"), Theme.C.textFaint)
+        default: return (T("Cameră · accesul se cere la previzualizare sau la înregistrare"), Theme.C.textFaint)
         }
     }
+    /// What the menu shows: the chosen mode, or "Automat" (the camera's own current mode, written next to it as plain text).
+    private var formatChoice: String { r.format?.label ?? T("Automat") }
+    private var autoMode: String? { r.format == nil ? r.uid.flatMap { m.cameraFormat($0) } : nil }
+    private var formatText: String { autoMode.map { "\(formatChoice) · \($0)" } ?? formatChoice }
+    private var previewState: CameraPreviewState? { m.cameraPreviews[r.id] }
     var body: some View {
-        SourceRow(symbol: "video", enabled: Binding(get: { r.enabled }, set: { v in if let i = m.cameraRows.firstIndex(where: { $0.id == r.id }) { m.cameraRows[i].enabled = v } }), toggleLocked: m.phase != .idle, dimmed: !r.enabled, subtitle: sub.0, subtitleTone: sub.1) {
-            SourceMenu(title: m.cameras.first { $0.uid == r.uid }?.name ?? (r.uid == nil ? T("Alege camera…") : T("Camera lipsește")), placeholder: r.uid == nil,
+        let live = previewState?.isRunning == true
+        SourceRow(symbol: "video", enabled: Binding(get: { r.enabled }, set: { v in if let i = m.cameraRows.firstIndex(where: { $0.id == r.id }) { m.cameraRows[i].enabled = v } }), toggleLocked: m.phase != .idle, dimmed: !r.enabled,
+                  subtitle: sub.0, subtitleTone: sub.1,
+                  preview: r.uid == nil ? nil : AnyView(RowTextButton(title: live ? T("Ascunde imaginea") : T("Previzualizare"), symbol: live ? "eye.slash" : "eye", active: live,
+                                           help: live ? T("Oprește previzualizarea și eliberează camera") : T("Previzualizare reală de la cameră: pornește camera și o oprește când o închizi")) { Task { await m.toggleCameraPreview(r.id) } }.disabled(m.phase != .idle)),
+                  config: nil,
+                  more: AnyView(RowMenu { Button(role: .destructive) { m.removeCameraRow(r.id) } label: { Label(T("Elimină camera"), systemImage: "trash") }.disabled(m.phase != .idle) }),
+                  extra: previewState == .live ? AnyView(Text(T("Imagine reală de la cameră. Nu se înregistrează; se oprește când o ascunzi, când pleci din pagină sau când pornești înregistrarea.")).font(CM.note).foregroundStyle(Theme.C.textDim).frame(maxWidth: 520, alignment: .leading).fixedSize(horizontal: false, vertical: true)) : nil,
+                  side: previewState.map { st in AnyView(CameraPreviewBox(state: st, session: m.cameraPreviewSession(r.id), retry: { Task { m.stopCameraPreview(r.id); await m.toggleCameraPreview(r.id) } },
+                                       openSettings: { NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera")!) }).padding(.leading, 163)) },
+                  notes: r.uid != nil && present ? AnyView(VStack(alignment: .leading, spacing: 5) {
+                      Text(T("Formatul real este confirmat la pregătire.")); Text(T("Previzualizarea nu pornește înregistrarea."))
+                  }.font(CM.small).foregroundStyle(Theme.C.textDim)) : nil) {
+            SourceMenu(title: m.cameras.first { $0.uid == r.uid }?.name ?? (r.uid == nil ? T("Alege camera…") : T("Cameră")), placeholder: r.uid == nil,
                        items: m.cameras.map { ($0.uid, $0.name, $0.uid == r.uid) }, disabled: m.phase != .idle) { uid in Task { await m.setCamera(r.id, uid) } }
-        } actions: {
-            if let u = r.uid, m.cameras.contains(where: { $0.uid == u }) {
-                // modes the camera really lists; "automatic" = the camera's own current mode. A chosen mode the camera cannot give stops the camera with a message.
-                Menu {
-                    Button { m.setCameraFormat(r.id, nil) } label: { if r.format == nil { Label(T("Automat (modul curent al camerei)"), systemImage: "checkmark") } else { Text(T("Automat (modul curent al camerei)")) } }
-                    Divider()
-                    ForEach(CameraFormats.options(forDeviceID: u)) { o in
-                        Button { m.setCameraFormat(r.id, o) } label: { if r.format == o { Label(o.label, systemImage: "checkmark") } else { Text(o.label) } }
-                    }
-                } label: { Image(systemName: "camera.metering.matrix").font(Theme.F.icon).frame(width: 24, height: 24).contentShape(Rectangle()) }
-                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize().foregroundStyle(r.format == nil ? Theme.C.textDim : Theme.C.sel).disabled(m.phase != .idle)
-                    .help(r.format.map { L10n.f("Mod ales: %@", $0.label) } ?? T("Alege modul camerei (mărime și cadre pe secundă)")).accessibilityLabel(T("Modul camerei"))
+        } primary: {
+            if r.uid != nil && present {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) { formatMenu; autoModeText }
+                    VStack(alignment: .leading, spacing: 8) { formatMenu; autoModeText }
+                }
             }
-            RowMenu { Button(role: .destructive) { m.removeCameraRow(r.id) } label: { Label(T("Elimină camera"), systemImage: "trash") }.disabled(m.phase != .idle) }
+            else if r.uid != nil { Text(verbatim: "\(T("Format")): —").font(CM.small).foregroundStyle(Theme.C.textFaint) }
+            else { Text(T("Alege camera ca să vezi formatul")).font(CM.small).foregroundStyle(Theme.C.textDim) }
         } detail: { EmptyView() }
-        .help(T("Camera se înregistrează în fișierul ei, pe ceasul comun; se pregătește înainte de numărătoare. În editor apare ca prezentator în cerc."))
+    }
+    @ViewBuilder private var autoModeText: some View {
+        if let a = autoMode { Text(verbatim: L10n.f("modul curent: %@", a)).font(CM.small).foregroundStyle(Theme.C.textDim).lineLimit(1).fixedSize() }
+    }
+    /// Modes the camera really lists; "automatic" = the camera's own current mode. A chosen mode the camera cannot give stops the camera with a message.
+    private var formatMenu: some View {
+        Menu {
+            Button { m.setCameraFormat(r.id, nil) } label: { if r.format == nil { Label(T("Automat (modul curent al camerei)"), systemImage: "checkmark") } else { Text(T("Automat (modul curent al camerei)")) } }
+            Divider()
+            ForEach(CameraFormats.options(forDeviceID: r.uid ?? "")) { o in
+                Button { m.setCameraFormat(r.id, o) } label: { if r.format == o { Label(o.label, systemImage: "checkmark") } else { Text(o.label) } }
+            }
+        } label: {
+            HStack(spacing: 6) { Text(verbatim: "\(T("Format")): \(formatChoice)").font(CM.button).lineLimit(1); Image(systemName: "chevron.down").font(Theme.F.glyph) }.frame(minWidth: 150)
+        }.menuStyle(.button).buttonStyle(CMButtonStyle()).menuIndicator(.hidden).fixedSize().disabled(m.phase != .idle)
+            .help(r.format.map { L10n.f("Mod ales: %@", $0.label) } ?? T("Alege modul camerei (mărime și cadre pe secundă)")).accessibilityLabel(T("Format cameră")).accessibilityValue(formatText)
     }
 }
 

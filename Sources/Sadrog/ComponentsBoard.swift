@@ -56,6 +56,34 @@ struct ComponentsBoard: View {
                     }
                 }.padding(.vertical, 6)
             }
+            board("6 · Panou de captură: materialul din machetă, fiecare stare din stilurile reale") {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(states, id: \.0) { n, st in
+                        HStack(spacing: 14) {
+                            label(n)
+                            Button {} label: { Label(T("Previzualizare"), systemImage: "eye").lineLimit(1) }.buttonStyle(CMButtonStyle(width: CM.previewW))
+                            ZStack { CMFace(state: st); HStack(spacing: 6) { Text(T("Canale")); Image(systemName: "chevron.down").font(Theme.F.glyph) }.font(CM.button) }.frame(width: CM.configW, height: CM.buttonHeight)
+                            ZStack { CMFace(radius: CM.addRadius, state: st); HStack(spacing: 10) { Image(systemName: "plus.circle"); Text(T("Adaugă sursă")).font(.system(size: 19, weight: .semibold)) } }.frame(width: 250, height: CM.addH)
+                            RecordPillFace(phase: .idle, state: st, label: Text(T("Începe înregistrarea")))
+                        }.environment(\.forcedState, st).disabled(st == .disabled)
+                    }
+                }.padding(.vertical, 6)
+            }
+            board("7 · Indicator de nivel: oprit, normal, ridicat, aproape de limită, clipping") {
+                LazyVGrid(columns: [GridItem(.fixed(460)), GridItem(.fixed(460))], alignment: .leading, spacing: 18) {
+                    ForEach([("Oprit", Float(0), false), ("−30 dBFS", Float(0.0316), true), ("−12 dBFS", Float(0.251), true), ("−2 dBFS", Float(0.794), true), ("0 dBFS · clipping", Float(1.0), true)], id: \.0) { n, pk, live in
+                        let r: MeterReading = { var m = MeterReading(); m.update(peak: pk); return m }()
+                        VStack(alignment: .leading, spacing: 6) { Text(n).font(Theme.F.caption).foregroundStyle(Theme.C.textDim); LevelReadout(reading: r, live: live) }.frame(width: 440, alignment: .leading)
+                    }
+                }
+            }
+            board("8 · Previzualizare cameră: stările reale ale casetei (nicio imagine ilustrativă)") {
+                HStack(alignment: .top, spacing: 14) {
+                    ForEach([("Se încarcă", CameraPreviewState.loading), ("Acces refuzat", .denied), ("Restricționat", .restricted), ("Cameră lipsă", .absent), ("Eroare", .failed("Camera este folosită de altă aplicație."))], id: \.0) { n, st in
+                        VStack(alignment: .leading, spacing: 4) { Text(n).font(Theme.F.caption).foregroundStyle(Theme.C.textDim); CameraPreviewBox(state: st, session: nil) }
+                    }
+                }
+            }
             board("4 · Clipuri") {
                 let cases: [(String, Bool, Bool, Bool)] = [("Neales", false, false, false), ("Hover", false, true, false), ("Ales", true, false, false), ("Margine în editare", true, false, true)]
                 HStack(alignment: .top, spacing: 18) {
@@ -68,7 +96,7 @@ struct ComponentsBoard: View {
                     }
                 }
             }
-        }.padding(20).frame(width: 1060).background(Theme.C.bg1).foregroundStyle(Theme.C.text)
+        }.padding(20).frame(width: 1240).background(Theme.C.bg1).foregroundStyle(Theme.C.text)
     }
     private func label(_ t: String) -> some View { Text(t).font(Theme.F.caption).foregroundStyle(Theme.C.textDim).frame(width: 66, alignment: .leading) }
     private func board<C: View>(_ title: String, @ViewBuilder _ c: () -> C) -> some View {

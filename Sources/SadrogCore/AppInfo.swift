@@ -3,7 +3,7 @@ import Foundation
 
 public enum AppInfo {
     public static let name = "SADROG"
-    public static let version = "1.2.1"
+    public static let version = "1.3.0"
     public static let bundleID = "dev.gordas.sadrog"
     /// Build number and source identifier written into Info.plist by scripts/build_app.sh (commit count; short commit hash, „+modificări”
     /// when the tree had uncommitted changes). A build run from Xcode/swift run has neither.

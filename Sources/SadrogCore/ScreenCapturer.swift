@@ -37,6 +37,8 @@ public final class ScreenCapturer: NSObject, SCStreamOutput, SCStreamDelegate, @
     public private(set) var writer: RecordingWriter?
     public var onStop: (@Sendable (Error?) -> Void)?
 
+    /// Frame rate of every screen capture file (also what the capture panel states).
+    public static let defaultFPS = 60
     public static func hasPermission() -> Bool { CGPreflightScreenCaptureAccess() }
     @discardableResult public static func requestPermission() -> Bool { CGRequestScreenCaptureAccess() }
 
@@ -148,7 +150,7 @@ public final class ScreenCapturer: NSObject, SCStreamOutput, SCStreamDelegate, @
     /// Starts every source of the session: the primary screen (capture.mov, with system audio and every input as separate tracks), each
     /// additional screen and each camera into its own file. All share one clock; the first frame of the primary screen is the common start.
     /// Every source is validated by the caller; nothing is substituted here — a source that cannot start aborts the whole start.
-    public func start(config: CaptureConfig, sources: [SourceInfo], destination: Destination, fps: Int = 60) async throws -> Started {
+    public func start(config: CaptureConfig, sources: [SourceInfo], destination: Destination, fps: Int = ScreenCapturer.defaultFPS) async throws -> Started {
         guard let v = config.video else { throw CaptureError.sourceNotFound }
         let c = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
         let primary = try Self.streamParts(v, content: c, sources: sources, fps: fps)

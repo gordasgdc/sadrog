@@ -6,53 +6,7 @@ import SadrogCore
 struct SourceList<Content: View>: View {
     @ViewBuilder var content: Content
     var body: some View {
-        VStack(spacing: 0) { content }
-            .background(PanelBackground(radius: 9))
-            .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
-    }
-}
-
-/// Row anatomy: [icon tile] [title + subtitle] … [actions] [details chevron] [on/off]. Details open in place, on request.
-struct SourceRow<Title: View, Actions: View, Detail: View>: View {
-    let symbol: String
-    var enabled: Binding<Bool>? = nil
-    var toggleLocked = false
-    var dimmed = false
-    var subtitle: String = ""
-    var subtitleTone: Color = Theme.C.textFaint
-    var hasDetail = false
-    @State private var open = false
-    @ViewBuilder var title: Title
-    @ViewBuilder var actions: Actions
-    @ViewBuilder var detail: Detail
-
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 10) {
-                Image(systemName: symbol).font(Theme.F.icon).foregroundStyle(dimmed ? Theme.C.textFaint : Theme.C.textDim).frame(width: 28, height: 28)
-                    .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Theme.C.bg3.opacity(0.8)))
-                VStack(alignment: .leading, spacing: 2) {
-                    title
-                    if !subtitle.isEmpty { Text(subtitle).font(Theme.F.caption).foregroundStyle(subtitleTone).lineLimit(1).truncationMode(.middle) }
-                }.opacity(dimmed ? 0.6 : 1)
-                Spacer(minLength: 6)
-                actions
-                if !hasDetail { Color.clear.frame(width: 22, height: 24) }       // keeps the action columns aligned across rows
-                if hasDetail {
-                    Button { withAnimation(.easeOut(duration: 0.12)) { open.toggle() } } label: {
-                        Image(systemName: "chevron.right").font(Theme.F.glyph).rotationEffect(.degrees(open ? 90 : 0)).frame(width: 22, height: 24).contentShape(Rectangle())
-                    }.buttonStyle(.plain).foregroundStyle(Theme.C.textFaint).help(open ? T("Ascunde detaliile") : T("Arată detaliile")).accessibilityLabel(open ? T("Ascunde detaliile") : T("Arată detaliile"))
-                }
-                if let e = enabled {
-                    Toggle("", isOn: e).toggleStyle(.switch).controlSize(.mini).labelsHidden().disabled(toggleLocked)
-                        .help(e.wrappedValue ? T("Activă: se înregistrează") : T("Inactivă: nu se înregistrează")).accessibilityLabel(T("Activează sursa"))
-                }
-            }.padding(.horizontal, 12).frame(minHeight: 48)
-            if open && hasDetail {
-                detail.padding(.leading, 50).padding(.trailing, 12).padding(.bottom, 10).frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }
-        .overlay(alignment: .bottom) { HairlineDivider().opacity(0.55) }
+        VStack(spacing: 14) { content }
     }
 }
 
@@ -68,8 +22,8 @@ struct SourceMenu: View {
     @State private var open = false
     private var label: some View {
         HStack(spacing: 4) {
-            Text(title).font(Theme.F.body.weight(.medium)).foregroundStyle(placeholder ? Theme.C.textDim : Theme.C.text).lineLimit(1).truncationMode(.tail)
-            Image(systemName: "chevron.up.chevron.down").font(Theme.F.glyph).foregroundStyle(Theme.C.textFaint)
+            Text(title).font(CM.title).foregroundStyle(placeholder ? Theme.C.textDim : Theme.C.text).lineLimit(1).truncationMode(.tail)
+            Image(systemName: "chevron.down").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.C.textDim)
         }
     }
     var body: some View {
@@ -125,7 +79,7 @@ struct Notice: View {
 struct RowMenu<Items: View>: View {
     @ViewBuilder var items: Items
     var body: some View {
-        Menu { items } label: { Image(systemName: "ellipsis").font(Theme.F.icon).frame(width: 24, height: 24).contentShape(Rectangle()) }
+        Menu { items } label: { Image(systemName: "ellipsis").font(.system(size: 20, weight: .medium)).frame(width: 26, height: 26).contentShape(Rectangle()) }
             .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize().foregroundStyle(Theme.C.textDim).help(T("Mai multe")).accessibilityLabel(T("Mai multe"))
     }
 }

@@ -1174,3 +1174,112 @@ Exportul s-a blocat (scrierea fișierului nu mai avansa) și a fost oprit. Înce
 Foarfecă (B): clic taie elementul din punctul indicat; cu mai multe elemente selectate, clic pe unul dintre ele taie toată selecția la același moment; Esc revine la Selectare	Blade (B): a click cuts the item at that point; with several items selected, a click on one of them cuts the whole selection at the same instant; Esc returns to Select	Cuchilla (B): un clic corta el elemento en ese punto; con varios elementos seleccionados, un clic en uno de ellos corta toda la selección en el mismo instante; Esc vuelve a Seleccionar
 Unealta Lamă: clic taie elementul în punctul indicat; pe un element dintr-o selecție multiplă taie toată selecția.	Blade tool: a click cuts the item at the pointer; on an item of a multiple selection it cuts the whole selection.	Herramienta Cuchilla: un clic corta el elemento en el puntero; en un elemento de una selección múltiple corta toda la selección.
 Taie %d elemente	Cut %d items	Cortar %d elementos
+Acces la cameră refuzat	Camera access denied	Acceso a la cámara denegado
+Acces la cameră restricționat	Camera access restricted	Acceso a la cámara restringido
+Activ	On	Activo
+Activ: sursa se înregistrează	On: the source is recorded	Activo: la fuente se graba
+Adaugă canalul %@ în înregistrare	Add channel %@ to the recording	Añadir el canal %@ a la grabación
+Adaugă un monitor, o fereastră, o cameră, un microfon sau sunetul calculatorului	Add a monitor, a window, a camera, a microphone or the computer's sound	Añade un monitor, una ventana, una cámara, un micrófono o el sonido del ordenador
+Alege camera ca să vezi formatul	Choose the camera to see its format	Elige la cámara para ver su formato
+Alege canalele	Choose channels	Elegir canales
+Alege canalele dispozitivului care intră în această pistă	Choose which device channels go into this track	Elige qué canales del dispositivo entran en esta pista
+Alege sursa ca să vezi dimensiunea fișierului	Choose the source to see the file size	Elige la fuente para ver el tamaño del archivo
+Alege sursele. Verifică imaginea și sunetul. Înregistrează.	Choose the sources. Check picture and sound. Record.	Elige las fuentes. Comprueba imagen y sonido. Graba.
+Alegerea canalelor se aplică doar înregistrării SADROG. Nu modifică setările interfeței audio (de exemplu MixPre).	Channel choice applies only to SADROG's recording. It does not change the audio interface's own settings (for example a MixPre).	La elección de canales solo afecta a la grabación de SADROG. No cambia los ajustes de la interfaz de audio (por ejemplo, un MixPre).
+Anulează · %@	Cancel · %@	Cancelar · %@
+Aproape de limită	Near the limit	Cerca del límite
+Arată detaliile (dimensiuni, canale)	Show details (sizes, channels)	Mostrar detalles (tamaños, canales)
+Arată nivelul	Show level	Mostrar nivel
+Arată nivelul real al sursei (fără redare pe difuzoare)	Show the source's real level (nothing is played through speakers)	Mostrar el nivel real de la fuente (sin reproducir por altavoces)
+Ascunde imaginea	Hide picture	Ocultar imagen
+Cameră · acces refuzat	Camera · access denied	Cámara · acceso denegado
+Cameră · accesul se cere la previzualizare sau la înregistrare	Camera · access is requested at preview or recording	Cámara · el acceso se pide al previsualizar o grabar
+Cameră · prezentator	Camera · presenter	Cámara · presentador
+Canale selectate: %@ din %@	Selected channels: %@ of %@	Canales elegidos: %@ de %@
+Canalele dispozitivului (%@)	Device channels (%@)	Canales del dispositivo (%@)
+Canalul %@	Channel %@	Canal %@
+Canalul %@ este în înregistrare; clic pentru a-l scoate	Channel %@ is in the recording; click to remove it	El canal %@ está en la grabación; clic para quitarlo
+Clipping	Clipping	Recorte
+Clipping detectat — șterge	Clipping detected — clear	Recorte detectado — borrar
+Clipping detectat. Clic pentru a șterge semnalul	Clipping detected. Click to clear the flag	Recorte detectado. Clic para borrar el aviso
+Deschide Setările	Open Settings	Abrir Ajustes
+Dimensiune	Size	Tamaño
+Dimensiune logică	Logical size	Tamaño lógico
+Dimensiunea fișierului urmează setarea «Dimensiune» a sursei principale.	The file size follows the main source's “Size” setting.	El tamaño del archivo sigue el ajuste «Tamaño» de la fuente principal.
+Dimensiunea fișierului înregistrat: 1:1 cu randarea macOS, panoul fizic sau maxim 1920 px	Recorded file size: 1:1 with the macOS render, the physical panel, or at most 1920 px	Tamaño del archivo grabado: 1:1 con el renderizado de macOS, el panel físico o como máximo 1920 px
+Dispozitivul lipsește	The device is missing	Falta el dispositivo
+Dispozitivul nu mai este conectat. Nu se folosește alt dispozitiv în loc.	The device is no longer connected. No other device is used instead.	El dispositivo ya no está conectado. No se usa otro en su lugar.
+Ecran · fereastră · cameră · microfon · sunetul calculatorului	Screen · window · camera · microphone · computer sound	Pantalla · ventana · cámara · micrófono · sonido del ordenador
+Ecran · întregul monitor	Screen · the whole monitor	Pantalla · el monitor completo
+Fără semnal	No signal	Sin señal
+Imagine reală de la cameră. Nu se înregistrează; se oprește când o ascunzi, când pleci din pagină sau când pornești înregistrarea.	Live picture from the camera. It is not recorded; it stops when you hide it, leave the page or start recording.	Imagen real de la cámara. No se graba; se detiene al ocultarla, al salir de la página o al iniciar la grabación.
+Includere în înregistrare	Include in the recording	Incluir en la grabación
+Microfon / interfață audio	Microphone / audio interface	Micrófono / interfaz de audio
+Nicio altă sursă. Adaugă o cameră, un microfon sau sunetul calculatorului cu «Adaugă sursă».	No other source. Add a camera, a microphone or the computer's sound with “Add source”.	Ninguna otra fuente. Añade una cámara, un micrófono o el sonido del ordenador con «Añadir fuente».
+Nivel oprit	Level off	Nivel apagado
+Normal	Normal	Normal
+Nu s-a putut obține imaginea. Verifică permisiunea „Înregistrare ecran” și că sursa încă există.	The picture could not be obtained. Check the “Screen Recording” permission and that the source still exists.	No se pudo obtener la imagen. Comprueba el permiso «Grabación de pantalla» y que la fuente siga existiendo.
+O politică a sistemului nu permite folosirea camerei.	A system policy does not allow using the camera.	Una política del sistema no permite usar la cámara.
+Oprește imaginea	Stop picture	Detener imagen
+Oprește nivelul	Stop level	Detener nivel
+Oprește previzualizarea și eliberează camera	Stop the preview and release the camera	Detener la vista previa y liberar la cámara
+Oprește înregistrarea	Stop recording	Detener grabación
+Oprit	Off	Apagado
+Oprit: sursa rămâne în listă, dar nu se înregistrează	Off: the source stays in the list but is not recorded	Apagado: la fuente sigue en la lista, pero no se graba
+Panoul fizic	The physical panel	El panel físico
+Permisiune lipsă	Permission missing	Falta un permiso
+Permisiuni disponibile	Permissions available	Permisos disponibles
+Permite accesul în Setări de sistem → Confidențialitate și securitate → Cameră.	Allow access in System Settings → Privacy & Security → Camera.	Permite el acceso en Ajustes del Sistema → Privacidad y seguridad → Cámara.
+Pregătește înregistrarea	Get ready to record	Prepara la grabación
+Previzualizare	Preview	Vista previa
+Previzualizare cameră	Camera preview	Vista previa de la cámara
+Previzualizare reală de la cameră: pornește camera și o oprește când o închizi	Live camera preview: turns the camera on and off when you close it	Vista previa real de la cámara: la enciende y la apaga al cerrarla
+Previzualizare: imagini statice la cerere; nu înregistrează	Preview: still pictures on request; nothing is recorded	Vista previa: imágenes fijas bajo demanda; no se graba
+Previzualizare: o imagine statică, la cerere; nu înregistrează	Preview: a still picture on request; nothing is recorded	Vista previa: una imagen fija bajo demanda; no se graba
+Previzualizarea nu a pornit	The preview did not start	La vista previa no se inició
+Principală	Main	Principal
+Randare internă macOS	macOS internal render	Renderizado interno de macOS
+Randarea internă (%@×%@) este mai mare decât panoul fizic (%@×%@): fișierul 1:1 este mai mare decât imaginea pe care o poate afișa panoul. «Dimensiune» → «Panoul fizic» îl aduce la rezoluția panoului.	The internal render (%@×%@) is larger than the physical panel (%@×%@): the 1:1 file is larger than the picture the panel can show. “Size” → “The physical panel” brings it to the panel's resolution.	El renderizado interno (%@×%@) es mayor que el panel físico (%@×%@): el archivo 1:1 es mayor que la imagen que el panel puede mostrar. «Tamaño» → «El panel físico» lo lleva a la resolución del panel.
+Reia	Resume	Reanudar
+Rezoluție efectivă de captură	Effective capture resolution	Resolución efectiva de captura
+Rezoluție fizică raportată	Reported physical resolution	Resolución física reportada
+Ridicat	High	Alto
+Salvare în	Save to	Guardar en
+Schimbă folderul…	Change folder…	Cambiar carpeta…
+Se pornește camera…	Starting the camera…	Iniciando la cámara…
+Se pregătește…	Getting ready…	Preparando…
+Stereo · toate aplicațiile	Stereo · all applications	Estéreo · todas las aplicaciones
+Sunetul aplicațiilor	Application sound	Sonido de las aplicaciones
+Sursa principală a înregistrării: ceasul comun și fișierul de bază; nu poate fi oprită	The main source of the recording: the shared clock and the base file; it cannot be switched off	La fuente principal de la grabación: el reloj común y el archivo base; no se puede apagar
+Sursele înregistrării	Recording sources	Fuentes de la grabación
+Vârful a atins nivelul maxim digital (0 dBFS). Semnalul poate fi distorsionat; scade câștigul sursei. Clic pentru a șterge semnalul.	The peak reached digital full scale (0 dBFS). The signal may be distorted; lower the source gain. Click to clear the flag.	El pico alcanzó el máximo digital (0 dBFS). La señal puede distorsionarse; baja la ganancia de la fuente. Clic para borrar el aviso.
+Vârful digital al semnalului în dBFS: verde până la −18, galben până la −3, roșu peste −3; la 0 dBFS apare clipping.	The signal's digital peak in dBFS: green up to −18, yellow up to −3, red above −3; clipping shows at 0 dBFS.	El pico digital de la señal en dBFS: verde hasta −18, amarillo hasta −3, rojo por encima de −3; a 0 dBFS aparece el recorte.
+acordat	granted	concedido
+ales	chosen	elegido
+automat	automatic	automático
+camera este folosită de altă aplicație sau a fost întreruptă	the camera is in use by another application or was interrupted	la cámara la usa otra aplicación o se interrumpió
+disponibile	available	disponibles
+fereastra nu are panou propriu	a window has no panel of its own	una ventana no tiene panel propio
+fișiere separate	separate files	archivos separados
+fișierul înregistrat	the recorded file	el archivo grabado
+fișierul înregistrat, egal cu randarea internă	the recorded file, equal to the internal render	el archivo grabado, igual al renderizado interno
+lipsește	missing	falta
+lipsă	missing	falta
+modul nativ al panoului, raportat de macOS	the panel's native mode, as reported by macOS	el modo nativo del panel, reportado por macOS
+neales	not chosen	no elegido
+nu este raportată	not reported	no reportada
+puncte macOS: cât „încape” pe ecran	macOS points: how much “fits” on screen	puntos de macOS: cuánto «cabe» en pantalla
+refuzat	denied	denegado
+refuzată	denied	denegada
+scară %@× — pixeli de randare, nu panoul	scale %@× — render pixels, not the panel	escala %@× — píxeles de renderizado, no el panel
+se cere la prima folosire	asked at first use	se pide al primer uso
+vârf	peak	pico
+Începe înregistrarea	Start recording	Iniciar grabación
+Înregistrare ecran: %@ · Microfon: %@ · Cameră: %@. Clic pentru detalii.	Screen recording: %@ · Microphone: %@ · Camera: %@. Click for details.	Grabación de pantalla: %@ · Micrófono: %@ · Cámara: %@. Clic para detalles.
+Alegerea canalelor nu modifică setările interfeței audio.	Channel choice does not change the audio interface's settings.	La elección de canales no cambia los ajustes de la interfaz de audio.
+Formatul real este confirmat la pregătire.	The real format is confirmed when recording is prepared.	El formato real se confirma al preparar la grabación.
+Previzualizarea nu pornește înregistrarea.	The preview does not start recording.	La vista previa no inicia la grabación.
+NIVEL DE INTRARE	INPUT LEVEL	NIVEL DE ENTRADA
+Format cameră	Camera format	Formato de cámara
+Capturează. Explică. Creează.	Capture. Explain. Create.	Captura. Explica. Crea.
+modul curent: %@	current mode: %@	modo actual: %@
