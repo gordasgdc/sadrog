@@ -1,5 +1,13 @@
 # SADROG — changelog
 
+## 1.1.0
+- Timeline: rectangle selection — with the Select tool, drag from free space to select clips, titles, highlights and sounds across tracks (⇧/⌘ add, Esc cancels, a click in free space clears; the timeline scrolls at the edge). Selected items move together keeping distances and sync; “Cut selected items at the playhead” (⇧⌘K) cuts only the selection; locked tracks refuse the whole operation with an explanation; main-track clips are never moved in time together with other items.
+- Timeline: a cut clip from the main track can be moved to a video track (V2) keeping its properties and links; titles that overlap now sit on independent rows.
+- Circular presenter: “Frame the image in the circle” — drag and scale the whole faded camera frame under a fixed circle, with no gaps, one Undo step, guides never exported.
+- Highlights: Lens — the chosen area is shown magnified in a separate area.
+- Interface: hover explanations for icon-only buttons, tools, handles and stateful or disabled controls (Romanian, English, Spanish).
+- Docs: manuals RO/EN/ES and the product page updated (selection and cut on selection, move to V2 and title rows, circle framing, lens); README unchanged (no feature list); install and price text unchanged.
+
 ## 1.0.2
 - Editor: after detaching a clip's sound, selecting the separate audio item shows its source sounds again — volume, mute and the audio-effect chain with its plug-in windows — and the item stays editable from its own selection.
 - Tracks: a larger, always-visible grab handle for moving a track up or down; dragging a video overlay above the top track, or a separate audio item below the last one, creates a new track there (a dashed "New track" band shows where it will land).

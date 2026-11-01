@@ -147,12 +147,18 @@ final class GroupMoveTests: XCTestCase {
         XCTAssertEqual(e.project.layers.map(\.start), [1.5, 5.5]); XCTAssertEqual(e.project.callouts[0].start, 5.5, accuracy: 1e-9); XCTAssertEqual(e.project.callouts[0].clipID, e.project.clips[1].id)
         e.undo(); XCTAssertEqual(e.project.layers.map(\.start), [1, 5]); XCTAssertEqual(e.project.callouts[0].start, 5)
     }
-    func testStopsAtZeroAndLeavesMainClipsInMixedSelection() {
+    func testStopsAtZero() {
         let (e, ids) = fixture()
-        let r = e.moveGroup(ids + [e.project.clips[0].id], by: -3)
-        XCTAssertEqual(r, .moved(dx: -1, mainStayed: true))                                 // clamped: l1 starts at 1
+        let r = e.moveGroup(ids, by: -3)
+        XCTAssertEqual(r, .moved(dx: -1, mainStayed: false))                                // clamped: l1 starts at 1
         XCTAssertEqual(e.project.layers.map(\.start), [0, 4]); XCTAssertEqual(e.project.clips.count, 2)
         XCTAssertEqual(e.project.callouts[0].start, 4, accuracy: 1e-9)
+    }
+    func testMixedSelectionWithMainClipsIsRefusedWholeAndNothingChanges() {
+        let (e, ids) = fixture()
+        let r = e.moveGroup(ids + [e.project.clips[0].id], by: -3)
+        XCTAssertEqual(r, .refused(.mainTrack))                                             // V1 is sequential: no partial move
+        XCTAssertEqual(e.project.layers.map(\.start), [1, 5]); XCTAssertEqual(e.project.callouts[0].start, 5, accuracy: 1e-9)
     }
     func testBoundCalloutBecomesIndependentWhenMovedOutOfEveryClip() {
         let (e, ids) = fixture()

@@ -24,6 +24,26 @@ public struct CircleCrop: Codable, Equatable, Sendable {
     }
     /// The square of the source picture shown in the circle, in TOP-LEFT pixel coordinates of a source of size `n`. Never distorts:
     /// a square of the shorter side divided by `zoom`, moved inside the picture by the offsets.
+    /// Moves the picture by `d` SOURCE pixels (right/down) while the circle stays: the window travels the opposite way, always inside the picture (no gaps).
+    public mutating func pan(imageBy d: CGSize, in n: CGSize) {
+        let w = window(in: n); setWindowOrigin(CGPoint(x: w.minX - d.width, y: w.minY - d.height), in: n)
+    }
+    /// Places the window (top-left source pixels), clamped inside the source; converts back to the −1…1 offsets.
+    public mutating func setWindowOrigin(_ o: CGPoint, in n: CGSize) {
+        let side = min(n.width, n.height) / CGFloat(max(1, zoom)), fx = n.width - side, fy = n.height - side
+        offsetX = fx > 0.5 ? Double(min(max(o.x, 0), fx) / (fx / 2) - 1) : 0
+        offsetY = fy > 0.5 ? Double(min(max(o.y, 0), fy) / (fy / 2) - 1) : 0
+        normalize()
+    }
+    /// New magnification, keeping the point of the picture that is at the circle's centre where it is (clamped: never a gap in the circle).
+    public mutating func setZoom(_ z: Double, keepingCentreIn n: CGSize) {
+        let w = window(in: n), cx = w.midX, cy = w.midY
+        zoom = z; normalize()
+        let side = min(n.width, n.height) / CGFloat(zoom)
+        setWindowOrigin(CGPoint(x: cx - side / 2, y: cy - side / 2), in: n)
+    }
+    /// Centres the picture in the circle (offsets 0), keeping the magnification.
+    public mutating func recentre() { offsetX = 0; offsetY = 0 }
     public func window(in n: CGSize) -> CGRect {
         let side = min(n.width, n.height) / CGFloat(max(1, zoom))
         let fx = n.width - side, fy = n.height - side

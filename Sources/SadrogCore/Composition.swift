@@ -28,7 +28,8 @@ public struct BuiltComposition {
 
     /// nil when the project is a plain sequence with identity transforms (then the composition plays/exports as before).
     /// Otherwise a custom CoreImage compositor draws, per frame: background, main clip, overlays, titles — the same code for preview and export.
-    public func videoComposition(for p: SadrogProject) -> AVMutableVideoComposition? {
+    /// `framingGuide`: id of a circle item being framed in the EDITOR preview — its whole source rectangle is drawn faded outside the circle. Never set by an export.
+    public func videoComposition(for p: SadrogProject, framingGuide: UUID? = nil) -> AVMutableVideoComposition? {
         let rateChange = p.canvas.map { abs($0.fps - sourceFps) > 0.01 } ?? false
         guard p.needsCompositing || rateChange || p.clips.contains(where: { mainSize[$0.id].map { $0 != renderSize } ?? false }) else { return nil }
         let total = max(p.timelineEnd, composition.duration.seconds)
@@ -41,7 +42,7 @@ public struct BuiltComposition {
                 let n = mainSize[c.id] ?? renderSize, acc = spans[i].start
                 let tid = lanes[i] == 1 ? (mainTrackB ?? mt).trackID : mt.trackID
                 var mi = Item(source: .track(tid, n), start: acc, duration: c.duration, a: c.transform, b: c.endTransform, fit: true, crop: c.crop.map { CircleCropRender($0, source: n) }, rect: c.crop == nil ? c.rectCrop : nil)
-                mi.motion = c.motion; mi.dissolveIn = p.overlap(into: i)
+                mi.motion = c.motion; mi.dissolveIn = p.overlap(into: i); mi.guide = framingGuide == c.id && c.crop != nil
                 if let fx = c.mouseFX, !fx.isOff, !c.held, let tr = mouseTracks[c.media] ?? MouseTrack.load(besideMedia: c.media) { mi.mouse = (tr, c.sourceStart, fx) }
                 items.append(mi)
             }
@@ -51,20 +52,20 @@ public struct BuiltComposition {
         let overlayIDs = Set(p.layers.filter { $0.kind == .video && layerTracks[$0.id] != nil }.map(\.id))
         let onOverlay: (Callout) -> Bool = { $0.layerID.map(overlayIDs.contains) ?? false }       // bound to a video overlay that exists here
         if !p.hiddenLanes.contains(.c) {
-            for c in p.callouts where bound(c) { items.append(Item(source: .callout(c, CalloutMask.make(c, render: renderSize)), start: c.start, duration: c.duration, a: .identity, b: nil, fit: false)) }
+            for c in p.callouts where bound(c) { items.append(Item(source: .callout(c, CalloutMask.make(c.displayed, render: renderSize)), start: c.start, duration: c.duration, a: .identity, b: nil, fit: false)) }
         }
         if !p.hiddenLanes.contains(.v2) {
             for l in p.layers.filter({ $0.kind == .video }).sorted(by: { $0.row < $1.row }) {
                 guard let lt = layerTracks[l.id] else { continue }
                 var it = Item(source: .track(lt.track.trackID, lt.size), start: l.start, duration: l.duration, a: l.transform, b: l.endTransform, fit: true, crop: l.crop.map { CircleCropRender($0, source: lt.size) }, rect: l.crop == nil ? l.rectCrop : nil)
-                it.layer = l.id; it.motion = l.motion; items.append(it)
+                it.layer = l.id; it.motion = l.motion; it.guide = framingGuide == l.id && l.crop != nil; items.append(it)
                 if !p.hiddenLanes.contains(.c) {       // callouts bound to this overlay sit right above it and act inside its picture only
-                    for c in p.callouts where c.layerID == l.id { var ci = Item(source: .callout(c, CalloutMask.make(c, render: renderSize)), start: c.start, duration: c.duration, a: .identity, b: nil, fit: false); ci.limitTo = l.id; items.append(ci) }
+                    for c in p.callouts where c.layerID == l.id { var ci = Item(source: .callout(c, CalloutMask.make(c.displayed, render: renderSize)), start: c.start, duration: c.duration, a: .identity, b: nil, fit: false); ci.limitTo = l.id; items.append(ci) }
                 }
             }
         }
         if !p.hiddenLanes.contains(.c) {
-            for c in p.callouts where !bound(c) && !onOverlay(c) { items.append(Item(source: .callout(c, CalloutMask.make(c, render: renderSize)), start: c.start, duration: c.duration, a: .identity, b: nil, fit: false)) }
+            for c in p.callouts where !bound(c) && !onOverlay(c) { items.append(Item(source: .callout(c, CalloutMask.make(c.displayed, render: renderSize)), start: c.start, duration: c.duration, a: .identity, b: nil, fit: false)) }
         }
         if !p.hiddenLanes.contains(.t) {
             for t in p.texts { if let img = TextRenderer.image(t, render: renderSize) { var ti = Item(source: .image(CIImage(cgImage: img), CGSize(width: img.width, height: img.height)), start: t.start, duration: t.duration, a: t.transform, b: t.endTransform, fit: false); ti.motion = t.motion; items.append(ti) } }
@@ -177,6 +178,7 @@ final class SadrogInstruction: NSObject, AVVideoCompositionInstructionProtocol {
         var crop: CircleCropRender? = nil       // „Prezentator în cerc”: the picture is cut to a circle (+ outline) before it is placed
         var rect: RectCrop? = nil               // rectangular crop (not combined with the circle)
         var layer: UUID? = nil                  // set on an overlay's item: its picture's footprint is remembered for callouts bound to it
+        var guide = false                       // editor-only framing guide: the part of the source outside the circle, faded
         var limitTo: UUID? = nil                // set on a callout bound to an overlay: the effect stays inside that overlay's footprint
     }
     let timeRange: CMTimeRange
@@ -209,7 +211,7 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
         if c.blur > 0.001 { affected = img.clampedToExtent().applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: c.blur * 0.03 * r.height]).cropped(to: rect) }
         if c.dim > 0.001 { let k = CGFloat(1 - c.dim); affected = affected.applyingFilter("CIColorMatrix", parameters: ["inputRVector": CIVector(x: k, y: 0, z: 0, w: 0), "inputGVector": CIVector(x: 0, y: k, z: 0, w: 0), "inputBVector": CIVector(x: 0, y: 0, z: k, w: 0)]) }
         var keep = selection                                   // white = keep the original
-        if c.invert { keep = keep.applyingFilter("CIColorInvert") }
+        if c.invert && !c.isLens { keep = keep.applyingFilter("CIColorInvert") }
         var out = img.applyingFilter("CIBlendWithMask", parameters: [kCIInputBackgroundImageKey: affected, kCIInputMaskImageKey: keep]).cropped(to: rect)
         // shadow (just outside the selection) → local magnification (inside it) → outline (a ring around it); each only when set, so older callouts look as before
         if c.shadow > 0.001 {
@@ -219,7 +221,14 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
             let black = CIImage(color: CIColor(red: 0, green: 0, blue: 0, alpha: 0.7 * c.shadow)).cropped(to: rect)
             out = black.applyingFilter("CIBlendWithMask", parameters: [kCIInputBackgroundImageKey: out, kCIInputMaskImageKey: outside]).cropped(to: rect)
         }
-        if c.magnify > 0.001 {
+        if c.isLens {       // the whole source box, scaled to the display box (same proportions, so nothing is cut or distorted), on top of what is below
+            let b = c.displayBox, k = CGFloat(c.lensEffective)
+            let sx = c.x * r.width, sy = (1 - (c.y + c.h)) * r.height          // source box bottom-left, CoreImage's y-up space
+            let dx = b.minX * r.width, dy = (1 - b.maxY) * r.height
+            let m = CGAffineTransform(translationX: dx, y: dy).scaledBy(x: k, y: k).translatedBy(x: -sx, y: -sy)
+            let big = img.transformed(by: m).cropped(to: rect)
+            out = big.applyingFilter("CIBlendWithMask", parameters: [kCIInputBackgroundImageKey: out, kCIInputMaskImageKey: selection]).cropped(to: rect)
+        } else if c.magnify > 0.001 {
             let k = CGFloat(1 + c.magnify)
             let cx = (c.x + c.w / 2) * r.width, cy = (1 - (c.y + c.h / 2)) * r.height       // box centre in CoreImage's y-up space
             let m = CGAffineTransform(translationX: cx, y: cy).scaledBy(x: k, y: k).translatedBy(x: -cx, y: -cy)
@@ -267,7 +276,7 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
         func flip(_ h: CGFloat) -> CGAffineTransform { CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: h) }
         var footprints: [UUID: CIImage] = [:]           // overlay id → white where that overlay's picture is (alpha), for callouts bound to it
         for it in ins.items {
-            var src: CIImage; let n: CGSize
+            var src: CIImage; let n: CGSize; var guideSrc: CIImage?
             switch it.source {
             case .callout(let c, let mask):
                 if let lid = it.limitTo {
@@ -277,7 +286,10 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
                 continue
             case .track(let id, let size):
                 guard let pb = request.sourceFrame(byTrackID: id) else { continue }
-                if let cr = it.crop { src = cr.apply(to: CIImage(cvPixelBuffer: pb), source: size); n = CGSize(width: cr.side, height: cr.side) }
+                if let cr = it.crop {
+                    let full = CIImage(cvPixelBuffer: pb); src = cr.apply(to: full, source: size); n = CGSize(width: cr.side, height: cr.side)
+                    if it.guide { guideSrc = full.transformed(by: CGAffineTransform(translationX: -cr.window.minX, y: -(size.height - cr.window.maxY))) }
+                }
                 else if let rc = it.rect, !rc.isNone {
                     let w = rc.window(of: size), ciY = size.height - w.maxY                  // top-left window → CoreImage (y-up)
                     src = CIImage(cvPixelBuffer: pb).cropped(to: CGRect(x: w.minX, y: ciY, width: w.width, height: w.height)).transformed(by: CGAffineTransform(translationX: -w.minX, y: -ciY))
@@ -296,6 +308,10 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
             }
             if it.dissolveIn > 0 { t.opacity *= Easing.smooth.apply((now - it.start) / it.dissolveIn) }
             if t.opacity < 0.9999 { placed = placed.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: t.opacity)]) }
+            if let g = guideSrc {       // framing guide: the whole camera rectangle, faded, under the circle (preview only)
+                let gp = g.transformed(by: m).applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: 0.38)])
+                img = gp.composited(over: img)
+            }
             img = placed.composited(over: img)
         }
         ci.render(img.cropped(to: rect), to: out, bounds: rect, colorSpace: nil)

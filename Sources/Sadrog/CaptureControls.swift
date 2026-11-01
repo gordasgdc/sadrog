@@ -158,7 +158,7 @@ struct MenuBarControls: View {
         Text("\(CaptureControlText.state(m)) · \(CaptureControlText.clock(m.elapsed))")
         Divider()
         switch m.phase {
-        case .idle: Button(T("Înregistrează")) { Task { await m.toggle() } }.disabled(m.blocker != nil)
+        case .idle: Button(T("Înregistrează")) { Task { await m.toggle() } }.disabled(m.blocker != nil).help(m.blocker ?? T("Pornește înregistrarea cu sursele alese."))
         case .preparing, .countdown: Button(T("Anulează pornirea")) { m.cancelStart() }
         case .recording, .paused:
             Button(m.phase == .paused ? T("Reia toate sursele") : T("Pauză (toate sursele)")) { m.togglePause() }

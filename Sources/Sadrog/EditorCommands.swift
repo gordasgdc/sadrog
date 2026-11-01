@@ -73,10 +73,11 @@ extension EditorModel {
     /// True when moving these items would touch a locked lane.
     func anyLocked(_ ids: [UUID]) -> Bool { ids.contains { lockedLane(of: $0) } }
     func commitGroupMove(_ ids: [UUID], dx: Double) {
-        var r: GroupMove = .refused(.nothing); let mainSel = selectionHasMainClips
+        var r: GroupMove = .refused(.nothing)
         apply { r = $0.moveGroup(ids, by: dx) }
         switch r {
-        case .moved(_, let stayed): message = (stayed || mainSel) ? T("Clipurile din pista principală au rămas pe loc; se mută doar celelalte elemente.") : ""
+        case .moved: message = ""
+        case .refused(.mainTrack): message = T("Clipurile de pe pista principală sunt secvențiale și nu se mută în timp împreună cu alte elemente. Deselectează-le sau mută separat elementele celelalte; nu s-a modificat nimic.")
         case .refused(.locked): message = T("Nu se poate muta: o pistă a selecției este blocată.")
         case .refused(.overlap): message = T("Nu se poate muta acolo: grupul s-ar suprapune cu un element care nu se mută.")
         case .refused(.nothing): break
@@ -87,6 +88,19 @@ extension EditorModel {
         var ok = false; let ids = selectedIDs
         apply { ok = $0.moveBlock(ids, byIndex: offset) }
         message = ok ? "" : T("Clipurile selectate trebuie să fie vecine și pista deblocată pentru a se muta împreună.")
+    }
+    /// Replaces the selection with `ids` (the first stays the one the Inspector edits). Used by the rectangle selection.
+    func setSelection(_ ids: [UUID]) { selection = ids.first; extra = Set(ids.dropFirst()); if ids.count != 1 { cropEditing = false; endFraming() } }
+    /// „Taie elementele selectate la cursor”: only the selected items that cross the playhead are cut (one undo step); the others, and the other tracks, are not touched.
+    func splitSelected() {
+        let ids = selectedIDs; guard !ids.isEmpty else { return }
+        var r: SplitSelection = .nothing
+        apply { r = $0.splitSelection(ids, at: self.time) }
+        switch r {
+        case .split: message = ""
+        case .locked: message = T("Nu se poate tăia: o pistă a unui element selectat de la cursor este blocată; nu s-a modificat nimic.")
+        case .nothing: message = T("Niciun element selectat nu este traversat de cursor (o evidențiere se scurtează, nu se taie).")
+        }
     }
     func selectAll() {
         let all = project.clips.map(\.id) + project.layers.map(\.id) + project.texts.map(\.id) + project.callouts.map(\.id)

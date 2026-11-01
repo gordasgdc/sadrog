@@ -67,6 +67,20 @@ extension EditorModel {
         else if let i = project.layers.firstIndex(where: { $0.id == id }) { project.layers[i].crop = c }
         refreshVideoComposition()
     }
+    /// Framing mode: starts (remembering the state for „Anulează”), ends keeping the change, or cancels back to the start.
+    func beginFraming() { guard let c = selectedCrop else { return }; framingStart = c; circleFraming = true; refreshVideoComposition() }
+    func endFraming() { guard circleFraming else { return }; circleFraming = false; framingStart = nil; refreshVideoComposition() }
+    func cancelFraming() { if let c = framingStart, c != selectedCrop { setCrop(c) }; endFraming() }
+    /// Live pan of the PICTURE (source pixels) while the circle stays; `commitCrop` closes the gesture as ONE undo step.
+    func framingPan(from c0: CircleCrop, by d: CGSize) {
+        guard let n = selectedMedia.flatMap({ media[$0]?.size }) else { return }
+        var c = c0; c.pan(imageBy: d, in: n); liveCrop(c)
+    }
+    func framingZoom(from c0: CircleCrop, to z: Double) {
+        guard let n = selectedMedia.flatMap({ media[$0]?.size }) else { return }
+        var c = c0; c.setZoom(min(max(z, 1), 4), keepingCentreIn: n); liveCrop(c)
+    }
+    func framingRecentre() { guard var c = selectedCrop else { return }; c.recentre(); setCrop(c) }
     func commitCrop() { if let id = selectedVideoID, let c = selectedCrop { apply(reload: false) { $0.setCrop(id, c) } } }
     func setCrop(_ c: CircleCrop) { liveCrop(c); commitCrop() }
 
@@ -91,6 +105,18 @@ struct PresenterGroup: View {
                     Text(T("Poziție")).font(Theme.F.body).frame(width: 70, alignment: .leading)
                     ForEach(PresenterCorner.allCases) { k in
                         IconButton(symbol: k.symbol, label: L10n.f("Mută cercul în colțul %@", "\(k.label.lowercased())")) { m.placePresenter(k) }.help(k.label)
+                    }
+                    Spacer(minLength: 0)
+                }.frame(height: 28)
+                HStack(spacing: 6) {
+                    if m.circleFraming {
+                        Button { m.endFraming() } label: { Label(T("Gata"), systemImage: "checkmark") }.buttonStyle(.gloss(.primary, compact: true)).fixedSize()
+                        Button { m.cancelFraming() } label: { Text(T("Anulează")) }.buttonStyle(.gloss(.secondary, compact: true)).fixedSize()
+                        Button { m.framingRecentre() } label: { Text(T("Recentrează")) }.buttonStyle(.gloss(.secondary, compact: true)).fixedSize()
+                    } else {
+                        Button { m.beginFraming() } label: { Label(T("Încadrează imaginea în cerc"), systemImage: "viewfinder.circle") }
+                            .buttonStyle(.gloss(.secondary, compact: true)).fixedSize()
+                            .help(T("Cercul rămâne pe loc; vezi tot dreptunghiul camerei, estompat în afara cercului. Tragi imaginea sau colțurile ei ca să alegi ce apare în cerc. Dreptunghiul nu apare la export."))
                     }
                     Spacer(minLength: 0)
                 }.frame(height: 28)

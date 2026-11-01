@@ -183,7 +183,11 @@ final class PluginWindow: NSObject, NSWindowDelegate {
         if size.width < 50 || size.height < 50 { size = CGSize(width: 640, height: 420) }
         let w = NSWindow(contentRect: NSRect(origin: .zero, size: size), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
         w.title = title; w.contentViewController = vc; w.setContentSize(size); w.isReleasedWhenClosed = false; w.delegate = self
-        w.center(); w.makeKeyAndOrderFront(nil); window = w
+        w.center()
+        // Auxiliary window of the project: a CHILD of the editor window — always above it (clicks, scrolling and playback in the timeline never bury it),
+        // hidden/shown together with the app (never left over another application), and below modal dialogs. No window level, no timer.
+        if let parent = NSApp.mainWindow ?? NSApp.keyWindow ?? NSApp.windows.first(where: { $0.isVisible && $0.canBecomeMain }), parent !== w { parent.addChildWindow(w, ordered: .above) }
+        w.makeKeyAndOrderFront(nil); window = w
         fxLog.notice("\("fereastra pluginului deschisă: \(name) (\(Int(size.width))×\(Int(size.height)))", privacy: .public)")
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in Task { @MainActor in self?.poll() } }
         // Development only (like SADROG_SIMULATED_CAPTURE): the plugin's interface runs in another process that test automation may not
@@ -237,6 +241,7 @@ final class PluginWindow: NSObject, NSWindowDelegate {
     private func teardown() {
         timer?.invalidate(); timer = nil
         if let t = token { unit?.auAudioUnit.parameterTree?.removeParameterObserver(t) }; token = nil
+        if let w = window { w.parent?.removeChildWindow(w) }
         unit = nil; window?.delegate = nil; window = nil
         model?.pluginWindows[effectID] = nil
     }

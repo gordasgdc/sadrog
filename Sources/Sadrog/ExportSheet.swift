@@ -48,7 +48,7 @@ struct ExportSheet: View {
                                 .buttonStyle(.gloss(.secondary, compact: true)).disabled(newPresetName.trimmingCharacters(in: .whitespaces).isEmpty)
                             Button(T("Renunță")) { namingPreset = false }.buttonStyle(.gloss(.secondary, compact: true))
                         } else {
-                            Button(T("Salvează ca preset…")) { namingPreset = true }.buttonStyle(.gloss(.secondary, compact: true)).disabled(running)
+                            Button(T("Salvează ca preset…")) { namingPreset = true }.buttonStyle(.gloss(.secondary, compact: true)).disabled(running).help(running ? T("Disponibil după ce se termină exportul în curs.") : T("Salvează setările de acum ca preset reutilizabil."))
                             Button(T("Setează ca implicit")) { m.exportPresets.setDefault(activePreset?.id ?? m.exportPresets.save(name: T("Implicit"), settings: m.exportSettings)?.id) }
                                 .buttonStyle(.gloss(.secondary, compact: true)).disabled(running || m.exportPresets.defaultID == activePreset?.id && activePreset != nil)
                             if let p = activePreset, !p.builtIn { Button(T("Șterge presetul")) { m.exportPresets.delete(id: p.id) }.buttonStyle(.gloss(.secondary, compact: true)).disabled(running) }
@@ -85,6 +85,15 @@ struct ExportSheet: View {
         return "\(file) · " + (pl.delivery == .passthrough ? T("fără re-codificare") : pl.codec) + " · \(pl.width)×\(pl.height) · \(timecode(pl.duration))" + span
     }
 
+    /// Why the export button is disabled (empty = enabled): the condition to fix, shown as its tooltip.
+    private var exportBlockedWhy: String {
+        if m.exportKind == .archive { return T("Creează o arhivă autonomă a proiectului.") }
+        if m.exportKind == .audio && !m.deliveryConflicts.isEmpty { return T("Două fișiere audio ar avea același nume — schimbă numele sau opțiunile.") }
+        if let r = m.fxBlockReason { return r }
+        if m.exportKind == .video && m.exportSettings.mode == .copy, let r = m.reencodeReason { return r }
+        if !act.allowsRecordAndExport { return ActivationModel.shared.blockedText }
+        return T("Pornește exportul cu setările de mai sus.")
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             PageHeader(title: T("Exportă proiectul"), subtitle: summary)
@@ -135,7 +144,7 @@ struct ExportSheet: View {
                 default:
                     Button(T("Închide")) { m.showExport = false }.buttonStyle(.gloss(.secondary)).keyboardShortcut(.cancelAction)
                     Button(m.exportKind == .audio ? L10n.f("Exportă %@ fișiere", "\(m.deliveryPlan.count)") : (m.exportKind == .archive ? T("Creează arhiva") : T("Exportă"))) { if m.exportKind == .audio { m.startAudioDelivery() } else if m.exportKind == .archive { m.startArchive() } else { m.startExport() } }
-                        .buttonStyle(.gloss(.primary)).keyboardShortcut(.defaultAction).disabled(m.exportKind == .archive ? false : ((m.exportKind == .audio && !m.deliveryConflicts.isEmpty) || m.fxBlockReason != nil || (m.exportKind == .video && m.exportSettings.mode == .copy && m.reencodeReason != nil) || !act.allowsRecordAndExport))
+                        .buttonStyle(.gloss(.primary)).keyboardShortcut(.defaultAction).help(exportBlockedWhy).disabled(m.exportKind == .archive ? false : ((m.exportKind == .audio && !m.deliveryConflicts.isEmpty) || m.fxBlockReason != nil || (m.exportKind == .video && m.exportSettings.mode == .copy && m.reencodeReason != nil) || !act.allowsRecordAndExport))
                 }
             }
         }

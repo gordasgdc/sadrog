@@ -66,6 +66,7 @@ struct TrackMenuItems: View {
     private var lane: TrackLane? { guard let l = e.selectedLayer else { return nil }; return l.kind == .video ? .v2 : .a2 }
     var body: some View {
         Button(T("Taie la cursor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.split() } }.keyboardShortcut("k", modifiers: .command)
+        Button(T("Taie elementele selectate la cursor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.splitSelected() } }.keyboardShortcut("k", modifiers: [.command, .shift]).disabled(e.selectedIDs.isEmpty)
         Divider()
         Menu(T("Pistă")) {
             Button(T("Adaugă pistă video suprapusă")) { e.addTrack(.v2) }

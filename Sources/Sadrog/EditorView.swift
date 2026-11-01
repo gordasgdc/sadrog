@@ -321,6 +321,7 @@ struct DrawLayer: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.white.opacity(0.001).contentShape(Rectangle())
+                .help(T("Trage în imagine pentru a desena zona evidențiată; Esc anulează."))
                 .gesture(DragGesture(minimumDistance: 3, coordinateSpace: .named("viewer"))
                     .onChanged { v in
                         if a == nil { a = v.startLocation; path = [v.startLocation] }
@@ -379,6 +380,7 @@ struct CalloutOverlay: View {
         guard let b = best else { return (0, []) }
         return (b.d, [b.a])
     }
+    @State private var lensStart: CGPoint?
     private func finish() { m.commitCallout(); start = nil; guideX = []; guideY = [] }
     /// Outline of the selection inside its box (rounded rectangle, ellipse or the freehand polygon), plus the box itself when the shape is not a rectangle.
     @ViewBuilder private func outline(_ c: Callout) -> some View {
@@ -424,6 +426,7 @@ struct CalloutOverlay: View {
                     let sx = d.0, sy = d.1
                     Rectangle().fill(Theme.C.sel).frame(width: hs, height: hs).overlay(Rectangle().strokeBorder(Theme.C.bg0, lineWidth: 1))
                         .padding(5).contentShape(Rectangle())
+                        .help(T("Mâner de formă: trage pentru a schimba zona evidențiată."))
                         .gesture(DragGesture(minimumDistance: 1, coordinateSpace: .named("viewer"))
                             .onChanged { v in
                                 let b = start ?? c; start = b
@@ -440,6 +443,23 @@ struct CalloutOverlay: View {
                         .onHover { if $0 { (sx == 0 ? NSCursor.resizeUpDown : (sy == 0 ? NSCursor.resizeLeftRight : NSCursor.crosshair)).push() } else { NSCursor.pop() } }
                         .accessibilityLabel(T("Mâner de redimensionare a regiunii"))
                         .position(x: rect.midX + CGFloat(sx) * rect.width / 2, y: rect.midY + CGFloat(sy) * rect.height / 2)
+                }
+                if c.isLens {       // the magnified area: where the whole selection is shown; drag it anywhere in the frame
+                    let b = c.displayBox, dr = CGRect(x: frame.minX + b.minX * W, y: frame.minY + b.minY * H, width: b.width * W, height: b.height * H)
+                    ZStack(alignment: .topLeading) {
+                        Rectangle().strokeBorder(Theme.C.warn, style: StrokeStyle(lineWidth: 2, dash: [6, 3]))
+                        Text(L10n.f("Lupă %@×", String(format: "%.1f", c.lensEffective))).font(Theme.F.small).foregroundStyle(Theme.C.bg0).padding(.horizontal, 5).padding(.vertical, 1).background(Theme.C.warn).offset(x: 0, y: -16)
+                    }
+                    .frame(width: dr.width, height: dr.height).contentShape(Rectangle())
+                    .gesture(DragGesture(minimumDistance: 2, coordinateSpace: .named("viewer"))
+                        .onChanged { v in
+                            let o = lensStart ?? CGPoint(x: b.minX, y: b.minY); lensStart = o
+                            m.liveCallout { $0.lensX = Double(o.x) + Double(v.translation.width / W); $0.lensY = Double(o.y) + Double(v.translation.height / H) }
+                        }
+                        .onEnded { _ in lensStart = nil; m.commitCallout() })
+                    .onHover { if $0 { NSCursor.openHand.push() } else { NSCursor.pop() } }
+                    .accessibilityLabel(T("Zona mărită (lupă)")).accessibilityHint(T("Trage pentru a muta zona mărită"))
+                    .position(x: dr.midX, y: dr.midY)
                 }
             }.frame(width: frame.maxX, height: frame.maxY, alignment: .topLeading)
         }
@@ -474,6 +494,49 @@ struct ViewerOverlay: View {
 
     /// Direct crop: eight handles on the picture's edges and corners. The opposite sides stay put and the kept pixels do not move on the canvas;
     /// one drag = one undo step. Drag outward to give back what was cut.
+    @State private var framingBase: CircleCrop?
+    @State private var framingDist: CGFloat = 1
+    /// Framing mode: the circle (side `w` on screen) stays; the whole camera rectangle is the draggable picture, its corners scale it.
+    /// The rectangle and handles are editing guides only (the compositor draws the faded picture in the preview, never in an export).
+    @ViewBuilder private func framingLayer(w: CGFloat, centre: CGPoint) -> some View {
+        if let crop = m.selectedCrop, let n = m.selectedMedia.flatMap({ m.media[$0]?.size }), n.width > 0 {
+            let side = min(n.width, n.height) / CGFloat(crop.zoom), perPx = w / side
+            let win = crop.window(in: n)
+            let rw = n.width * perPx, rh = n.height * perPx
+            let cx = w / 2 + (n.width / 2 - win.midX) * perPx, cy = w / 2 + (n.height / 2 - win.midY) * perPx       // rectangle centre in the circle's local space
+            ZStack {
+                Rectangle().fill(Color.white.opacity(0.001)).frame(width: rw, height: rh)
+                    .overlay(Rectangle().strokeBorder(Theme.C.sel, style: StrokeStyle(lineWidth: 1, dash: [5, 3])))
+                    .gesture(DragGesture(minimumDistance: 1, coordinateSpace: .named("viewer"))
+                        .onChanged { v in
+                            if framingBase == nil { framingBase = crop }
+                            m.framingPan(from: framingBase ?? crop, by: CGSize(width: v.translation.width / perPx, height: v.translation.height / perPx))
+                        }
+                        .onEnded { _ in framingBase = nil; m.commitCrop() })
+                    .onHover { if $0 { NSCursor.openHand.push() } else { NSCursor.pop() } }
+                    .accessibilityLabel(T("Imaginea camerei în cerc")).accessibilityHint(T("Trage pentru a alege ce apare în cerc; cercul rămâne pe loc"))
+                    .position(x: cx, y: cy)
+                Circle().strokeBorder(Theme.C.sel, lineWidth: 2).frame(width: w, height: w).allowsHitTesting(false)
+                ForEach(0..<4, id: \.self) { i in
+                    let sx: CGFloat = i % 2 == 0 ? -1 : 1, sy: CGFloat = i < 2 ? -1 : 1
+                    Rectangle().fill(Theme.C.sel).frame(width: 9, height: 9).overlay(Rectangle().strokeBorder(Theme.C.bg0, lineWidth: 1))
+                        .padding(6).contentShape(Rectangle())
+                        .gesture(DragGesture(minimumDistance: 1, coordinateSpace: .named("viewer"))
+                            .onChanged { v in
+                                // scaling about the circle's centre: the ratio of the pointer's distance from it
+                                let cc = centre
+                                if framingBase == nil { framingBase = crop; framingDist = max(8, hypot(v.startLocation.x - cc.x, v.startLocation.y - cc.y)) }
+                                let r = hypot(v.location.x - cc.x, v.location.y - cc.y) / framingDist
+                                m.framingZoom(from: framingBase ?? crop, to: (framingBase ?? crop).zoom * Double(r))
+                            }
+                            .onEnded { _ in framingBase = nil; m.commitCrop() })
+                        .onHover { if $0 { NSCursor.crosshair.push() } else { NSCursor.pop() } }
+                        .accessibilityLabel(T("Mâner de scalare a imaginii")).accessibilityHint(T("Trage pentru a mări sau micșora imaginea în cerc"))
+                        .position(x: cx + sx * rw / 2, y: cy + sy * rh / 2)
+                }
+            }.frame(width: w, height: w)
+        }
+    }
     @ViewBuilder private func cropLayer(id: UUID, w: CGFloat, h: CGFloat, k: CGFloat, R: CGSize) -> some View {
         if let n0 = m.selectedMedia.flatMap({ m.media[$0]?.size }), n0.width > 0 {
             let spots: [(CGFloat, CGFloat)] = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
@@ -549,8 +612,8 @@ struct ViewerOverlay: View {
                         }
                         .onEnded { _ in if startCrop != nil { startCrop = nil; m.commitCrop() } else { finish(id) } })
                     .onHover { if $0 { NSCursor.openHand.push() } else { NSCursor.pop() } }
-                    .accessibilityLabel(T("Cadrul elementului selectat")).accessibilityHint(m.selectedCrop != nil ? T("Trage pentru a muta cercul; cu Option apăsat muți imaginea în cerc") : T("Trage pentru a muta"))
-                if cropMode { cropLayer(id: id, w: w, h: h, k: k, R: R) } else {
+                    .accessibilityLabel(T("Cadrul elementului selectat")).accessibilityHint(m.selectedCrop != nil ? T("Trage pentru a muta cercul; cu Option apăsat muți imaginea în cerc") : T("Trage pentru a muta")).help(m.selectedCrop != nil ? T("Trage pentru a muta cercul; cu Option apăsat muți imaginea în cerc. Pentru încadrare fină folosește „Încadrează imaginea în cerc” din inspector.") : T("Trage pentru a muta elementul; mânerele din colțuri scalează, cel de sus rotește."))
+                if m.circleFraming, m.selectedCrop != nil { framingLayer(w: w, centre: c) } else if cropMode { cropLayer(id: id, w: w, h: h, k: k, R: R) } else {
                 ForEach(0..<4, id: \.self) { i in
                     let sx: CGFloat = i % 2 == 0 ? -1 : 1, sy: CGFloat = i < 2 ? -1 : 1
                     Rectangle().fill(Theme.C.sel).frame(width: hs, height: hs).overlay(Rectangle().strokeBorder(Theme.C.bg0, lineWidth: 1))
@@ -576,7 +639,7 @@ struct ViewerOverlay: View {
                             }
                             .onEnded { _ in finish(id) })
                         .onHover { if $0 { NSCursor.crosshair.push() } else { NSCursor.pop() } }
-                        .accessibilityLabel(T("Mâner de redimensionare"))
+                        .accessibilityLabel(T("Mâner de redimensionare")).help(T("Mâner de redimensionare: trage pentru a scala elementul; colțul opus rămâne pe loc."))
                         .position(x: w / 2 + sx * w / 2, y: h / 2 + sy * h / 2)       // after the gesture: the hit area is the handle, not the whole frame
                 }
                 Rectangle().fill(Theme.C.sel).frame(width: 1, height: 14).position(x: w / 2, y: -7).allowsHitTesting(false)
@@ -590,7 +653,7 @@ struct ViewerOverlay: View {
                         }
                         .onEnded { _ in finish(id) })
                     .onHover { if $0 { NSCursor.pointingHand.push() } else { NSCursor.pop() } }
-                    .accessibilityLabel(T("Mâner de rotație")).accessibilityHint(T("Trage pentru a roti; se lipește la 45°"))
+                    .accessibilityLabel(T("Mâner de rotație")).accessibilityHint(T("Trage pentru a roti; se lipește la 45°")).help(T("Mâner de rotație: trage pentru a roti elementul; se lipește la 45°."))
                     .position(x: w / 2, y: -21)
                 }
             }.frame(width: w, height: h).rotationEffect(.degrees(t.rotation)).position(c)
@@ -1023,11 +1086,11 @@ struct CalloutGroup: View {
                 Picker("", selection: Binding(get: { c.isFrameOnly }, set: { v in m.updateCallout { if v { $0.makeFrameOnly() } else { $0.makeSpotlight() } } })) { Text(T("Evidențiere")).tag(false); Text(T("Doar cadru")).tag(true) }
                     .labelsHidden().pickerStyle(.segmented).accessibilityLabel(T("Tipul selecției"))
             }
-            Picker("", selection: Binding(get: { c.invert }, set: { v in m.updateCallout { $0.invert = v } })) { Text(T("În exterior")).tag(false); Text(T("În interior")).tag(true) }
-                .labelsHidden().pickerStyle(.segmented).accessibilityLabel(T("Unde se aplică efectul"))
+            if !c.isLens { Picker("", selection: Binding(get: { c.invert }, set: { v in m.updateCallout { $0.invert = v } })) { Text(T("În exterior")).tag(false); Text(T("În interior")).tag(true) }
+                .labelsHidden().pickerStyle(.segmented).accessibilityLabel(T("Unde se aplică efectul")) }
             NumberRow(label: T("Întunecare"), unit: "%", range: 0...100, value: bind(\.dim, 100), commit: done)
             NumberRow(label: T("Estompare"), unit: "%", range: 0...100, value: bind(\.blur, 100), commit: done)
-            NumberRow(label: T("Mărire"), unit: "%", range: 0...400, value: bind(\.magnify, 100), commit: done)
+            if !c.isLens { NumberRow(label: T("Mărire în selecție"), unit: "%", range: 0...400, value: bind(\.magnify, 100), commit: done).help(T("Mărește imaginea DOAR în interiorul formei selecției, din centrul ei; suprafața selecției rămâne la fel de mare. Pentru a mări întreaga zonă selectată folosește „Lupă”.")) }
             NumberRow(label: T("Contur"), unit: "%", range: 0...100, value: bind(\.outline, 100), commit: done)
             if c.outline > 0 {
                 HStack(spacing: 6) {
@@ -1048,16 +1111,34 @@ struct CalloutGroup: View {
             Text(c.invert ? T("Efectul se aplică în interiorul selecției (de ex. estompare pentru a ascunde o informație); exteriorul rămâne neschimbat.") : T("Efectul se aplică în exteriorul selecției (evidențiere); interiorul rămâne neschimbat. Aceeași imagine în previzualizare și în export.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint)
         }
         }
+        if c.shape == .rect || c.shape == .ellipse || c.shape == .freehand {
+        InspectorGroup(T("Lupă (zonă mărită)")) {
+            Toggle(T("Afișează zona selectată mărită"), isOn: Binding(get: { c.isLens }, set: { on in m.updateCallout { if on { if $0.dim == 0 && $0.outline == 0 { $0.outline = 0.35 }; $0.lens = $0.lens > 0 ? $0.lens : 2 } else { $0.lens = 0 } } }))
+                .toggleStyle(.switch).controlSize(.mini).font(Theme.F.body)
+                .help(T("Caseta „Casetă” devine zona-sursă: ÎNTREGUL ei conținut apare mărit într-o zonă separată, pe care o poți muta oriunde în cadru. Imaginea e aceeași, în mișcare, la același moment."))
+            if c.isLens {
+                NumberRow(label: T("Factor de mărire"), unit: "%", range: 125...800, value: Binding(get: { c.lens * 100 }, set: { v in m.liveCallout { $0.lens = v / 100 } }), commit: done)
+                let b = c.displayBox
+                NumberRow(label: T("Zona mărită: X"), unit: "%", range: 0...100, value: Binding(get: { b.minX * 100 }, set: { v in m.liveCallout { $0.lensX = v / 100; if $0.lensY == nil { $0.lensY = b.minY } } }), commit: done, decimals: 1)
+                NumberRow(label: T("Zona mărită: Y"), unit: "%", range: 0...100, value: Binding(get: { b.minY * 100 }, set: { v in m.liveCallout { $0.lensY = v / 100; if $0.lensX == nil { $0.lensX = b.minX } } }), commit: done, decimals: 1)
+                Button { m.updateCallout { $0.lensX = nil; $0.lensY = nil } } label: { Label(T("Centrează pe zona-sursă"), systemImage: "scope").frame(maxWidth: .infinity) }.buttonStyle(.gloss(.secondary, compact: true)).disabled(c.lensX == nil && c.lensY == nil)
+                if c.lensEffective < c.lens - 0.001 {
+                    Text(L10n.f("Factorul e limitat la %@× ca zona mărită să încapă în cadru; micșorează zona-sursă pentru un factor mai mare.", String(format: "%.2f", c.lensEffective))).font(Theme.F.caption).foregroundStyle(Theme.C.warn).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Text(T("Lupa mărește întreaga zonă-sursă (nu doar centrul) într-o zonă separată, cu aceleași proporții. Întunecarea, estomparea, conturul și umbra acționează în jurul zonei mărite.")).font(Theme.F.caption).foregroundStyle(Theme.C.textDim).fixedSize(horizontal: false, vertical: true)
+        }
+        }
         InspectorGroup(T("Poziție în proiect")) {
             let hi = max(30, m.project.timelineEnd + 30)
             NumberRow(label: T("Început"), unit: "s", range: 0...hi, value: Binding(get: { m.selectedCallout?.start ?? 0 }, set: { v in m.liveCallout { $0.start = max(0, v) } }), commit: done, decimals: 2)
             NumberRow(label: T("Durată"), unit: "s", range: 0.1...120, value: Binding(get: { m.selectedCallout?.duration ?? 1 }, set: { v in m.liveCallout { $0.duration = max(0.1, v) } }), commit: done, decimals: 2)
             InfoRow(label: T("Sfârșit"), value: tc(c.end, fps: m.fps))
         }
-        InspectorGroup(T("Zoom de cadru")) {
+        InspectorGroup(T("Zoom de cadru (tot cadrul)")) {
             Button { m.zoomFrameToCallout() } label: { Label(T("Zoom cadru către zonă"), systemImage: "plus.magnifyingglass").frame(maxWidth: .infinity) }.buttonStyle(.gloss(.secondary, compact: true))
                 .help(T("Animă clipul principal spre o stare finală care umple cadrul cu caseta selecției"))
-            Text(T("Mărește tot cadrul spre zonă (animația clipului, același mecanism ca zoomul existent). Lupa locală — zona mărită într-o suprapunere, fără a mări cadrul — nu există încă.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint)
+            Text(T("Mărește TOT cadrul spre zonă (animația clipului, același mecanism ca zoomul existent). Pentru a mări doar zona selectată, într-o zonă separată, folosește „Lupă” mai sus.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint)
         }
     }
 }
@@ -1410,8 +1491,16 @@ struct TimelinePanel: View {
     /// Lane-header column; wider when A1 lists named sources ("Sunetul calculatorului", "MixPre-6 II · canal 1"), so their names stay readable.
     private var headerW: CGFloat { m.mainSources.count > 1 ? 236 : 184 }
     private let edgeHit: CGFloat = 7
-    private enum Drag { case scrub, trim(UUID, ClipEdge, Lane), move(UUID, Lane), pending(UUID, Lane), blade, none }
+    private enum Drag { case scrub, trim(UUID, ClipEdge, Lane), move(UUID, Lane), pending(UUID, Lane), blade, marquee, none }
     @State private var drag: Drag?
+    /// Rectangle selection (content coordinates): `a` is where the button went down, `b` the pointer; `base` is the selection kept when ⇧/⌘ was held.
+    @State private var marquee: (a: CGPoint, b: CGPoint)?
+    @State private var marqueeBase: [UUID] = []
+    @State private var marqueeScreen = CGPoint.zero      // the pointer relative to the visible area, for the edge autoscroll
+    @State private var marqueeTimer: Timer?
+    @State private var marqueeKeys: Any?
+    @State private var marqueeCancelled = false
+    @State private var hPos = ScrollPosition()
     @State private var hoverItem: UUID?
     @State private var scrollOffset: CGFloat = 0
     @State private var autoScrollUntil = Date.distantPast
@@ -1428,7 +1517,7 @@ struct TimelinePanel: View {
 
     /// Vertical geometry of the five lanes: T titles, V2 overlay, V1 main video, A1 linked sound, A2 independent audio.
     struct Geo {
-        var t: CGFloat, v2: CGFloat, v1: CGFloat, a1: CGFloat, a2: CGFloat, c: CGFloat; var ruler: CGFloat, gap: CGFloat; var nV2 = 1, nA2 = 1, nC = 1
+        var t: CGFloat, v2: CGFloat, v1: CGFloat, a1: CGFloat, a2: CGFloat, c: CGFloat; var ruler: CGFloat, gap: CGFloat; var nV2 = 1, nA2 = 1, nC = 1, nT = 1
         /// Display order top → bottom, as lane indices (0 T, 1 V2, 2 V1, 3 A1, 4 A2, 5 C); comes from the project layout.
         var order: [Int] = Geo.defaultOrder
         /// Heights of the single tracks (V2 = lane 1, A2 = lane 4), top → bottom, when the user gave some; their sum is the lane's height. Absent = equal rows.
@@ -1436,7 +1525,7 @@ struct TimelinePanel: View {
         static let defaultOrder = [0, 5, 1, 2, 3, 4]
         static let laneOf: [TrackLane] = [.t, .v2, .v1, .a1, .a2, .c]
         static func index(_ l: TrackLane) -> Int { laneOf.firstIndex(of: l) ?? 0 }
-        func rows(_ l: Int) -> Int { l == 1 ? nV2 : (l == 4 ? nA2 : (l == 5 ? nC : 1)) }
+        func rows(_ l: Int) -> Int { l == 0 ? nT : l == 1 ? nV2 : (l == 4 ? nA2 : (l == 5 ? nC : 1)) }
         /// Row slot (0 = top) of the lane under y.
         func slot(_ l: Int, at py: CGFloat) -> Int {
             let n = rows(l); guard n > 1 else { return 0 }
@@ -1462,7 +1551,7 @@ struct TimelinePanel: View {
     /// The automatic geometry with the project's lane order and the heights the user gave (a lane never goes below what its content needs; the others are not squeezed).
     private func laidOut(_ auto: Geo, nSrc: Int, needC: CGFloat, needL: CGFloat) -> Geo {
         let layout = m.project.layout; var geo = auto; geo.order = layout.displayOrder.map { Geo.index($0) }
-        geo.t = pickH(layout, .t, auto.t, need: 20); geo.v2 = pickH(layout, .v2, auto.v2, need: max(CGFloat(auto.nV2) * 22, CGFloat(auto.nV2) * needL)); geo.v1 = pickH(layout, .v1, auto.v1, need: max(30, needC))
+        geo.t = pickH(layout, .t, auto.t, need: 20 * CGFloat(auto.nT)); geo.v2 = pickH(layout, .v2, auto.v2, need: max(CGFloat(auto.nV2) * 22, CGFloat(auto.nV2) * needL)); geo.v1 = pickH(layout, .v1, auto.v1, need: max(30, needC))
         geo.a1 = pickH(layout, .a1, auto.a1, need: CGFloat(max(1, nSrc)) * 20); geo.a2 = pickH(layout, .a2, auto.a2, need: CGFloat(auto.nA2) * 20); geo.c = pickH(layout, .c, auto.c, need: max(20, CGFloat(auto.nC) * 20))
         // single tracks of V2 / A2 with a height of their own: those tracks take it, the others keep the equal share of the lane's automatic height
         for (li, lane, minRow) in [(1, TrackLane.v2, max(22, needL)), (4, TrackLane.a2, 20)] {
@@ -1538,8 +1627,8 @@ struct TimelinePanel: View {
                 // V2 holds one row per overlay track (several cameras / screens at once); a single row keeps the former height
                 let depth = m.attachedDepth, needC = Self.tileNeed(depth.clips), needL = Self.tileNeed(depth.layers)
                 let nV2 = m.overlayRows, v2 = max(nV2 > 1 ? CGFloat(nV2) * max(sourceRowH, 30) : clamp(avail * 0.19, 24, 90), CGFloat(nV2) * needL)
-                let nA2 = m.audioRows, nC = m.calloutRowCount
-                let auto = Geo(t: clamp(avail * 0.11, 20, 40), v2: v2, v1: max(clamp(avail * 0.26, 30, 120), needC), a1: a1, a2: nA2 > 1 ? CGFloat(nA2) * max(sourceRowH, 30) : clamp(avail * 0.17, 20, 70), c: nC > 1 ? CGFloat(nC) * 22 : clamp(avail * 0.10, 20, 40), ruler: rulerH, gap: gap, nV2: nV2, nA2: nA2, nC: nC)
+                let nA2 = m.audioRows, nC = m.calloutRowCount, nT = m.textRowCount
+                let auto = Geo(t: nT > 1 ? CGFloat(nT) * 22 : clamp(avail * 0.11, 20, 40), v2: v2, v1: max(clamp(avail * 0.26, 30, 120), needC), a1: a1, a2: nA2 > 1 ? CGFloat(nA2) * max(sourceRowH, 30) : clamp(avail * 0.17, 20, 70), c: nC > 1 ? CGFloat(nC) * 22 : clamp(avail * 0.10, 20, 40), ruler: rulerH, gap: gap, nV2: nV2, nA2: nA2, nC: nC, nT: nT)
                 let geo = laidOut(auto, nSrc: nSrc, needC: needC, needL: needL)
                 // a recording with many sounds (e.g. 8 input channels) makes A1 taller than the panel: the lanes then scroll vertically, headers and content together
                 ScrollView(.vertical, showsIndicators: geo.total > g.size.height) {
@@ -1554,6 +1643,7 @@ struct TimelinePanel: View {
                                 .onDrop(of: [.fileURL], delegate: TimelineDropDelegate(m: m, pps: pps, locate: { locate($0, pps: pps, geo: geo) }))
                                 .background(GeometryReader { r in Color.clear.preference(key: ScrollOffsetKey.self, value: -r.frame(in: .named("tlscroll")).minX) })
                         }
+                        .scrollPosition($hPos)
                         .coordinateSpace(name: "tlscroll")
                         .onPreferenceChange(ScrollOffsetKey.self) { off in
                             // a change we did not cause, during playback = the user scrolled: stop following (no fight with the gesture)
@@ -1868,10 +1958,22 @@ struct TimelinePanel: View {
         var out: [Item] = []
         for sp in m.project.clipSpans { out.append(Item(id: sp.id, lane: .main, start: sp.start, dur: sp.end - sp.start)) }
         for l in m.project.layers { out.append(Item(id: l.id, lane: l.kind == .video ? .overlay : .audio, start: l.start, dur: l.duration, row: l.row)) }
-        for t in m.project.texts { out.append(Item(id: t.id, lane: .text, start: t.start, dur: t.duration)) }
+        let trow = m.project.textRows()
+        for t in m.project.texts { out.append(Item(id: t.id, lane: .text, start: t.start, dur: t.duration, row: trow[t.id] ?? 0)) }
         let crow = m.project.globalCalloutRows(), arow = m.project.attachedCalloutRows()
         for c in m.project.callouts { let at = m.project.isAttached(c); out.append(Item(id: c.id, lane: .callout, start: c.start, dur: c.duration, row: (at ? arow[c.id] : crow[c.id]) ?? 0, attached: at)) }
         return out
+    }
+    /// Hover text of a timeline item: what it is and what dragging does (the real gestures: move, trim at the edges, blade tool cuts).
+    private func itemHelp(_ it: Item) -> String {
+        if m.tool == .blade { return T("Unealta Lamă: clic taie elementul în punctul indicat.") }
+        switch it.lane {
+        case .main: return T("Clip de pe pista principală: trage pentru a-l muta între clipuri; trage marginile pentru a-l tăia; clic dreapta pentru mai multe comenzi.")
+        case .overlay: return T("Element video suprapus: trage pentru a-l muta (și pe altă pistă); trage marginile pentru a-l tăia; clic dreapta pentru mai multe comenzi.")
+        case .audio: return T("Element de sunet: trage pentru a-l muta (și pe altă pistă); trage marginile pentru a-l tăia; clic dreapta pentru mai multe comenzi.")
+        case .text: return T("Titlu: trage pentru a-l muta în timp; titlurile care se suprapun stau pe rânduri separate; trage marginile pentru durată.")
+        case .callout: return T("Evidențiere: trage pentru a o muta în timp; trage marginile pentru durată; forma se editează în vizor.")
+        }
     }
     private func item(_ id: UUID) -> Item? { items.first { $0.id == id } }
     private func rect(_ it: Item, pps: CGFloat) -> (x: CGFloat, w: CGFloat) {
@@ -1906,7 +2008,7 @@ struct TimelinePanel: View {
                 case .main:
                     if let c = m.project.clips.first(where: { $0.id == it.id }) {
                         VideoClipFace(media: c.media, sourceStart: c.sourceStart, duration: c.duration, w: r.w, h: geo.v1, pps: pps, held: c.held, selected: sel, hover: hov, editing: ed, linked: true, scaled: !c.transform.isIdentity, title: c.label)
-                            .opacity(m.isOff(.v1) ? 0.35 : 1).offset(x: r.x, y: geo.y(2)).contextMenu { menu(it.id) }.accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
+                            .opacity(m.isOff(.v1) ? 0.35 : 1).offset(x: r.x, y: geo.y(2)).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                         let srcs = m.mainSources
                         Group {
                             if c.held || m.media[c.media]?.hasAudio == false {
@@ -1929,23 +2031,23 @@ struct TimelinePanel: View {
                             }
                         }
                             .overlay(alignment: .topLeading) { if (sel || hov || m.liveAudio[c.id] != nil), m.media[c.media]?.hasAudio != false { FadeHandles(m: m, id: c.id, duration: c.duration, pps: pps, width: max(2, r.w - 1)) } }
-                            .opacity(m.isOff(.a1) ? 0.35 : 1).offset(x: r.x, y: geo.y(3)).contextMenu { menu(it.id) }.accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
+                            .opacity(m.isOff(.a1) ? 0.35 : 1).offset(x: r.x, y: geo.y(3)).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 case .overlay:
                     if let l = m.project.layers.first(where: { $0.id == it.id }) {
                         let rowH = geo.rowHeight(1, slot: m.slot(.v2, l.row))
                         VideoClipFace(media: l.media, sourceStart: l.sourceStart, duration: l.duration, w: r.w, h: rowH, pps: pps, selected: sel, hover: hov, editing: ed, linked: false, scaled: !l.transform.isIdentity)
-                            .opacity(m.isOff(.v2) ? 0.35 : 1).offset(x: r.x, y: geo.rowTop(1, slot: m.slot(.v2, l.row))).contextMenu { menu(it.id) }.accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
+                            .opacity(m.isOff(.v2) ? 0.35 : 1).offset(x: r.x, y: geo.rowTop(1, slot: m.slot(.v2, l.row))).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 case .text:
                     if let t = m.project.texts.first(where: { $0.id == it.id }) {
-                        TitleFace(text: t.text, w: r.w, h: geo.t, selected: sel, hover: hov, editing: ed, animated: t.endTransform != nil)
-                            .opacity(m.isOff(.t) ? 0.35 : 1).offset(x: r.x, y: geo.y(0)).contextMenu { menu(it.id) }.accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
+                        TitleFace(text: t.text, w: r.w, h: geo.t / CGFloat(max(1, geo.nT)), selected: sel, hover: hov, editing: ed, animated: t.endTransform != nil)
+                            .opacity(m.isOff(.t) ? 0.35 : 1).offset(x: r.x, y: geo.y(0) + CGFloat(it.row) * geo.t / CGFloat(max(1, geo.nT))).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 case .callout:
                     if !it.attached, let c = m.project.callouts.first(where: { $0.id == it.id }) {
                         CalloutFace(w: r.w, h: geo.c / CGFloat(max(1, geo.nC)), selected: sel, hover: hov, editing: ed, dim: c.dim, blur: c.blur)
-                            .opacity(m.isOff(.c) ? 0.35 : 1).offset(x: r.x, y: geo.y(5) + CGFloat(it.row) * geo.c / CGFloat(max(1, geo.nC))).contextMenu { menu(it.id) }.accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
+                            .opacity(m.isOff(.c) ? 0.35 : 1).offset(x: r.x, y: geo.y(5) + CGFloat(it.row) * geo.c / CGFloat(max(1, geo.nC))).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 case .audio:
                     if let l = m.project.layers.first(where: { $0.id == it.id }) {
@@ -1955,7 +2057,7 @@ struct TimelinePanel: View {
                                       label: (l.linkedClip != nil ? "⇄ " : "") + (ae.muted ? "mut · " : "") + (l.label ?? URL(fileURLWithPath: l.media).lastPathComponent) + (ae.gainDB != 0 ? String(format: "  %+.1f dB", ae.gainDB) : ""),
                                       fadeIn: CGFloat(fd.fadeIn) * pps, fadeOut: CGFloat(fd.fadeOut) * pps, dim: ae.muted)
                             .overlay(alignment: .topLeading) { if sel || hov || m.liveAudio[l.id] != nil { FadeHandles(m: m, id: l.id, duration: l.duration, pps: pps, width: max(2, r.w - 1)) } }
-                            .opacity(m.isOff(.a2) ? 0.35 : 1).offset(x: r.x, y: geo.rowTop(4, slot: l.row)).contextMenu { menu(it.id) }.accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
+                            .opacity(m.isOff(.a2) ? 0.35 : 1).offset(x: r.x, y: geo.rowTop(4, slot: l.row)).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 }
             }
@@ -1991,6 +2093,11 @@ struct TimelinePanel: View {
                 Text(String(format: "%+.2f s", mp.delta)).font(Theme.F.monoSmall).foregroundStyle(Theme.C.bg0).padding(.horizontal, 5).padding(.vertical, 2)
                     .background(RoundedRectangle(cornerRadius: 4).fill(Theme.C.sel)).offset(x: CGFloat(m.time) * pps + 8, y: rulerH + 4).allowsHitTesting(false)
             }
+            if let mq = marquee, hypot(mq.b.x - mq.a.x, mq.b.y - mq.a.y) >= 4 {
+                let r = CGRect(x: min(mq.a.x, mq.b.x), y: min(mq.a.y, mq.b.y), width: abs(mq.b.x - mq.a.x), height: abs(mq.b.y - mq.a.y))
+                Rectangle().fill(Theme.C.sel.opacity(0.14)).overlay(Rectangle().strokeBorder(Theme.C.sel, style: StrokeStyle(lineWidth: 1, dash: [4, 2])))
+                    .frame(width: r.width, height: r.height).offset(x: r.minX, y: r.minY).allowsHitTesting(false).zIndex(8)
+            }
             if let g = m.snapGuide {
                 Rectangle().fill(Theme.C.sel).frame(width: 1.5, height: geo.total - rulerH).offset(x: CGFloat(g) * pps - 0.75, y: rulerH).allowsHitTesting(false)
                 Text(T("Magnet")).font(Theme.F.smallMedium).foregroundStyle(Theme.C.bg0).padding(.horizontal, 4).padding(.vertical, 1)
@@ -2024,16 +2131,18 @@ struct TimelinePanel: View {
                         if mods.contains(.shift) || mods.contains(.command) { m.toggleSelect(it.id); drag = Drag.none }   // ⇧/⌘-click: add to / remove from the selection, no drag
                         else { drag = .pending(it.id, it.lane); if !m.isSelected(it.id) || m.extra.isEmpty { m.select(it.id) } }
                     }
+                    else if m.tool == .select, inLane { startMarquee(at: v.startLocation, pps: pps, geo: geo, width: width) }
                     else { drag = .scrub }
                 }
                 let raw = Double((v.location.x - v.startLocation.x) / pps)
                 switch drag {
                 case .scrub?: scrub(to: v.location.x, pps: pps)
+                case .marquee?: updateMarquee(to: v.location, pps: pps, geo: geo)
                 case .pending(let id, let lane)? where abs(v.location.x - v.startLocation.x) >= 4:
                     let grp = m.groupMoveIDs(primary: id)
                     if !grp.isEmpty && m.anyLocked(grp) { m.message = T("Nu se poate muta: o pistă a selecției este blocată."); drag = Drag.none; break }
                     if lane == .main && !m.extra.isEmpty && m.selectionHasMainClips && m.selectedIDs.contains(where: { s in !m.project.clips.contains { $0.id == s } }) {
-                        m.message = T("Clipurile din pista principală se mută separat de restul selecției."); m.select(id)      // mixed selection: the dragged main clip goes alone
+                        m.message = T("Clipurile de pe pista principală sunt secvențiale și nu se mută în timp împreună cu alte elemente. Deselectează-le sau mută separat elementele celelalte; nu s-a modificat nimic."); drag = Drag.none; break      // refused whole, like GroupMove.refused(.mainTrack)
                     }
                     drag = .move(id, lane); m.groupMoving = Set(grp)
                     if lane == .callout { m.effectDropTarget = effectTarget(at: v.location, pps: pps, geo: geo) }
@@ -2078,6 +2187,10 @@ struct TimelinePanel: View {
                     else if lane == .main && !m.extra.isEmpty { dropMainBlock(id, dx: dx) }
                     else if lane == .main { dropMain(id, dx: dx, pps: pps) } else if let it = item(id), abs(dx) > 0.02 { if lane == .text { m.moveTitle(id, to: max(0, it.start + dx)) } else if lane == .callout { m.moveCallout(id, to: max(0, it.start + dx)) } else { m.moveLayer(id, to: max(0, it.start + dx)) } }
                 case .pending(let id, _)?: if !m.extra.isEmpty { m.select(id) }; m.seek(max(0, min(m.project.timelineEnd, Double(v.location.x / pps))))
+                case .marquee?:
+                    let moved = hypot(v.location.x - v.startLocation.x, v.location.y - v.startLocation.y) >= 4
+                    if !moved && !marqueeCancelled { if marqueeBase.isEmpty { m.select(nil) }; m.seek(max(0, min(m.project.timelineEnd, Double(v.location.x / pps)))) }      // a click in free space empties the selection
+                    endMarquee()
                 case .blade?:
                     if abs(v.location.x - v.startLocation.x) < 4, let l = laneHit(v.startLocation.y, geo) { m.splitAt(min(m.project.timelineEnd, max(0, Double(v.location.x / pps))), lane: laneKind(l)) }
                 default: break
@@ -2085,6 +2198,72 @@ struct TimelinePanel: View {
                 m.rowPreview = nil
                 drag = nil
             })
+    }
+
+    // MARK: rectangle selection
+    /// Every rectangle an item occupies in the timeline (a main-track clip: its picture and its sound row).
+    private func frames(_ it: Item, pps: CGFloat, geo: Geo) -> [CGRect] {
+        let r = rect(it, pps: pps)
+        switch it.lane {
+        case .main: return [CGRect(x: r.x, y: geo.y(2), width: r.w, height: geo.v1), CGRect(x: r.x, y: geo.y(3), width: r.w, height: geo.a1)]
+        case .overlay: let sl = m.slot(.v2, it.row); return [CGRect(x: r.x, y: geo.rowTop(1, slot: sl), width: r.w, height: geo.rowHeight(1, slot: sl))]
+        case .audio: return [CGRect(x: r.x, y: geo.rowTop(4, slot: it.row), width: r.w, height: geo.rowHeight(4, slot: it.row))]
+        case .text: let h = geo.t / CGFloat(max(1, geo.nT)); return [CGRect(x: r.x, y: geo.y(0) + CGFloat(it.row) * h, width: r.w, height: h)]
+        case .callout:
+            if it.attached { return bandRect(it, pps: pps, geo: geo).map { [$0] } ?? [] }
+            let h = geo.c / CGFloat(max(1, geo.nC)); return [CGRect(x: r.x, y: geo.y(5) + CGFloat(it.row) * h, width: r.w, height: h)]
+        }
+    }
+    private func marqueeHits(_ box: CGRect, pps: CGFloat, geo: Geo) -> [UUID] {
+        items.filter { it in frames(it, pps: pps, geo: geo).contains { $0.width >= 0 && $0.intersects(box) } }.map(\.id)
+    }
+    private func startMarquee(at p: CGPoint, pps: CGFloat, geo: Geo, width: CGFloat) {
+        let mods = NSApp.currentEvent?.modifierFlags ?? NSEvent.modifierFlags
+        marqueeBase = (mods.contains(.shift) || mods.contains(.command)) ? m.selectedIDs : []
+        marquee = (p, p); marqueeCancelled = false; drag = .marquee
+        marqueeKeys = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { e in
+            if e.keyCode == 53, marquee != nil {          // Esc: cancel the gesture, restore the selection it started from
+                marqueeCancelled = true; m.setSelection(marqueeBase); marquee = nil; return nil
+            }
+            return e
+        }
+        marqueeTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30, repeats: true) { _ in
+            Task { @MainActor in autoscrollMarquee(pps: pps, geo: geo, width: width) }
+        }
+    }
+    private func updateMarquee(to p: CGPoint, pps: CGFloat, geo: Geo) {
+        guard !marqueeCancelled, let a = marquee?.a else { return }
+        marquee = (a, p); marqueeScreen = CGPoint(x: p.x - scrollOffset, y: p.y - vOff)
+        applyMarquee(pps: pps, geo: geo)
+    }
+    private func applyMarquee(pps: CGFloat, geo: Geo) {
+        guard let mq = marquee, hypot(mq.b.x - mq.a.x, mq.b.y - mq.a.y) >= 4 else { return }
+        let box = CGRect(x: min(mq.a.x, mq.b.x), y: min(mq.a.y, mq.b.y), width: abs(mq.b.x - mq.a.x), height: abs(mq.b.y - mq.a.y))
+        let hits = marqueeHits(box, pps: pps, geo: geo)
+        var ids = marqueeBase; for h in hits where !ids.contains(h) { ids.append(h) }
+        if ids != m.selectedIDs { m.setSelection(ids) }
+    }
+    /// Near the edge of the visible area the timeline scrolls (sideways and up/down) while the rectangle keeps growing under the stationary pointer.
+    private func autoscrollMarquee(pps: CGFloat, geo: Geo, width: CGFloat) {
+        guard let mq = marquee, !marqueeCancelled else { return }
+        let viewW = width / CGFloat(max(1, m.zoom)), edge: CGFloat = 28
+        var dx: CGFloat = 0, dy: CGFloat = 0
+        if marqueeScreen.x < edge { dx = -max(4, (edge - marqueeScreen.x) / 2) } else if marqueeScreen.x > viewW - edge { dx = max(4, (marqueeScreen.x - (viewW - edge)) / 2) }
+        if marqueeScreen.y < rulerH + edge { dy = -max(4, (rulerH + edge - marqueeScreen.y) / 2) } else if marqueeScreen.y > viewportH - edge { dy = max(4, (marqueeScreen.y - (viewportH - edge)) / 2) }
+        if m.zoom <= 1.01 { dx = 0 }
+        if dy != 0 && geo.total <= viewportH { dy = 0 }
+        guard dx != 0 || dy != 0 else { return }
+        let nx = max(0, min(max(0, width - viewW), scrollOffset + dx)), ny = max(0, min(max(0, geo.total - viewportH), vOff + dy))
+        let rdx = nx - scrollOffset, rdy = ny - vOff
+        if rdx != 0 { hPos.scrollTo(x: nx); scrollOffset = nx }
+        if rdy != 0 { vPos.scrollTo(y: ny); vOff = ny }
+        marquee = (mq.a, CGPoint(x: marqueeScreen.x + scrollOffset, y: marqueeScreen.y + vOff))
+        applyMarquee(pps: pps, geo: geo)
+    }
+    private func endMarquee() {
+        marqueeTimer?.invalidate(); marqueeTimer = nil
+        if let k = marqueeKeys { NSEvent.removeMonitor(k); marqueeKeys = nil }
+        marquee = nil; marqueeBase = []; marqueeCancelled = false
     }
 
     /// Reorders a main-track clip: it lands before/after the neighbours its centre has crossed.
@@ -2111,9 +2290,11 @@ struct TimelinePanel: View {
         if item(id)?.lane == .main || item(id)?.lane == .overlay || item(id)?.lane == .audio { Button(T("Redenumește…")) { m.select(id); m.promptRename() } }
         Divider()
         Button(T("Taie la cursor")) { m.select(id); m.split() }
+        if m.selectedIDs.count > 1 { Button(T("Taie elementele selectate la cursor")) { m.splitSelected() } }
         if item(id)?.lane == .main {
             Button(T("Început = cursor")) { m.select(id); m.trimStartToPlayhead() }
             Button(T("Sfârșit = cursor")) { m.select(id); m.trimEndToPlayhead() }
+            Button(T("Mută pe pistă video (V2)")) { m.moveToOverlay(id) }.disabled(!m.canMoveToOverlay(id))
         }
         if m.canDetachAudio(id) || m.canReattachAudio(id) || m.hasLinkedPart(id) {
             Divider()

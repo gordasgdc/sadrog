@@ -471,6 +471,11 @@ public struct Callout: Codable, Equatable, Identifiable, Sendable {
     public var invert: Bool           // false: effect outside the selection; true: effect inside it
     public var feather: Double        // 0…1: soft edge (1 = 5% of the frame height)
     public var magnify: Double        // 0…4: local magnification INSIDE the selection, extra on top of 1× (0 = off, 1 = 200%); about the box centre
+    /// Local lens: the box (x, y, w, h) is the SOURCE area; the whole of it is shown magnified `lens`× (1.25…8, 0 = off) in a DISPLAY area of the same proportions,
+    /// placed at (`lensX`, `lensY`) — top-left, fractions of the frame; nil = centred on the source. The effects (dim, blur, outline, shadow) then act around the display area.
+    public var lens: Double = 0
+    public var lensX: Double?
+    public var lensY: Double?
     public var outline: Double        // 0…1: outline width around the selection (1 = 5% of the frame height); 0 = none
     public var outlineColor: TextColor
     public var shadow: Double         // 0…1: soft shadow just outside the selection (1 = 4% of the frame height of blur); 0 = none
@@ -481,6 +486,22 @@ public struct Callout: Codable, Equatable, Identifiable, Sendable {
     public var clipID: UUID?          // the clip this callout belongs to: it moves with the clip, is cut with it and disappears with it. nil = independent (older projects)
     public var end: Double { start + duration }
     public static let minSide = 0.02
+    public static let minLens = 1.25, maxLens = 8.0
+    public var isLens: Bool { lens > 0 }
+    /// The magnification actually applied: limited so the whole display area fits in the frame (the selection is never cut) — the inspector tells when this limit is active.
+    public var lensEffective: Double { isLens ? max(1, min(lens, 1 / w, 1 / h)) : 1 }
+    /// The display area (fractions of the frame): source size × effective magnification, centred on the source unless placed, always fully inside the frame.
+    public var displayBox: CGRect {
+        guard isLens else { return CGRect(x: x, y: y, width: w, height: h) }
+        let k = lensEffective, dw = w * k, dh = h * k
+        let ox = lensX ?? (x + w / 2 - dw / 2), oy = lensY ?? (y + h / 2 - dh / 2)
+        return CGRect(x: max(0, min(1 - dw, ox)), y: max(0, min(1 - dh, oy)), width: dw, height: dh)
+    }
+    /// The callout whose box is the display area: selection geometry for the mask of the effects (outline, shadow, dimming) in lens mode.
+    public var displayed: Callout {
+        guard isLens else { return self }
+        var d = self; let b = displayBox; d.lens = 0; d.lensX = nil; d.lensY = nil; d.x = b.minX; d.y = b.minY; d.w = b.width; d.h = b.height; return d
+    }
     public init(id: UUID = UUID(), start: Double, duration: Double = 3, x: Double = 0.3, y: Double = 0.3, w: Double = 0.4, h: Double = 0.4, dim: Double = 0.6, blur: Double = 0, corner: Double = 0.1,
                 shape: CalloutShape = .rect, points: [CalloutPoint] = [], invert: Bool = false, feather: Double = 0,
                 magnify: Double = 0, outline: Double = 0, outlineColor: TextColor = TextColor(r: 1, g: 0.85, b: 0.2), shadow: Double = 0, clipID: UUID? = nil, layerID: UUID? = nil) {
@@ -489,7 +510,7 @@ public struct Callout: Codable, Equatable, Identifiable, Sendable {
         self.magnify = magnify; self.outline = outline; self.outlineColor = outlineColor; self.shadow = shadow; self.clipID = clipID; self.layerID = layerID
         normalize()
     }
-    enum CodingKeys: String, CodingKey { case id, start, duration, x, y, w, h, dim, blur, corner, shape, points, invert, feather, magnify, outline, outlineColor, shadow, clipID, overlays, layerID, lineWidth }
+    enum CodingKeys: String, CodingKey { case id, start, duration, x, y, w, h, dim, blur, corner, shape, points, invert, feather, magnify, lens, lensX, lensY, outline, outlineColor, shadow, clipID, overlays, layerID, lineWidth }
     public init(from d: Decoder) throws {   // projects saved before shapes existed have none of the new keys
         let c = try d.container(keyedBy: CodingKeys.self)
         id = try c.decode(UUID.self, forKey: .id); start = try c.decode(Double.self, forKey: .start); duration = try c.decode(Double.self, forKey: .duration)
@@ -500,6 +521,8 @@ public struct Callout: Codable, Equatable, Identifiable, Sendable {
         invert = try c.decodeIfPresent(Bool.self, forKey: .invert) ?? false
         feather = try c.decodeIfPresent(Double.self, forKey: .feather) ?? 0
         magnify = try c.decodeIfPresent(Double.self, forKey: .magnify) ?? 0       // older projects: no magnification, outline or shadow → look unchanged
+        lens = try c.decodeIfPresent(Double.self, forKey: .lens) ?? 0
+        lensX = try c.decodeIfPresent(Double.self, forKey: .lensX); lensY = try c.decodeIfPresent(Double.self, forKey: .lensY)
         outline = try c.decodeIfPresent(Double.self, forKey: .outline) ?? 0
         outlineColor = try c.decodeIfPresent(TextColor.self, forKey: .outlineColor) ?? TextColor(r: 1, g: 0.85, b: 0.2)
         shadow = try c.decodeIfPresent(Double.self, forKey: .shadow) ?? 0
@@ -515,14 +538,16 @@ public struct Callout: Codable, Equatable, Identifiable, Sendable {
         x = max(0, min(1 - w, x)); y = max(0, min(1 - h, y))
         dim = max(0, min(1, dim)); blur = max(0, min(1, blur)); corner = max(0, min(0.5, corner)); feather = max(0, min(1, feather))
         lineWidth = max(0.1, min(3, lineWidth.isFinite ? lineWidth : 0.4)); magnify = max(0, min(4, magnify)); outline = max(0, min(1, outline)); shadow = max(0, min(1, shadow))
+        lens = lens.isFinite && lens >= 1.0001 ? max(Self.minLens, min(Self.maxLens, lens)) : 0
+        if lens == 0 { lensX = nil; lensY = nil } else { invert = false }
         start = max(0, start)
         if points.count > 4000 { points = Array(points.prefix(4000)) }
         points = points.map { CalloutPoint(x: max(0, min(1, $0.x)), y: max(0, min(1, $0.y))) }
     }
     /// A rectangle/ellipse that only draws its frame: no darkening, blur or magnification, a visible outline. This is the "rectangular annotation".
-    public var isFrameOnly: Bool { (shape == .rect || shape == .ellipse) && dim == 0 && blur == 0 && magnify == 0 && outline > 0 }
+    public var isFrameOnly: Bool { (shape == .rect || shape == .ellipse) && dim == 0 && blur == 0 && magnify == 0 && !isLens && outline > 0 }
     /// Turns the region into a frame-only annotation (keeps the colour and a chosen thickness; 0.35 when there was none).
-    public mutating func makeFrameOnly() { dim = 0; blur = 0; magnify = 0; shadow = 0; if outline < 0.05 { outline = 0.35 }; invert = false }
+    public mutating func makeFrameOnly() { dim = 0; blur = 0; magnify = 0; lens = 0; lensX = nil; lensY = nil; shadow = 0; if outline < 0.05 { outline = 0.35 }; invert = false }
     /// Back to a spotlight: darkens what is outside the region again.
     public mutating func makeSpotlight() { if dim < 0.05 { dim = 0.6 } }
     /// Makes this a straight line or an arrow from `a` to `b` (frame fractions): the box is their bounding box (at least `minSide`, centred on the stroke), the points relative to it.
@@ -553,7 +578,7 @@ public struct TimelineMarker: Codable, Equatable, Sendable, Identifiable {
 }
 
 public struct SadrogProject: Codable, Equatable, Sendable {
-    public static let currentFormat = 16   // 16 keys source volume/mute/effects by recording (media path);  15 adds detached clip audio (an independent A2 item linked to its clip);  13 adds locked lanes and optional clip/overlay names; 12 adds the circle crop of video clips/overlays („Prezentator în cerc”); 11 adds audio effect chains (Audio Units) per recording source; 10 adds the master (mix) volume; 9 adds per-clip audio edits (A2 volume/mute, fades on A1 clips and A2 items); 8 adds per-source volume in dB; 7 adds the document format (canvas size + frame rate); 2 adds clip zoom + text overlays; 3 adds transforms, overlay/audio layers and a material library; 4 adds muted/hidden lanes; 5 adds callouts; 6 adds muted sources of the main sound (all optional on load)
+    public static let currentFormat = 17   // 17 adds the local lens on callouts (source box + display box); 16 keys source volume/mute/effects by recording (media path);  15 adds detached clip audio (an independent A2 item linked to its clip);  13 adds locked lanes and optional clip/overlay names; 12 adds the circle crop of video clips/overlays („Prezentator în cerc”); 11 adds audio effect chains (Audio Units) per recording source; 10 adds the master (mix) volume; 9 adds per-clip audio edits (A2 volume/mute, fades on A1 clips and A2 items); 8 adds per-source volume in dB; 7 adds the document format (canvas size + frame rate); 2 adds clip zoom + text overlays; 3 adds transforms, overlay/audio layers and a material library; 4 adds muted/hidden lanes; 5 adds callouts; 6 adds muted sources of the main sound (all optional on load)
     public var formatVersion = SadrogProject.currentFormat
     public var name: String
     public var clips: [Clip]
@@ -738,6 +763,14 @@ public struct SadrogProject: Codable, Equatable, Sendable {
         callouts = out
     }
     public static let minCalloutLength = 0.05
+    /// Display rows of the title lane: titles that overlap in time sit on different, independent rows (greedy, in start order; a pure view — nothing stored).
+    public func textRows() -> [UUID: Int] {
+        var rows: [UUID: Int] = [:], ends: [Double] = []
+        for t in texts.sorted(by: { ($0.start, $0.id.uuidString) < ($1.start, $1.id.uuidString) }) {
+            if let r = ends.firstIndex(where: { $0 <= t.start + 1e-6 }) { rows[t.id] = r; ends[r] = t.end } else { rows[t.id] = ends.count; ends.append(t.end) }
+        }
+        return rows
+    }
     /// Display rows of the effect lane: callouts that overlap in time sit on different rows (greedy, in start order; a pure view of the data — nothing stored).
     public func calloutRows() -> [UUID: Int] {
         var rows: [UUID: Int] = [:], ends: [Double] = []
@@ -826,9 +859,10 @@ public final class ProjectEditor {
         undoStack.append(project); project = p; return true
     }
 
-    public func split(at t: Double) {
-        commit { p in
-            guard let (i, off) = p.locate(t), off >= Self.minClip, p.clips[i].duration - off >= Self.minClip, off >= p.overlap(into: i) + Self.minClip || p.overlap(into: i) == 0,
+    public func split(at t: Double) { commit { p in Self.splitClip(&p, at: t, only: nil) } }
+    /// Cuts the main-track clip under `t` (with `only`: that clip, if `t` lies inside it) in two. Shared by `split(at:)` and `splitSelection`.
+    static func splitClip(_ p: inout SadrogProject, at t: Double, only: Clip.ID?) -> Bool {
+            guard let (i, off) = p.locate(t), only == nil || p.clips[i].id == only, off >= Self.minClip, p.clips[i].duration - off >= Self.minClip, off >= p.overlap(into: i) + Self.minClip || p.overlap(into: i) == 0,
                   i + 1 >= p.clips.count || t < p.clipSpans[i + 1].start else { return false }       // not inside a dissolve: two clips are on screen there
             var a = p.clips[i], b = p.clips[i]
             a.duration = off
@@ -837,7 +871,6 @@ public final class ProjectEditor {
             if a.audio != nil { a.audio?.fadeOut = 0; b.audio?.fadeIn = 0 }
             a.cut(into: &b, duration: a.duration + b.duration, at: off)
             p.clips.replaceSubrange(i...i, with: [a, b]); return true
-        }
     }
     /// Freeze frame: holds the picture at `t` for `length` seconds, inserted at that point (the clip is cut there; at a clip's very start or end it is
     /// inserted before/after it). The held clip has no sound; the rest of the timeline shifts later. One undo step. Returns the new clip's id.
@@ -1068,28 +1101,25 @@ public final class ProjectEditor {
         }
     }
     // MARK: titles (their own lane; items on it never overlap)
-    private static func overlaps(_ t: TextOverlay, in p: SadrogProject) -> Bool {
-        p.texts.contains { $0.id != t.id && $0.start < t.end - 1e-6 && t.start < $0.end - 1e-6 }
-    }
     @discardableResult public func addText(_ t: TextOverlay) -> Bool {
         var ok = false
-        commit { p in guard !t.text.isEmpty, t.duration >= Self.minClip, !Self.overlaps(t, in: p) else { return false }; p.texts.append(t); ok = true; return true }
+        commit { p in guard !t.text.isEmpty, t.duration >= Self.minClip else { return false }; p.texts.append(t); ok = true; return true }
         return ok
     }
     public func removeText(_ id: TextOverlay.ID) { commit { p in guard let i = p.texts.firstIndex(where: { $0.id == id }) else { return false }; p.texts.remove(at: i); return true } }
-    /// Edits any property of a title (content, font, size, colour, alignment, start, duration) as ONE undo step; refused if the result would overlap another title.
+    /// Edits any property of a title (content, font, size, colour, alignment, start, duration) as ONE undo step. Titles may overlap in time: they are drawn on independent rows.
     @discardableResult public func updateText(_ id: TextOverlay.ID, _ edit: (inout TextOverlay) -> Void) -> Bool {
         var ok = false
         commit { p in
             guard let i = p.texts.firstIndex(where: { $0.id == id }) else { return false }
             var t = p.texts[i]; edit(&t)
             t.start = max(0, t.start); t.duration = max(Self.minClip, t.duration); t.size = max(0.01, min(0.5, t.size))
-            guard !t.text.isEmpty, !Self.overlaps(t, in: p) else { return false }
+            guard !t.text.isEmpty else { return false }
             p.texts[i] = t; ok = true; return true
         }
         return ok
     }
-    /// Moves a title so it starts at `start`; refused if it would overlap another title.
+    /// Moves a title so it starts at `start` (an overlap puts it on its own row).
     @discardableResult public func moveText(_ id: TextOverlay.ID, to start: Double) -> Bool { updateText(id) { $0.start = start } }
     /// Trims a title's left edge (positive = cut from the front); the right edge stays.
     public func trimTextStart(_ id: TextOverlay.ID, by delta: Double) {
@@ -1111,15 +1141,14 @@ public final class ProjectEditor {
     }
     public func removeKey(_ id: UUID, at index: Int) { updateMotion(id) { if $0.keys.indices.contains(index) { $0.keys.remove(at: index) } } }
     /// Splits the title under `t` in two (same look, the second one starts at `t`).
-    public func splitText(at t: Double) {
-        commit { p in
-            guard let i = p.texts.firstIndex(where: { $0.start + Self.minClip <= t && t <= $0.end - Self.minClip }) else { return false }
+    public func splitText(at t: Double) { commit { p in Self.splitTitle(&p, at: t, only: nil) } }
+    static func splitTitle(_ p: inout SadrogProject, at t: Double, only: TextOverlay.ID?) -> Bool {
+            guard let i = p.texts.firstIndex(where: { (only == nil || $0.id == only) && $0.start + Self.minClip <= t && t <= $0.end - Self.minClip }) else { return false }
             var a = p.texts[i], b = a; b.id = UUID(); b.start = t; b.duration = a.end - t; a.duration = t - a.start
             let D = a.duration + b.duration
             a.cut(into: &b, duration: D, at: a.duration)
             if let an = a.anim { let inZone = a.duration < an.seconds || a.duration > D - an.seconds; a.anim = inZone ? nil : TextAnimation(appear: an.appear, disappear: .none, seconds: an.seconds); b.anim = inZone ? nil : TextAnimation(appear: .none, disappear: an.disappear, seconds: an.seconds); if a.anim?.isNone == true { a.anim = nil }; if b.anim?.isNone == true { b.anim = nil } }
             p.texts[i] = a; p.texts.insert(b, at: i + 1); return true
-        }
     }
     /// Sets how a title enters and leaves (replaces its animation by the preset's keyframes around its current resting placement). One undo step.
     public func setTextAnimation(_ id: TextOverlay.ID, _ a: TextAnimation) {
@@ -1286,15 +1315,14 @@ public final class ProjectEditor {
         }
     }
     /// Splits the layer of `kind` that contains timeline time `t`.
-    public func splitLayer(kind: LayerKind, at t: Double) {
-        commit { p in
-            guard let i = p.layers.firstIndex(where: { $0.kind == kind && t - $0.start >= Self.minClip && $0.end - t >= Self.minClip }) else { return false }
+    public func splitLayer(kind: LayerKind, at t: Double) { commit { p in Self.splitItem(&p, kind: kind, at: t, only: nil) } }
+    static func splitItem(_ p: inout SadrogProject, kind: LayerKind, at t: Double, only: Layer.ID?) -> Bool {
+            guard let i = p.layers.firstIndex(where: { (only == nil ? $0.kind == kind : $0.id == only) && t - $0.start >= Self.minClip && $0.end - t >= Self.minClip }) else { return false }
             var a = p.layers[i], b = p.layers[i]; let off = t - a.start
             a.duration = off; b.id = UUID(); b.start = t; b.sourceStart += off; b.duration -= off
             if a.audio != nil { a.audio?.fadeOut = 0; b.audio?.fadeIn = 0 }
             a.cut(into: &b, duration: a.duration + b.duration, at: off)
             p.layers.replaceSubrange(i...i, with: [a, b]); return true
-        }
     }
     // MARK: detach / reattach the sound of a clip
     /// Detaches the clip's sound into an independent audio item (A2): same source file, same source offset, same timeline position — so sync is exact — with the
@@ -1303,16 +1331,55 @@ public final class ProjectEditor {
         var made: Layer.ID?; let before = project
         commit { p in
             guard let i = p.clips.firstIndex(where: { $0.id == clipID }), !p.clips[i].held, !p.clips[i].audioDetached else { return false }
-            let c = p.clips[i], start = p.clipSpans[i].start
-            var l = Layer(kind: .audio, media: c.media, start: start, sourceStart: c.sourceStart, duration: c.duration)
-            var e = AudioEdit()      // an A1 clip carries only fades (its volume/mute are the per-source ones, which stay in force for the detached sound too)
-            let f = (c.audio ?? AudioEdit()).effectiveFades(duration: c.duration)
-            e.fadeIn = max(f.fadeIn, p.overlap(into: i)); e.fadeOut = max(f.fadeOut, i + 1 < p.clips.count ? p.overlap(into: i + 1) : 0)
-            l.audio = e.isNeutral ? nil : e; l.label = c.label ?? URL(fileURLWithPath: c.media).lastPathComponent; l.linkedClip = c.id; l.sourceIdentity = true
-            var row = 0; l.track = nil
-            while Self.overlaps(l, in: p) { row += 1; l.track = row }
-            p.layers.append(l); p.clips[i].audioDetached = true; p.clips[i].audio = nil
-            made = l.id; return true
+            made = Self.makeDetached(&p, at: i); return made != nil
+        }
+        return project != before ? made : nil
+    }
+    /// The A2 item that carries clip `i`'s own sound; the clip keeps its picture and stops playing it. Shared by `detachAudio` and `moveClipToOverlay`.
+    static func makeDetached(_ p: inout SadrogProject, at i: Int) -> Layer.ID? {
+        guard !p.clips[i].held, !p.clips[i].audioDetached else { return nil }
+        let c = p.clips[i], start = p.clipSpans[i].start
+        var l = Layer(kind: .audio, media: c.media, start: start, sourceStart: c.sourceStart, duration: c.duration)
+        var e = AudioEdit()      // an A1 clip carries only fades (its volume/mute are the per-source ones, which stay in force for the detached sound too)
+        let f = (c.audio ?? AudioEdit()).effectiveFades(duration: c.duration)
+        e.fadeIn = max(f.fadeIn, p.overlap(into: i)); e.fadeOut = max(f.fadeOut, i + 1 < p.clips.count ? p.overlap(into: i + 1) : 0)
+        l.audio = e.isNeutral ? nil : e; l.label = c.label ?? URL(fileURLWithPath: c.media).lastPathComponent; l.linkedClip = c.id; l.sourceIdentity = true
+        var row = 0; l.track = nil
+        while overlaps(l, in: p) { row += 1; l.track = row }
+        p.layers.append(l); p.clips[i].audioDetached = true; p.clips[i].audio = nil
+        return l.id
+    }
+    /// Why a main-track clip cannot be lifted onto an overlay (V2) row, or nil when it can: a freeze frame, a cross-dissolve and the pointer effect exist only on the main track.
+    public func overlayMoveBlocker(of clipID: Clip.ID) -> String? {
+        guard let i = project.clips.firstIndex(where: { $0.id == clipID }) else { return "missing" }
+        let c = project.clips[i]
+        if c.held { return "held" }
+        if c.dissolve > 0 { return "dissolve" }
+        if let fx = c.mouseFX, !fx.isOff { return "pointer" }
+        return nil
+    }
+    /// Lifts a main-track (V1) clip onto an overlay row of V2 as an independent video item, in one undo step. The picture keeps its transform, animation, circle/rectangle crop
+    /// and name; its sound stays with the recording (detached into an A2 item linked to the same id, when it was not yet). V1 closes the gap and everything that started after
+    /// the clip (items, titles, highlights) moves earlier by its length, so the rest of the montage keeps its sync. The item is placed where the clip was, in `row`
+    /// (nil = the first row where it does not overlap another item). Refused (nil) when `overlayMoveBlocker` is set, for the last remaining clip, or when `row` is occupied.
+    @discardableResult public func moveClipToOverlay(_ clipID: Clip.ID, row: Int? = nil) -> Layer.ID? {
+        guard overlayMoveBlocker(of: clipID) == nil, project.clips.count > 1 else { return nil }
+        var made: Layer.ID?; let before = project
+        commit { p in
+            guard let i = p.clips.firstIndex(where: { $0.id == clipID }) else { return false }
+            let c = p.clips[i], span = p.clipSpans[i]
+            var l = Layer(id: c.id, kind: .video, media: c.media, start: span.start, sourceStart: c.sourceStart, duration: c.duration, transform: c.transform, endTransform: c.endTransform)
+            l.motion = c.motion; l.crop = c.crop; l.rectCrop = c.rectCrop; l.label = c.label
+            if let row { guard row >= 0 else { return false }; l.track = row == 0 ? nil : row; guard !Self.overlaps(l, in: p) else { return false } }
+            else { var r = 0; while Self.overlaps(l, in: p) { r += 1; l.track = r } }
+            if !c.audioDetached { _ = Self.makeDetached(&p, at: i) }
+            if i + 1 < p.clips.count { p.clips[i + 1].dissolve = 0 }
+            p.clips.remove(at: i)
+            let d = c.duration
+            for k in p.layers.indices where p.layers[k].start >= span.end - 1e-6 { p.layers[k].start = max(0, p.layers[k].start - d) }
+            for k in p.texts.indices where p.texts[k].start >= span.end - 1e-6 { p.texts[k].start = max(0, p.texts[k].start - d) }
+            for k in p.callouts.indices where p.callouts[k].start >= span.end - 1e-6 { p.callouts[k].start = max(0, p.callouts[k].start - d) }
+            p.layers.append(l); made = l.id; return true
         }
         return project != before ? made : nil
     }

@@ -118,12 +118,12 @@ extension ProjectEditor {
 /// Outcome of moving a multiple selection. One rule for the model and the interface:
 /// timed items (overlay/audio items, titles, callouts) move together by the same time, keeping their distances, in ONE undo step;
 /// main-track clips are sequential, so they never move by time: a selection made only of main-track clips moves as one block by index,
-/// and in a mixed selection the main-track clips stay where they are (`mainStayed`). The group stops at time 0 (the delta is clamped),
+/// and a mixed selection (main-track clips + other items) is refused as a whole (`mainTrack`): nothing moves, so nothing can drift out of sync. The group stops at time 0 (the delta is clamped),
 /// and is refused as a whole when one moving item lies on a locked lane or would overlap an item that is not moving.
 public enum GroupMove: Equatable, Sendable {
     case moved(dx: Double, mainStayed: Bool)
     case refused(Reason)
-    public enum Reason: Sendable { case locked, overlap, nothing }
+    public enum Reason: Sendable { case locked, overlap, nothing, mainTrack }
 }
 
 extension ProjectEditor {
@@ -142,6 +142,8 @@ extension ProjectEditor {
     @discardableResult public func moveGroup(_ ids: [UUID], by dx: Double) -> GroupMove {
         let timed = Set(timedItems(in: ids)); let mainSel = project.clips.contains { ids.contains($0.id) }
         guard !timed.isEmpty else { return .refused(.nothing) }
+        // main-track clips are sequential (they cannot be shifted in time), so a selection holding them AND other items cannot move as one: refused whole, nothing moves
+        if mainSel { return .refused(.mainTrack) }
         let d = clampedGroupDelta(ids, dx)
         guard abs(d) > 1e-9 else { return .refused(.nothing) }
         var result: GroupMove = .refused(.nothing)
@@ -179,5 +181,32 @@ extension ProjectEditor {
             let block = Array(p.clips[first...last]); p.clips.removeSubrange(first...last); p.clips.insert(contentsOf: block, at: target); return true
         }
         return project != before
+    }
+}
+
+/// Outcome of „Taie elementele selectate la cursor”.
+public enum SplitSelection: Equatable, Sendable {
+    case split(Int)                 // number of items cut
+    case locked                     // a selected item that the cursor crosses lies on a locked lane: nothing is cut
+    case nothing                    // no selected item crosses the cursor (or the cut would leave a piece shorter than the minimum)
+}
+
+extension ProjectEditor {
+    /// Cuts ONLY the selected items that cross time `t`, in one undo step; everything else stays untouched. Main-track clips, overlay/audio items and titles are cut
+    /// (an effect highlight is trimmed, not cut, so it is left as it is). Refused whole when a crossed selected item lies on a locked lane — never a partial cut.
+    @discardableResult public func splitSelection(_ ids: [UUID], at t: Double) -> SplitSelection {
+        let s = Set(ids), minLen = ProjectEditor.minClip
+        let clips = project.clipSpans.filter { s.contains($0.id) && t - $0.start >= minLen && $0.end - t >= minLen }.map(\.id)
+        let layers = project.layers.filter { s.contains($0.id) && t - $0.start >= minLen && $0.end - t >= minLen }
+        let texts = project.texts.filter { s.contains($0.id) && t - $0.start >= minLen && $0.end - t >= minLen }.map(\.id)
+        if (!clips.isEmpty && project.lockedLanes.contains(.v1)) || layers.contains(where: { project.lockedLanes.contains($0.kind == LayerKind.video ? TrackLane.v2 : TrackLane.a2) }) || (!texts.isEmpty && project.lockedLanes.contains(.t)) { return .locked }
+        var n = 0
+        commit { p in
+            for id in clips where Self.splitClip(&p, at: t, only: id) { n += 1 }
+            for l in layers where Self.splitItem(&p, kind: l.kind, at: t, only: l.id) { n += 1 }
+            for id in texts where Self.splitTitle(&p, at: t, only: id) { n += 1 }
+            return n > 0
+        }
+        return n > 0 ? .split(n) : .nothing
     }
 }

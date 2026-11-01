@@ -84,6 +84,9 @@ final class EditorModel: ObservableObject {
     @Published var movePreview: (id: UUID, delta: Double)?
     @Published var groupMoving: Set<UUID> = []
     /// Crop handles are shown on the selected picture in the viewer (off whenever the selection changes).
+    /// „Încadrează imaginea în cerc”: the circle is fixed and the whole camera rectangle is shown (faded outside the circle) — editor preview only.
+    @Published var circleFraming = false
+    var framingStart: CircleCrop?
     @Published var cropEditing = false      // items that follow the dragged one (multiple selection); empty = single drag
     private var built: BuiltComposition?
     @Published var time = 0.0
@@ -288,7 +291,8 @@ final class EditorModel: ObservableObject {
         try? ProjectStore.save(project, to: projectURL)      // autosave on every edit
         if reload { Task { await self.reload(keepTime: true) } } else { refreshVideoComposition() }
     }
-    func refreshVideoComposition() { player.currentItem?.videoComposition = built?.videoComposition(for: project); player.currentItem?.audioMix = built?.audioMix(for: project) }
+    var framingGuideID: UUID? { circleFraming ? selectedVideoID : nil }
+    func refreshVideoComposition() { player.currentItem?.videoComposition = built?.videoComposition(for: project, framingGuide: framingGuideID); player.currentItem?.audioMix = built?.audioMix(for: project) }
 
     func reload(keepTime: Bool) async {
         guard missing.isEmpty else { message = L10n.f("Lipsește fișierul media: %@", "\(missing.joined(separator: ", "))"); return }
@@ -296,7 +300,7 @@ final class EditorModel: ObservableObject {
         do {
             fxPlan = await EffectRenderer.plan(project, folder: folder)
             let b = try await CompositionBuilder.buildFull(project, fx: fxPlan.ready); built = b; let comp = b.composition
-            let item = AVPlayerItem(asset: comp); item.videoComposition = b.videoComposition(for: project); item.audioMix = b.audioMix(for: project)
+            let item = AVPlayerItem(asset: comp); item.videoComposition = b.videoComposition(for: project, framingGuide: framingGuideID); item.audioMix = b.audioMix(for: project)
             player.replaceCurrentItem(with: item)
             if keepTime { await player.seek(to: min(t, comp.duration), toleranceBefore: .zero, toleranceAfter: .zero) }
             if let v = try? await comp.loadTracks(withMediaType: .video).first, let s = try? await v.load(.naturalSize) { videoSize = s }
@@ -358,7 +362,7 @@ final class EditorModel: ObservableObject {
 
     func seek(_ t: Double) { time = t; player.seek(to: CMTime(seconds: t, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero) }
     func select(at t: Double) { if let (i, _) = project.locate(min(t, project.duration - 0.001)) { selection = project.clips[i].id } }
-    func select(_ id: UUID?) { extra = []; if id != selection { cropEditing = false }; selection = id }
+    func select(_ id: UUID?) { extra = []; if id != selection { cropEditing = false; endFraming() }; selection = id }
     /// The pointer track of the selected clip's recording (nil when it was recorded without the setting, or the file is not there).
     var selectedMouseTrack: MouseTrack? { selectedClip.flatMap { $0.held ? nil : MouseTrack.load(besideMedia: $0.media) } }
     /// The front-window track of the selected clip's recording (nil when it was recorded without the setting).
@@ -414,7 +418,7 @@ final class EditorModel: ObservableObject {
         if next { if let t = b.first(where: { $0 > time + 0.01 }) { seek(min(t, max(0, project.timelineEnd - 0.001))) } }
         else if let t = b.last(where: { $0 < time - 0.01 }) { seek(t) }
     }
-    func select(clip id: Clip.ID?) { extra = []; if id != selection { cropEditing = false }; selection = id }
+    func select(clip id: Clip.ID?) { extra = []; if id != selection { cropEditing = false; endFraming() }; selection = id }
     /// Edge trim with ripple. `delta` seconds on the timeline: positive moves the edge right.
     func trim(clip id: Clip.ID, edge: ClipEdge, by delta: Double) {
         guard let c = project.clips.first(where: { $0.id == id }) else { return }
@@ -530,6 +534,18 @@ final class EditorModel: ObservableObject {
         if let made { selection = made; extra = []; message = T("Sunetul e acum un element separat — poate fi mutat, tăiat sau șters independent.") }
         else if project.clips.first(where: { $0.id == c.id })?.audioDetached != true { message = T("Nu pot detașa sunetul acestui clip.") }
     }
+    func canMoveToOverlay(_ id: UUID? = nil) -> Bool { let i = id ?? selection; return project.clips.count > 1 && i != nil && editor.overlayMoveBlocker(of: i!) == nil }
+    /// Lifts the main-track clip onto a video overlay row (V2); the new item becomes the selection. One undo step.
+    func moveToOverlay(_ id: UUID? = nil) {
+        guard let i = id ?? selection, project.clips.contains(where: { $0.id == i }) else { return }
+        if let why = editor.overlayMoveBlocker(of: i) {
+            message = why == "held" ? T("Un cadru înghețat rămâne pe pista principală.") : (why == "dissolve" ? T("Clipul are o tranziție cu clipul dinainte — scoate-o ca să-l poți muta pe o pistă video.") : T("Clipul are efectul de cursor — rămâne pe pista principală."))
+            return
+        }
+        var made: UUID?; apply { made = $0.moveClipToOverlay(i) }
+        if let made { selection = made; extra = []; message = T("Clipul e acum pe o pistă video (V2); pista principală s-a strâns în locul lui.") }
+        else { message = T("Nu pot muta clipul pe o pistă video (ultimul clip rămâne pe pista principală).") }
+    }
     /// Give the clip its sound back (removes the detached item when it is still in sync). Refused, with a message, when the item was moved/trimmed/cut.
     func reattachAudio(_ id: UUID? = nil) {
         guard let c = clipForAudioCommand(id) else { return }
@@ -619,6 +635,7 @@ final class EditorModel: ObservableObject {
     var overlayRows: Int { project.rowCount(.v2) }
     var audioRows: Int { project.rowCount(.a2) }
     var attachedDepth: (clips: Int, layers: Int) { project.attachedRowDepth }
+    var textRowCount: Int { (project.textRows().values.max() ?? 0) + 1 }
     var calloutRowCount: Int { (project.globalCalloutRows().values.max() ?? 0) + 1 }
     /// Row under the pointer while a V2/A2 item is dragged: free = the item fits there (no overlap), otherwise the drop will be refused.
     @Published var rowPreview: (id: UUID, row: Int, free: Bool)?
