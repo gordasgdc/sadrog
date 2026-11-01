@@ -1,5 +1,10 @@
 # SADROG — changelog
 
+## 1.0.2
+- Editor: after detaching a clip's sound, selecting the separate audio item shows its source sounds again — volume, mute and the audio-effect chain with its plug-in windows — and the item stays editable from its own selection.
+- Tracks: a larger, always-visible grab handle for moving a track up or down; dragging a video overlay above the top track, or a separate audio item below the last one, creates a new track there (a dashed "New track" band shows where it will land).
+- Tests: the effect chain (order, bypass, plug-in state) is verified through detach, cut, move to another track, track reorder, undo/redo and save/reopen.
+
 ## 1.0.1
 - Help ▸ User Manual… (also in the About window): opens the manual PDF in the language chosen in SADROG — Romanian, English or Spanish — independent of the system language.
 

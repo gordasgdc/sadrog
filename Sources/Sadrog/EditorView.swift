@@ -1289,7 +1289,7 @@ struct InspectorPanel: View {
                             }
                             if !c.audioDetached { FadeGroup(m: m, id: id) }
                         }
-                        if m.selectedClip != nil, !m.mainSources.isEmpty {
+                        if m.selectedClip != nil || m.selectedLayer?.keepsSource == true, !m.mainSources.isEmpty {
                             // the clip's linked sound: every recorded source with its own switch (same state as the A1 lane headers)
                             InspectorGroup(T("Sunet")) {
                                 if m.recordingsInUse.count > 1 {      // several recordings: say which file these switches belong to
@@ -1304,7 +1304,7 @@ struct InspectorPanel: View {
                                         Button { m.focusSource(src.index) } label: { Text(T("Alege")).font(Theme.F.small) }.buttonStyle(.plain).foregroundStyle(Theme.C.sel)
                                         Toggle("", isOn: Binding(get: { !m.isSourceMuted(src.index) }, set: { on in if on == m.isSourceMuted(src.index) { m.toggleSource(src.index) } })).toggleStyle(.switch).controlSize(.mini).labelsHidden()
                                             .accessibilityLabel(L10n.f("Sunet sursa %@", "\(src.name)"))
-                                    }.frame(height: 24).disabled(m.isOff(.a1))
+                                    }.frame(height: 24).disabled(m.isOff(m.selectedLayer?.keepsSource == true ? .a2 : .a1))
                                   } else {
                                     VStack(alignment: .leading, spacing: 2) {
                                         if m.focusedSource == src.index {
@@ -1325,7 +1325,7 @@ struct InspectorPanel: View {
                                                   commit: { m.commitSourceGain(src.index) }, decimals: 1)
                                             .disabled(m.isSourceMuted(src.index)).opacity(m.isSourceMuted(src.index) ? 0.45 : 1)
                                         EffectsRow(m: m, k: src.index)
-                                    }.disabled(m.isOff(.a1)).padding(.bottom, 4)
+                                    }.disabled(m.isOff(m.selectedLayer?.keepsSource == true ? .a2 : .a1)).padding(.bottom, 4)
                                   }
                                 }
                                 if let pk = m.estimatedMixPeakDB {
@@ -1797,7 +1797,8 @@ struct TimelinePanel: View {
         return (row, slot, nil)
     }
     private func rowGrip(_ lane: TrackLane, row: Int, rows n: Int, height: CGFloat, geo: Geo) -> some View {
-        Image(systemName: "line.3.horizontal").font(.system(size: 8)).foregroundStyle(Theme.C.textFaint).frame(width: 14, height: 22)
+        Image(systemName: "line.3.horizontal").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.C.textDim).frame(width: 24, height: max(24, min(height, 36)))
+            .background(RoundedRectangle(cornerRadius: 4).fill(Theme.C.text.opacity(0.06)))
             .contentShape(Rectangle()).pointerStyle(.grabIdle)
             .gesture(DragGesture(minimumDistance: 3, coordinateSpace: .named("lanes")).onChanged { v in
                 rowDrag = (lane, row, v.location.y, v.location.x > headerW + 40)
@@ -1960,9 +1961,12 @@ struct TimelinePanel: View {
             }
             if let rp = m.rowPreview, m.project.layers.contains(where: { $0.id == rp.id }) {
                 let isV = m.project.layers.first { $0.id == rp.id }?.kind == .video, li = isV ? 1 : 4
-                let sl = isV ? m.slot(.v2, rp.row) : rp.row, rh = geo.rowHeight(li, slot: sl)
+                let isNew = rp.row >= m.project.rowCount(isV ? .v2 : .a2)
+                let sl = isNew ? (isV ? -1 : m.project.rowCount(.a2)) : (isV ? m.slot(.v2, rp.row) : rp.row), rh = isNew ? 24 : geo.rowHeight(li, slot: sl)
+                let top = isNew ? (isV ? geo.y(li) - rh : geo.y(li) + geo.heights[li]) : geo.rowTop(li, slot: sl)
                 RoundedRectangle(cornerRadius: 4).stroke(rp.free ? Theme.C.sel : Theme.C.warn, style: StrokeStyle(lineWidth: 2, dash: rp.free ? [] : [5, 3]))
-                    .background((rp.free ? Theme.C.sel : Theme.C.warn).opacity(0.12)).frame(width: width, height: rh).offset(y: geo.rowTop(li, slot: sl)).allowsHitTesting(false).zIndex(2)
+                    .background((rp.free ? Theme.C.sel : Theme.C.warn).opacity(0.12)).frame(width: width, height: rh).offset(y: top).allowsHitTesting(false).zIndex(2)
+                    .overlay(alignment: .leading) { if isNew { Text(T("Pistă nouă")).font(Theme.F.small).foregroundStyle(Theme.C.sel).padding(.leading, 8).allowsHitTesting(false) } }
             }
             // effects that belong to a clip or an overlay live INSIDE its tile: one band per effect over exactly its interval, stacked from the tile's bottom edge in start order
             ForEach(items.filter(\.attached), id: \.id) { it in
@@ -2153,7 +2157,9 @@ struct TimelinePanel: View {
         guard lane == .overlay || lane == .audio, let l = m.project.layers.first(where: { $0.id == id }) else { m.rowPreview = nil; return }
         let li = lane == .overlay ? 1 : 4
         let inLane = y >= geo.y(li) && y < geo.y(li) + geo.heights[li]
-        let row = inLane ? (rowAt(lane, li, y, geo) ?? 0) : l.row
+        // past the outer edge of the lane (above V2, below A2): a NEW track at the end of the stack; the preview band says so
+        let beyond = lane == .overlay ? y < geo.y(li) - 6 : y > geo.y(li) + geo.heights[li] + 6
+        let row = beyond ? m.project.rowCount(lane == .overlay ? .v2 : .a2) : (inLane ? (rowAt(lane, li, y, geo) ?? 0) : l.row)
         var probe = l; probe.start = max(0, l.start + dx); probe.track = row == 0 ? nil : row
         let free = !m.project.layers.contains { $0.id != id && $0.kind == l.kind && $0.row == row && $0.start < probe.end - 1e-6 && probe.start < $0.end - 1e-6 }
         m.rowPreview = (id, row, free)

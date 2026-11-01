@@ -631,6 +631,7 @@ enum L10nCatalog {
         "Pista nu poate fi mutată acolo.": ("The track can't be moved there.", "La pista no se puede mover ahí."),
         "Pistele %@ se mută doar în interiorul benzii %@": ("%@ tracks only move inside the %@ lane", "Las pistas %@ solo se mueven dentro de la banda %@"),
         "Pistă": ("Track", "Pista"),
+        "Pistă nouă": ("New track", "Pista nueva"),
         "Pistă nouă + inserare": ("New track + insert", "Pista nueva + inserción"),
         "Pistă nouă creată și materialul inserat.": ("New track created and material inserted.", "Pista nueva creada y material insertado."),
         "Pistă în fișier": ("Track in file", "Pista en el archivo"),
