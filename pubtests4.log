@@ -1,0 +1,1153 @@
+Building for debugging...
+[1 / 9]
+[2 / 5] SadrogCoreTests-product
+[4 / 7] SadrogCoreTests-product
+[9 / 11] SadrogCoreTests-product
+Build complete! (1,66 secs)
+Test Suite 'All tests' started at 2026-11-01 11:46:18.735.
+Test Suite 'SadrogCoreTests.xctest' started at 2026-11-01 11:46:18.736.
+Test Suite 'ActivationE2ETests' started at 2026-11-01 11:46:18.736.
+Test Case '-[SadrogCoreTests.ActivationE2ETests testPermanentLicenceIsVerifiedLocally]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ActivationE2ETests.swift:11: -[SadrogCoreTests.ActivationE2ETests testPermanentLicenceIsVerifiedLocally] : Test skipped - SADROG_E2E_URL not set
+Test Case '-[SadrogCoreTests.ActivationE2ETests testPermanentLicenceIsVerifiedLocally]' skipped (0.001 seconds).
+Test Case '-[SadrogCoreTests.ActivationE2ETests testTrialRequestApproveActivateAndOnePerMac]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ActivationE2ETests.swift:11: -[SadrogCoreTests.ActivationE2ETests testTrialRequestApproveActivateAndOnePerMac] : Test skipped - SADROG_E2E_URL not set
+Test Case '-[SadrogCoreTests.ActivationE2ETests testTrialRequestApproveActivateAndOnePerMac]' skipped (0.000 seconds).
+Test Suite 'ActivationE2ETests' passed at 2026-11-01 11:46:18.737.
+	 Executed 2 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ActivationTests' started at 2026-11-01 11:46:18.737.
+Test Case '-[SadrogCoreTests.ActivationTests testClientVerifiesLeaseNonceAndSignedRefusal]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testClientVerifiesLeaseNonceAndSignedRefusal]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testDeviceRequestIsSignedOverTheExactBody]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testDeviceRequestIsSignedOverTheExactBody]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testEnvelopeRejectsWrongContextKeyAndTampering]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testEnvelopeRejectsWrongContextKeyAndTampering]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testLeaseFromAnotherActivationOrOlderGenerationIsIgnored]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testLeaseFromAnotherActivationOrOlderGenerationIsIgnored]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testMachineIDFormula]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testMachineIDFormula]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testPermanentLicenceWorksForeverWithoutServer]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testPermanentLicenceWorksForeverWithoutServer]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testRefusedLicenceGivesFreeMode]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testRefusedLicenceGivesFreeMode]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testRequestValidationAndContactBlockReuseTheSameRequest]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testRequestValidationAndContactBlockReuseTheSameRequest]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testStateRoundTripAndKeyIsStable]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testStateRoundTripAndKeyIsStable]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ActivationTests testTrialRunsOnlyOnTheLeaseAndEndsAtValidUntil]' started.
+Test Case '-[SadrogCoreTests.ActivationTests testTrialRunsOnlyOnTheLeaseAndEndsAtValidUntil]' passed (0.004 seconds).
+Test Suite 'ActivationTests' passed at 2026-11-01 11:46:18.752.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.014 (0.015) seconds
+Test Suite 'AddRecordingTests' started at 2026-11-01 11:46:18.752.
+Test Case '-[SadrogCoreTests.AddRecordingTests testAddedSessionJoinsTheEndAsOneUndoStepAndKeepsTheRestUntouched]' started.
+Test Case '-[SadrogCoreTests.AddRecordingTests testAddedSessionJoinsTheEndAsOneUndoStepAndKeepsTheRestUntouched]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.AddRecordingTests testCameraAndExtraScreenFilesAreAddedShiftedOnFreeRowsSeparatelyEditable]' started.
+Test Case '-[SadrogCoreTests.AddRecordingTests testCameraAndExtraScreenFilesAreAddedShiftedOnFreeRowsSeparatelyEditable]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.AddRecordingTests testNothingAddedWhenTooShort]' started.
+Test Case '-[SadrogCoreTests.AddRecordingTests testNothingAddedWhenTooShort]' passed (0.000 seconds).
+Test Suite 'AddRecordingTests' passed at 2026-11-01 11:46:18.755.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'AnimationCutTests' started at 2026-11-01 11:46:18.755.
+Test Case '-[SadrogCoreTests.AnimationCutTests testCutsOfCutsKeepThePicture]' started.
+Test Case '-[SadrogCoreTests.AnimationCutTests testCutsOfCutsKeepThePicture]' passed (0.033 seconds).
+Test Case '-[SadrogCoreTests.AnimationCutTests testEditorSplitFreezeUndoAndSave]' started.
+Test Case '-[SadrogCoreTests.AnimationCutTests testEditorSplitFreezeUndoAndSave]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.AnimationCutTests testEveryCutKeepsThePicture]' started.
+Test Case '-[SadrogCoreTests.AnimationCutTests testEveryCutKeepsThePicture]' passed (0.070 seconds).
+Test Case '-[SadrogCoreTests.AnimationCutTests testNoJumpAtTheCut]' started.
+Test Case '-[SadrogCoreTests.AnimationCutTests testNoJumpAtTheCut]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.AnimationCutTests testTrimsKeepWhatStays]' started.
+Test Case '-[SadrogCoreTests.AnimationCutTests testTrimsKeepWhatStays]' passed (0.007 seconds).
+Test Suite 'AnimationCutTests' passed at 2026-11-01 11:46:18.867.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.111 (0.112) seconds
+Test Suite 'AudioEditTests' started at 2026-11-01 11:46:18.867.
+Test Case '-[SadrogCoreTests.AudioEditTests testA2LevelMuteAndFadesInExport]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/AudioEditTests.swift:65: -[SadrogCoreTests.AudioEditTests testA2LevelMuteAndFadesInExport] : Test skipped - synthetic clips not available
+Test Case '-[SadrogCoreTests.AudioEditTests testA2LevelMuteAndFadesInExport]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.AudioEditTests testFadesAfterTrimAndOnMainClip]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/AudioEditTests.swift:82: -[SadrogCoreTests.AudioEditTests testFadesAfterTrimAndOnMainClip] : Test skipped - synthetic clips not available
+Test Case '-[SadrogCoreTests.AudioEditTests testFadesAfterTrimAndOnMainClip]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.AudioEditTests testModelRulesUndoPersistenceLegacy]' started.
+Test Case '-[SadrogCoreTests.AudioEditTests testModelRulesUndoPersistenceLegacy]' passed (0.001 seconds).
+Test Suite 'AudioEditTests' passed at 2026-11-01 11:46:18.868.
+	 Executed 3 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'AudioEffectsTests' started at 2026-11-01 11:46:18.869.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testCancelLeavesNoFile]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/AudioEffectsTests.swift:123: -[SadrogCoreTests.AudioEffectsTests testCancelLeavesNoFile] : Test skipped
+Test Case '-[SadrogCoreTests.AudioEffectsTests testCancelLeavesNoFile]' skipped (0.266 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testCancelWhileWorkerIsBlockedIsAnsweredAsCancelledPromptly]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testCancelWhileWorkerIsBlockedIsAnsweredAsCancelledPromptly]' passed (11.798 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testCatalogIsGenericAndIncludesMusicEffects]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testCatalogIsGenericAndIncludesMusicEffects]' passed (0.004 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testExportAndStemUseTheProcessedSource]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testExportAndStemUseTheProcessedSource]' passed (20.113 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testFourLOChainAlignedWhenInstalled]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/AudioEffectsTests.swift:202: -[SadrogCoreTests.AudioEffectsTests testFourLOChainAlignedWhenInstalled] : Test skipped - 4LO refuză gazda xctest (−128); verificat prin probă și în aplicație
+Test Case '-[SadrogCoreTests.AudioEffectsTests testFourLOChainAlignedWhenInstalled]' skipped (0.173 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testMissingPluginIsReportedAndBlocksExport]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testMissingPluginIsReportedAndBlocksExport]' passed (0.004 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testModelFormat11UndoAndOldProjects]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testModelFormat11UndoAndOldProjects]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testRenderIsReproducibleAndKeyFollowsChain]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testRenderIsReproducibleAndKeyFollowsChain]' passed (1.355 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testStalledRenderIsStoppedWithoutLeavingFiles]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testStalledRenderIsStoppedWithoutLeavingFiles]' passed (2.010 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testStateBytesAreCanonical]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testStateBytesAreCanonical]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.AudioEffectsTests testUnreportedConstantDelayIsMeasuredAndCompensated]' started.
+Test Case '-[SadrogCoreTests.AudioEffectsTests testUnreportedConstantDelayIsMeasuredAndCompensated]' passed (0.698 seconds).
+Test Suite 'AudioEffectsTests' passed at 2026-11-01 11:46:55.294.
+	 Executed 11 tests, with 2 tests skipped and 0 failures (0 unexpected) in 36.423 (36.425) seconds
+Test Suite 'CalloutBandDepthTests' started at 2026-11-01 11:46:55.294.
+Test Case '-[SadrogCoreTests.CalloutBandDepthTests testDepthCountsStackedRowsPerTargetKind]' started.
+Test Case '-[SadrogCoreTests.CalloutBandDepthTests testDepthCountsStackedRowsPerTargetKind]' passed (0.000 seconds).
+Test Suite 'CalloutBandDepthTests' passed at 2026-11-01 11:46:55.294.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'CalloutBandsTests' started at 2026-11-01 11:46:55.294.
+Test Case '-[SadrogCoreTests.CalloutBandsTests testAttachedEffectsStackInsideTheirOwnTargetInStartOrder]' started.
+Test Case '-[SadrogCoreTests.CalloutBandsTests testAttachedEffectsStackInsideTheirOwnTargetInStartOrder]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutBandsTests testEffectsBoundToAnOverlayAreAttachedToo]' started.
+Test Case '-[SadrogCoreTests.CalloutBandsTests testEffectsBoundToAnOverlayAreAttachedToo]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutBandsTests testNonOverlappingEffectsOnTheSameTargetShareARow]' started.
+Test Case '-[SadrogCoreTests.CalloutBandsTests testNonOverlappingEffectsOnTheSameTargetShareARow]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutBandsTests testOldGlobalEffectsStayGlobalAndAreNotReassociated]' started.
+Test Case '-[SadrogCoreTests.CalloutBandsTests testOldGlobalEffectsStayGlobalAndAreNotReassociated]' passed (0.000 seconds).
+Test Suite 'CalloutBandsTests' passed at 2026-11-01 11:46:55.295.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'CalloutClipBindingTests' started at 2026-11-01 11:46:55.295.
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testDeletingTheClipDeletesItsCallout]' started.
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testDeletingTheClipDeletesItsCallout]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testIndependentCalloutsAreNeverTouchedAndOldProjectsDecodeUnbound]' started.
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testIndependentCalloutsAreNeverTouchedAndOldProjectsDecodeUnbound]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testMovesWithItsClipWhenAnEarlierClipIsTrimmed]' started.
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testMovesWithItsClipWhenAnEarlierClipIsTrimmed]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testMovesWithItsClipWhenClipsAreReordered]' started.
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testMovesWithItsClipWhenClipsAreReordered]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testSplitInsideTheCalloutKeepsItInTheClipItStartsIn_andTrimShortensIt]' started.
+Test Case '-[SadrogCoreTests.CalloutClipBindingTests testSplitInsideTheCalloutKeepsItInTheClipItStartsIn_andTrimShortensIt]' passed (0.000 seconds).
+Test Suite 'CalloutClipBindingTests' passed at 2026-11-01 11:46:55.297.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'CalloutOperationsTests' started at 2026-11-01 11:46:55.297.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testCuttingTheClipMovesTheBandToThePieceItStartsIn]' started.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testCuttingTheClipMovesTheBandToThePieceItStartsIn]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testDeletingTheBandKeepsTheClip]' started.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testDeletingTheBandKeepsTheClip]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testDuplicateAtTheEndOfTheClipStillFitsAndStaysAttached]' started.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testDuplicateAtTheEndOfTheClipStillFitsAndStaysAttached]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testDuplicatedBandStaysOnItsTargetInsideTheClipAndNeverShiftsOthers]' started.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testDuplicatedBandStaysOnItsTargetInsideTheClipAndNeverShiftsOthers]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testSaveAndReopenKeepTargetAndInterval]' started.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testSaveAndReopenKeepTargetAndInterval]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testTrimmingTheClipEndShortensTheBand]' started.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testTrimmingTheClipEndShortensTheBand]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testTrimmingTheClipStartShiftsTheBandKeepingItsPlaceInTheClip]' started.
+Test Case '-[SadrogCoreTests.CalloutOperationsTests testTrimmingTheClipStartShiftsTheBandKeepingItsPlaceInTheClip]' passed (0.000 seconds).
+Test Suite 'CalloutOperationsTests' passed at 2026-11-01 11:46:55.300.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'CalloutOverlayBindingTests' started at 2026-11-01 11:46:55.300.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testACalloutPastedAloneStaysOnItsOverlay]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testACalloutPastedAloneStaysOnItsOverlay]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testACutGivesTheCalloutToThePieceItStartsIn]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testACutGivesTheCalloutToThePieceItStartsIn]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testBindAndReleaseAndClipExclusivity]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testBindAndReleaseAndClipExclusivity]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testCopyingTheOverlayCopiesItsCalloutBoundToTheCopy]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testCopyingTheOverlayCopiesItsCalloutBoundToTheCopy]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testDeletingTheOverlayDeletesItsCalloutAndUndoBringsBothBack]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testDeletingTheOverlayDeletesItsCalloutAndUndoBringsBothBack]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testEffectStaysInsideTheOverlayPicture]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CalloutOverlayBindingTests.swift:92: -[SadrogCoreTests.CalloutOverlayBindingTests testEffectStaysInsideTheOverlayPicture] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testEffectStaysInsideTheOverlayPicture]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testFollowsTheOverlayWhenItMoves]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testFollowsTheOverlayWhenItMoves]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testIsShortenedByTrimsAndRemovedWhenTrimmedAway]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testIsShortenedByTrimsAndRemovedWhenTrimmedAway]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testUnknownOverlayReleasesAndOldProjectsDecode]' started.
+Test Case '-[SadrogCoreTests.CalloutOverlayBindingTests testUnknownOverlayReleasesAndOldProjectsDecode]' passed (0.000 seconds).
+Test Suite 'CalloutOverlayBindingTests' passed at 2026-11-01 11:46:55.303.
+	 Executed 9 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'CalloutTargetsTests' started at 2026-11-01 11:46:55.303.
+Test Case '-[SadrogCoreTests.CalloutTargetsTests testEffectsOnDifferentTargetsCoexistAndKeepTheirRequestedStart]' started.
+Test Case '-[SadrogCoreTests.CalloutTargetsTests testEffectsOnDifferentTargetsCoexistAndKeepTheirRequestedStart]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTargetsTests testOverlappingEffectsKeepArrayOrderAcrossSaveAndReload]' started.
+Test Case '-[SadrogCoreTests.CalloutTargetsTests testOverlappingEffectsKeepArrayOrderAcrossSaveAndReload]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.CalloutTargetsTests testTwoDiscreteStyleEditsAreTwoUndoSteps]' started.
+Test Case '-[SadrogCoreTests.CalloutTargetsTests testTwoDiscreteStyleEditsAreTwoUndoSteps]' passed (0.000 seconds).
+Test Suite 'CalloutTargetsTests' passed at 2026-11-01 11:46:55.304.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'CalloutTests' started at 2026-11-01 11:46:55.304.
+Test Case '-[SadrogCoreTests.CalloutTests testBlurSpreadsOnlyOutsideTheRegion]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CalloutTests.swift:52: -[SadrogCoreTests.CalloutTests testBlurSpreadsOnlyOutsideTheRegion] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CalloutTests testBlurSpreadsOnlyOutsideTheRegion]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testEllipseFreehandInvertAndFeatherSelectTheRightPixels]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CalloutTests.swift:92: -[SadrogCoreTests.CalloutTests testEllipseFreehandInvertAndFeatherSelectTheRightPixels] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CalloutTests testEllipseFreehandInvertAndFeatherSelectTheRightPixels]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testFreehandBoxFollowsThePointsAndStaysRelative]' started.
+Test Case '-[SadrogCoreTests.CalloutTests testFreehandBoxFollowsThePointsAndStaysRelative]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testMagnifyOutlineAndShadowAffectOnlyTheirPixels]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CalloutTests.swift:140: -[SadrogCoreTests.CalloutTests testMagnifyOutlineAndShadowAffectOnlyTheirPixels] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CalloutTests testMagnifyOutlineAndShadowAffectOnlyTheirPixels]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testOldCalloutsDecodeWithoutMagnifyOutlineShadow]' started.
+Test Case '-[SadrogCoreTests.CalloutTests testOldCalloutsDecodeWithoutMagnifyOutlineShadow]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testOldProjectsWithoutShapeKeysDecodeAsRectangles]' started.
+Test Case '-[SadrogCoreTests.CalloutTests testOldProjectsWithoutShapeKeysDecodeAsRectangles]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testOutsideIsDarkenedInsideUntouchedOnlyWhileTheCalloutLastsAndLaneSwitchHidesIt]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CalloutTests.swift:36: -[SadrogCoreTests.CalloutTests testOutsideIsDarkenedInsideUntouchedOnlyWhileTheCalloutLastsAndLaneSwitchHidesIt] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CalloutTests testOutsideIsDarkenedInsideUntouchedOnlyWhileTheCalloutLastsAndLaneSwitchHidesIt]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testRectCropIsNonDestructiveAndChangesTheShownPicture]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CalloutTests.swift:171: -[SadrogCoreTests.CalloutTests testRectCropIsNonDestructiveAndChangesTheShownPicture] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CalloutTests testRectCropIsNonDestructiveAndChangesTheShownPicture]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testRegionIsClampedToTheFrameAndEditingIsOneUndoStep]' started.
+Test Case '-[SadrogCoreTests.CalloutTests testRegionIsClampedToTheFrameAndEditingIsOneUndoStep]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.CalloutTests testWritesDemoFramesForTheShapes]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CalloutTests.swift:118: -[SadrogCoreTests.CalloutTests testWritesDemoFramesForTheShapes] : Test skipped - needs the private demo project
+Test Case '-[SadrogCoreTests.CalloutTests testWritesDemoFramesForTheShapes]' skipped (0.000 seconds).
+Test Suite 'CalloutTests' passed at 2026-11-01 11:46:55.308.
+	 Executed 10 tests, with 6 tests skipped and 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'CameraFormatTests' started at 2026-11-01 11:46:55.308.
+Test Case '-[SadrogCoreTests.CameraFormatTests testChosenModeSurvivesTheConfigFileAndOldFilesHaveNone]' started.
+Test Case '-[SadrogCoreTests.CameraFormatTests testChosenModeSurvivesTheConfigFileAndOldFilesHaveNone]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CameraFormatTests testIndexFindsTheDeviceFormatOrRefusesNeverSubstitutes]' started.
+Test Case '-[SadrogCoreTests.CameraFormatTests testIndexFindsTheDeviceFormatOrRefusesNeverSubstitutes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CameraFormatTests testOptionsComeFromTheRangesLargestFirstWithoutDuplicates]' started.
+Test Case '-[SadrogCoreTests.CameraFormatTests testOptionsComeFromTheRangesLargestFirstWithoutDuplicates]' passed (0.000 seconds).
+Test Suite 'CameraFormatTests' passed at 2026-11-01 11:46:55.309.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'CameraTests' started at 2026-11-01 11:46:55.309.
+Test Case '-[SadrogCoreTests.CameraTests testManifestRoundTripAndOldManifests]' started.
+Test Case '-[SadrogCoreTests.CameraTests testManifestRoundTripAndOldManifests]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.CameraTests testPresenterCornersKeepTheMargin]' started.
+Test Case '-[SadrogCoreTests.CameraTests testPresenterCornersKeepTheMargin]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CameraTests testRecordingOpensWithTheCameraAsASeparateSyncedPresenter]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CameraTests.swift:74: -[SadrogCoreTests.CameraTests testRecordingOpensWithTheCameraAsASeparateSyncedPresenter] : Test skipped - synthetic presenter missing
+Test Case '-[SadrogCoreTests.CameraTests testRecordingOpensWithTheCameraAsASeparateSyncedPresenter]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CameraTests testValidatorNeverSubstitutesACamera]' started.
+Test Case '-[SadrogCoreTests.CameraTests testValidatorNeverSubstitutesACamera]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CameraTests testWriterKeepsItsOwnFileFirstFrameTimeAndOrder]' started.
+Test Case '-[SadrogCoreTests.CameraTests testWriterKeepsItsOwnFileFirstFrameTimeAndOrder]' passed (1.105 seconds).
+Test Suite 'CameraTests' passed at 2026-11-01 11:46:56.416.
+	 Executed 5 tests, with 1 test skipped and 0 failures (0 unexpected) in 1.107 (1.107) seconds
+Test Suite 'CaptureSourcesTests' started at 2026-11-01 11:46:56.416.
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testChannelExtractInterleavedAndPeak]' started.
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testChannelExtractInterleavedAndPeak]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testManifestRoundTrip]' started.
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testManifestRoundTrip]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testRegionMathLogicalPointsPixelsAndScales]' started.
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testRegionMathLogicalPointsPixelsAndScales]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testStillScreenKeepsVideoAsLongAsAudio]' started.
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testStillScreenKeepsVideoAsLongAsAudio]' passed (0.102 seconds).
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testValidatorNeverSubstitutes]' started.
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testValidatorNeverSubstitutes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testWriterTwoSeparateAudioTracks]' started.
+Test Case '-[SadrogCoreTests.CaptureSourcesTests testWriterTwoSeparateAudioTracks]' passed (0.208 seconds).
+Test Suite 'CaptureSourcesTests' passed at 2026-11-01 11:46:56.731.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.314 (0.314) seconds
+Test Suite 'CaptureTimelineTests' started at 2026-11-01 11:46:56.731.
+Test Case '-[SadrogCoreTests.CaptureTimelineTests testCameraHeldToTheSessionEnd]' started.
+Test Case '-[SadrogCoreTests.CaptureTimelineTests testCameraHeldToTheSessionEnd]' passed (0.431 seconds).
+Test Case '-[SadrogCoreTests.CaptureTimelineTests testMapDropsBeforeStartAndInsidePausesAndShiftsAfter]' started.
+Test Case '-[SadrogCoreTests.CaptureTimelineTests testMapDropsBeforeStartAndInsidePausesAndShiftsAfter]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.CaptureTimelineTests testPreparedCameraStartsWithTheScreenAndPausesTogether]' started.
+Test Case '-[SadrogCoreTests.CaptureTimelineTests testPreparedCameraStartsWithTheScreenAndPausesTogether]' passed (2.788 seconds).
+Test Suite 'CaptureTimelineTests' passed at 2026-11-01 11:46:59.951.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 3.220 (3.220) seconds
+Test Suite 'CircleCropTests' started at 2026-11-01 11:46:59.951.
+Test Case '-[SadrogCoreTests.CircleCropTests testCircleOutlineFramingAndBackToRectangleInTheExport]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CircleCropTests.swift:72: -[SadrogCoreTests.CircleCropTests testCircleOutlineFramingAndBackToRectangleInTheExport] : Test skipped - synthetic clips missing
+Test Case '-[SadrogCoreTests.CircleCropTests testCircleOutlineFramingAndBackToRectangleInTheExport]' skipped (0.001 seconds).
+Test Case '-[SadrogCoreTests.CircleCropTests testGlossyOutlineIsLighterOnTopAndStaysThin]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CircleCropTests.swift:90: -[SadrogCoreTests.CircleCropTests testGlossyOutlineIsLighterOnTopAndStaysThin] : Test skipped - synthetic clips missing
+Test Case '-[SadrogCoreTests.CircleCropTests testGlossyOutlineIsLighterOnTopAndStaysThin]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CircleCropTests testModelUndoSplitPersistenceAndOldProjects]' started.
+Test Case '-[SadrogCoreTests.CircleCropTests testModelUndoSplitPersistenceAndOldProjects]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.CircleCropTests testWindowIsASquareThatNeverDistorts]' started.
+Test Case '-[SadrogCoreTests.CircleCropTests testWindowIsASquareThatNeverDistorts]' passed (0.000 seconds).
+Test Suite 'CircleCropTests' passed at 2026-11-01 11:46:59.954.
+	 Executed 4 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'CircleFramingTests' started at 2026-11-01 11:46:59.954.
+Test Case '-[SadrogCoreTests.CircleFramingTests testFramingIsCodableRoundTripAndGestureIsDeterministic]' started.
+Test Case '-[SadrogCoreTests.CircleFramingTests testFramingIsCodableRoundTripAndGestureIsDeterministic]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CircleFramingTests testPanIsClampedInsideSource]' started.
+Test Case '-[SadrogCoreTests.CircleFramingTests testPanIsClampedInsideSource]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CircleFramingTests testPanMovesPictureOppositeToWindowAndKeepsCircleAndZoom]' started.
+Test Case '-[SadrogCoreTests.CircleFramingTests testPanMovesPictureOppositeToWindowAndKeepsCircleAndZoom]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CircleFramingTests testRecentreKeepsZoomAndBorder]' started.
+Test Case '-[SadrogCoreTests.CircleFramingTests testRecentreKeepsZoomAndBorder]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CircleFramingTests testZoomClampedToRange]' started.
+Test Case '-[SadrogCoreTests.CircleFramingTests testZoomClampedToRange]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CircleFramingTests testZoomKeepsCentrePointWhenRoomAndNeverLeavesSource]' started.
+Test Case '-[SadrogCoreTests.CircleFramingTests testZoomKeepsCentrePointWhenRoomAndNeverLeavesSource]' passed (0.000 seconds).
+Test Suite 'CircleFramingTests' passed at 2026-11-01 11:46:59.956.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ClipDuplicateTests' started at 2026-11-01 11:46:59.956.
+Test Case '-[SadrogCoreTests.ClipDuplicateTests testCopyPasteAtEndAndRoundTrip]' started.
+Test Case '-[SadrogCoreTests.ClipDuplicateTests testCopyPasteAtEndAndRoundTrip]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ClipDuplicateTests testDuplicateCopiesBoundCalloutAndShiftsLaterOnes]' started.
+Test Case '-[SadrogCoreTests.ClipDuplicateTests testDuplicateCopiesBoundCalloutAndShiftsLaterOnes]' passed (0.000 seconds).
+Test Suite 'ClipDuplicateTests' passed at 2026-11-01 11:46:59.957.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ClipboardLockTests' started at 2026-11-01 11:46:59.957.
+Test Case '-[SadrogCoreTests.ClipboardLockTests testLockedLaneRefusesEditsButFollowUpsStillWork]' started.
+Test Case '-[SadrogCoreTests.ClipboardLockTests testLockedLaneRefusesEditsButFollowUpsStillWork]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ClipboardLockTests testMultiDuplicateIsOneUndoStepAndKeepsOriginals]' started.
+Test Case '-[SadrogCoreTests.ClipboardLockTests testMultiDuplicateIsOneUndoStepAndKeepsOriginals]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ClipboardLockTests testPasteLayerOverlappingGoesToNextRow]' started.
+Test Case '-[SadrogCoreTests.ClipboardLockTests testPasteLayerOverlappingGoesToNextRow]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ClipboardLockTests testPasteTitleSlidesToFreeSlot]' started.
+Test Case '-[SadrogCoreTests.ClipboardLockTests testPasteTitleSlidesToFreeSlot]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ClipboardLockTests testRenameAndRoundTrip]' started.
+Test Case '-[SadrogCoreTests.ClipboardLockTests testRenameAndRoundTrip]' passed (0.001 seconds).
+Test Suite 'ClipboardLockTests' passed at 2026-11-01 11:46:59.959.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'CompositionTests' started at 2026-11-01 11:46:59.959.
+Test Case '-[SadrogCoreTests.CompositionTests testDemoProjectReopenAndExportMatchesPreview]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CompositionTests.swift:77: -[SadrogCoreTests.CompositionTests testDemoProjectReopenAndExportMatchesPreview] : Test skipped - demo project not available
+Test Case '-[SadrogCoreTests.CompositionTests testDemoProjectReopenAndExportMatchesPreview]' skipped (0.001 seconds).
+Test Case '-[SadrogCoreTests.CompositionTests testLayerOperationsAndUndo]' started.
+Test Case '-[SadrogCoreTests.CompositionTests testLayerOperationsAndUndo]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CompositionTests testLegacyProjectStillDecodes]' started.
+Test Case '-[SadrogCoreTests.CompositionTests testLegacyProjectStillDecodes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.CompositionTests testOpacityBlendsAndMainTransformShrinks]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CompositionTests.swift:44: -[SadrogCoreTests.CompositionTests testOpacityBlendsAndMainTransformShrinks] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CompositionTests testOpacityBlendsAndMainTransformShrinks]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.CompositionTests testOverlayTransformOpacityAndGaps]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CompositionTests.swift:27: -[SadrogCoreTests.CompositionTests testOverlayTransformOpacityAndGaps] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.CompositionTests testOverlayTransformOpacityAndGaps]' skipped (0.000 seconds).
+Test Suite 'CompositionTests' passed at 2026-11-01 11:46:59.961.
+	 Executed 5 tests, with 3 tests skipped and 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'ConsentTests' started at 2026-11-01 11:46:59.961.
+Test Case '-[SadrogCoreTests.ConsentTests testConsentsAreExplicitAndOnlyForThePermanentRequest]' started.
+Test Case '-[SadrogCoreTests.ConsentTests testConsentsAreExplicitAndOnlyForThePermanentRequest]' passed (0.000 seconds).
+Test Suite 'ConsentTests' passed at 2026-11-01 11:46:59.961.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'DetachAudioClipboardTests' started at 2026-11-01 11:46:59.961.
+Test Case '-[SadrogCoreTests.DetachAudioClipboardTests testDeletingEachSideSeparatelyAndPastingACopyKeepsLinksHonest]' started.
+Test Case '-[SadrogCoreTests.DetachAudioClipboardTests testDeletingEachSideSeparatelyAndPastingACopyKeepsLinksHonest]' passed (0.000 seconds).
+Test Suite 'DetachAudioClipboardTests' passed at 2026-11-01 11:46:59.961.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'DetachAudioIdentityTests' started at 2026-11-01 11:46:59.961.
+Test Case '-[SadrogCoreTests.DetachAudioIdentityTests testCutPiecesReattachTogetherWithoutLeavingFragments]' started.
+Test Case '-[SadrogCoreTests.DetachAudioIdentityTests testCutPiecesReattachTogetherWithoutLeavingFragments]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DetachAudioIdentityTests testPasteKeepsSourceIdentityButDropsTheMontageLink]' started.
+Test Case '-[SadrogCoreTests.DetachAudioIdentityTests testPasteKeepsSourceIdentityButDropsTheMontageLink]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DetachAudioIdentityTests testReattachRefusedWhenTheItemCarriesItsOwnGainOrMute]' started.
+Test Case '-[SadrogCoreTests.DetachAudioIdentityTests testReattachRefusedWhenTheItemCarriesItsOwnGainOrMute]' passed (0.000 seconds).
+Test Suite 'DetachAudioIdentityTests' passed at 2026-11-01 11:46:59.962.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'DetachAudioMixTests' started at 2026-11-01 11:46:59.962.
+Test Case '-[SadrogCoreTests.DetachAudioMixTests testInSyncDetachIsInaudibleAndShiftMovesTheSound]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DetachAudioTests.swift:72: -[SadrogCoreTests.DetachAudioMixTests testInSyncDetachIsInaudibleAndShiftMovesTheSound] : Test skipped - C5
+Test Case '-[SadrogCoreTests.DetachAudioMixTests testInSyncDetachIsInaudibleAndShiftMovesTheSound]' skipped (0.001 seconds).
+Test Suite 'DetachAudioMixTests' passed at 2026-11-01 11:46:59.963.
+	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'DetachAudioTests' started at 2026-11-01 11:46:59.963.
+Test Case '-[SadrogCoreTests.DetachAudioTests testCutOfThePictureLeavesTheAudioWholeAndSurvivesSaveAndReload]' started.
+Test Case '-[SadrogCoreTests.DetachAudioTests testCutOfThePictureLeavesTheAudioWholeAndSurvivesSaveAndReload]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.DetachAudioTests testDetachKeepsPositionOffsetAndEditsAndSilencesTheClipSound]' started.
+Test Case '-[SadrogCoreTests.DetachAudioTests testDetachKeepsPositionOffsetAndEditsAndSilencesTheClipSound]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DetachAudioTests testIndependentMoveBreaksSyncAndReattachIsRefusedUntilItemIsGoneThenRestores]' started.
+Test Case '-[SadrogCoreTests.DetachAudioTests testIndependentMoveBreaksSyncAndReattachIsRefusedUntilItemIsGoneThenRestores]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DetachAudioTests testReattachInSyncRemovesItemAndRestoresEditsAndUndoRedoAreCoherent]' started.
+Test Case '-[SadrogCoreTests.DetachAudioTests testReattachInSyncRemovesItemAndRestoresEditsAndUndoRedoAreCoherent]' passed (0.000 seconds).
+Test Suite 'DetachAudioTests' passed at 2026-11-01 11:46:59.965.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'DetachedEffectsStateTests' started at 2026-11-01 11:46:59.965.
+Test Case '-[SadrogCoreTests.DetachedEffectsStateTests testChainSurvivesDetachCutMoveRowReorderUndoRedoAndReopen]' started.
+Test Case '-[SadrogCoreTests.DetachedEffectsStateTests testChainSurvivesDetachCutMoveRowReorderUndoRedoAndReopen]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.DetachedEffectsStateTests testRowReorderKeepsIdentityNameAndContentOfEveryTrack]' started.
+Test Case '-[SadrogCoreTests.DetachedEffectsStateTests testRowReorderKeepsIdentityNameAndContentOfEveryTrack]' passed (0.000 seconds).
+Test Suite 'DetachedEffectsStateTests' passed at 2026-11-01 11:46:59.966.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'DissolveTests' started at 2026-11-01 11:46:59.966.
+Test Case '-[SadrogCoreTests.DissolveTests testDissolveOverlapsAndShortensTheTimeline]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DissolveTests.swift:12: -[SadrogCoreTests.DissolveTests testDissolveOverlapsAndShortensTheTimeline] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.DissolveTests testDissolveOverlapsAndShortensTheTimeline]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.DissolveTests testEditsKeepDissolvesPossible]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DissolveTests.swift:12: -[SadrogCoreTests.DissolveTests testEditsKeepDissolvesPossible] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.DissolveTests testEditsKeepDissolvesPossible]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.DissolveTests testExportedPictureBlendsRedIntoBlue]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DissolveTests.swift:12: -[SadrogCoreTests.DissolveTests testExportedPictureBlendsRedIntoBlue] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.DissolveTests testExportedPictureBlendsRedIntoBlue]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.DissolveTests testNothingMovesSilently]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DissolveTests.swift:12: -[SadrogCoreTests.DissolveTests testNothingMovesSilently] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.DissolveTests testNothingMovesSilently]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.DissolveTests testSavedAndReopened]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DissolveTests.swift:12: -[SadrogCoreTests.DissolveTests testSavedAndReopened] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.DissolveTests testSavedAndReopened]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.DissolveTests testSoundCrossfadesOverTheSameSpan]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DissolveTests.swift:12: -[SadrogCoreTests.DissolveTests testSoundCrossfadesOverTheSameSpan] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.DissolveTests testSoundCrossfadesOverTheSameSpan]' skipped (0.000 seconds).
+Test Suite 'DissolveTests' passed at 2026-11-01 11:46:59.968.
+	 Executed 6 tests, with 6 tests skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'DocumentFormatTests' started at 2026-11-01 11:46:59.968.
+Test Case '-[SadrogCoreTests.DocumentFormatTests testCanvasAlignSnapsOnlyWithinThresholdAndReportsRealGuides]' started.
+Test Case '-[SadrogCoreTests.DocumentFormatTests testCanvasAlignSnapsOnlyWithinThresholdAndReportsRealGuides]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DocumentFormatTests testExportUsesTheDocumentSizeAndFrameRate]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DocumentFormatTests.swift:28: -[SadrogCoreTests.DocumentFormatTests testExportUsesTheDocumentSizeAndFrameRate] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.DocumentFormatTests testExportUsesTheDocumentSizeAndFrameRate]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.DocumentFormatTests testOldProjectsHaveNoCanvasAndNewOnesRoundTrip]' started.
+Test Case '-[SadrogCoreTests.DocumentFormatTests testOldProjectsHaveNoCanvasAndNewOnesRoundTrip]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DocumentFormatTests testPresetsAreRealSizesAndValuesAreSanitised]' started.
+Test Case '-[SadrogCoreTests.DocumentFormatTests testPresetsAreRealSizesAndValuesAreSanitised]' passed (0.000 seconds).
+Test Suite 'DocumentFormatTests' passed at 2026-11-01 11:46:59.969.
+	 Executed 4 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'DropPlanTests' started at 2026-11-01 11:46:59.969.
+Test Case '-[SadrogCoreTests.DropPlanTests testEffectDroppedOnAClipOrOverlayRetargetsItInOneUndoStep]' started.
+Test Case '-[SadrogCoreTests.DropPlanTests testEffectDroppedOnAClipOrOverlayRetargetsItInOneUndoStep]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DropPlanTests testIncompatibleLockedAndOverlapAreRefusedBeforeDropAndChangeNothing]' started.
+Test Case '-[SadrogCoreTests.DropPlanTests testIncompatibleLockedAndOverlapAreRefusedBeforeDropAndChangeNothing]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DropPlanTests testMainDropAppendsAndAudioSnapsToTheEdge]' started.
+Test Case '-[SadrogCoreTests.DropPlanTests testMainDropAppendsAndAudioSnapsToTheEdge]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DropPlanTests testOverlayDropKeepsOrderAndDistancesAndIsOneUndoStep]' started.
+Test Case '-[SadrogCoreTests.DropPlanTests testOverlayDropKeepsOrderAndDistancesAndIsOneUndoStep]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.DropPlanTests testTrackLimitAndUnreadable]' started.
+Test Case '-[SadrogCoreTests.DropPlanTests testTrackLimitAndUnreadable]' passed (0.000 seconds).
+Test Suite 'DropPlanTests' passed at 2026-11-01 11:46:59.970.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ExportAdvancedVerificationTests' started at 2026-11-01 11:46:59.970.
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testBitrateRespectedWithinToleranceAcrossRequests]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportAdvancedVerificationTests.swift:16: -[SadrogCoreTests.ExportAdvancedVerificationTests testBitrateRespectedWithinToleranceAcrossRequests] : Test skipped - synthetic export probe
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testBitrateRespectedWithinToleranceAcrossRequests]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testEffectiveParametersOnTheFile]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportAdvancedVerificationTests.swift:16: -[SadrogCoreTests.ExportAdvancedVerificationTests testEffectiveParametersOnTheFile] : Test skipped - synthetic export probe
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testEffectiveParametersOnTheFile]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testInOutWithNonZeroStartKeepsEventsAndSoundInSync]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportAdvancedVerificationTests.swift:16: -[SadrogCoreTests.ExportAdvancedVerificationTests testInOutWithNonZeroStartKeepsEventsAndSoundInSync] : Test skipped - synthetic export probe
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testInOutWithNonZeroStartKeepsEventsAndSoundInSync]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testSourceWithoutSoundStillExportsWithAudioSettings]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportAdvancedVerificationTests.swift:16: -[SadrogCoreTests.ExportAdvancedVerificationTests testSourceWithoutSoundStillExportsWithAudioSettings] : Test skipped - synthetic export probe
+Test Case '-[SadrogCoreTests.ExportAdvancedVerificationTests testSourceWithoutSoundStillExportsWithAudioSettings]' skipped (0.000 seconds).
+Test Suite 'ExportAdvancedVerificationTests' passed at 2026-11-01 11:46:59.971.
+	 Executed 4 tests, with 4 tests skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ExportPlanTests' started at 2026-11-01 11:46:59.971.
+Test Case '-[SadrogCoreTests.ExportPlanTests testInOutExportMatchesDurationPicturesAndAudioPosition]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportPlanTests.swift:67: -[SadrogCoreTests.ExportPlanTests testInOutExportMatchesDurationPicturesAndAudioPosition] : Test skipped - synthetic In/Out source not available
+Test Case '-[SadrogCoreTests.ExportPlanTests testInOutExportMatchesDurationPicturesAndAudioPosition]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportPlanTests testPlanSizeEqualsExportedSizeForEverySourceAndPreset]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportPlanTests.swift:27: -[SadrogCoreTests.ExportPlanTests testPlanSizeEqualsExportedSizeForEverySourceAndPreset] : Test skipped - synthetic sources not available
+Test Case '-[SadrogCoreTests.ExportPlanTests testPlanSizeEqualsExportedSizeForEverySourceAndPreset]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportPlanTests testScaledRuleIsPure]' started.
+Test Case '-[SadrogCoreTests.ExportPlanTests testScaledRuleIsPure]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportPlanTests testSummaryDescribesTheRangeNotTheWholeProject]' started.
+Test Case '-[SadrogCoreTests.ExportPlanTests testSummaryDescribesTheRangeNotTheWholeProject]' passed (0.000 seconds).
+Test Suite 'ExportPlanTests' passed at 2026-11-01 11:46:59.972.
+	 Executed 4 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ExportPresetTests' started at 2026-11-01 11:46:59.972.
+Test Case '-[SadrogCoreTests.ExportPresetTests testBuiltInsRoundTripToSettings]' started.
+Test Case '-[SadrogCoreTests.ExportPresetTests testBuiltInsRoundTripToSettings]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportPresetTests testCorruptFileMeansNoPersonalPresets]' started.
+Test Case '-[SadrogCoreTests.ExportPresetTests testCorruptFileMeansNoPersonalPresets]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ExportPresetTests testEstimateOnlyForProcessedVideoAndScalesWithSize]' started.
+Test Case '-[SadrogCoreTests.ExportPresetTests testEstimateOnlyForProcessedVideoAndScalesWithSize]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportPresetTests testPersonalPresetsSurviveReloadAndDefault]' started.
+Test Case '-[SadrogCoreTests.ExportPresetTests testPersonalPresetsSurviveReloadAndDefault]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.ExportPresetTests testRejectsEmptyAndBuiltInNamesAndReplacesSameName]' started.
+Test Case '-[SadrogCoreTests.ExportPresetTests testRejectsEmptyAndBuiltInNamesAndReplacesSameName]' passed (0.001 seconds).
+Test Suite 'ExportPresetTests' passed at 2026-11-01 11:46:59.977.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'ExportSettingsTests' started at 2026-11-01 11:46:59.977.
+Test Case '-[SadrogCoreTests.ExportSettingsTests testAdvancedAudioBitrateAndHEVC]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportSettingsTests.swift:145: -[SadrogCoreTests.ExportSettingsTests testAdvancedAudioBitrateAndHEVC] : Test skipped - synthetic clip with sound
+Test Case '-[SadrogCoreTests.ExportSettingsTests testAdvancedAudioBitrateAndHEVC]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testAdvancedBitrateIsAppliedAndMonotonic]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportSettingsTests.swift:34: -[SadrogCoreTests.ExportSettingsTests testAdvancedBitrateIsAppliedAndMonotonic] : Test skipped - synthetic clips
+Test Case '-[SadrogCoreTests.ExportSettingsTests testAdvancedBitrateIsAppliedAndMonotonic]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testAdvancedLeavesPresetPathAloneAndClampsRanges]' started.
+Test Case '-[SadrogCoreTests.ExportSettingsTests testAdvancedLeavesPresetPathAloneAndClampsRanges]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testCopyNeverTurnsLossyWhenProcessingIsNeeded]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportSettingsTests.swift:34: -[SadrogCoreTests.ExportSettingsTests testCopyNeverTurnsLossyWhenProcessingIsNeeded] : Test skipped - synthetic clips
+Test Case '-[SadrogCoreTests.ExportSettingsTests testCopyNeverTurnsLossyWhenProcessingIsNeeded]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testDocumentIsNeverModified]' started.
+Test Case '-[SadrogCoreTests.ExportSettingsTests testDocumentIsNeverModified]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testDownscalePortraitAndLandscapeToCustomSizeAndHEVC]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportSettingsTests.swift:34: -[SadrogCoreTests.ExportSettingsTests testDownscalePortraitAndLandscapeToCustomSizeAndHEVC] : Test skipped - synthetic clips
+Test Case '-[SadrogCoreTests.ExportSettingsTests testDownscalePortraitAndLandscapeToCustomSizeAndHEVC]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testLosslessIsBitExactAgainstTheProcessedFrames]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportSettingsTests.swift:34: -[SadrogCoreTests.ExportSettingsTests testLosslessIsBitExactAgainstTheProcessedFrames] : Test skipped - synthetic clips
+Test Case '-[SadrogCoreTests.ExportSettingsTests testLosslessIsBitExactAgainstTheProcessedFrames]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testPlanIsPureAndHonest]' started.
+Test Case '-[SadrogCoreTests.ExportSettingsTests testPlanIsPureAndHonest]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testRangeAndMasterAndAudio]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportSettingsTests.swift:34: -[SadrogCoreTests.ExportSettingsTests testRangeAndMasterAndAudio] : Test skipped - synthetic clips
+Test Case '-[SadrogCoreTests.ExportSettingsTests testRangeAndMasterAndAudio]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.ExportSettingsTests testUpscaleTo4KAndOtherRateWithEffectsOnTheWrittenFile]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ExportSettingsTests.swift:34: -[SadrogCoreTests.ExportSettingsTests testUpscaleTo4KAndOtherRateWithEffectsOnTheWrittenFile] : Test skipped - synthetic clips
+Test Case '-[SadrogCoreTests.ExportSettingsTests testUpscaleTo4KAndOtherRateWithEffectsOnTheWrittenFile]' skipped (0.000 seconds).
+Test Suite 'ExportSettingsTests' passed at 2026-11-01 11:46:59.980.
+	 Executed 10 tests, with 7 tests skipped and 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'FormatCompatTests' started at 2026-11-01 11:46:59.980.
+Test Case '-[SadrogCoreTests.FormatCompatTests testEarlierContentSurvivesTheJump]' started.
+Test Case '-[SadrogCoreTests.FormatCompatTests testEarlierContentSurvivesTheJump]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.FormatCompatTests testEveryEarlierFormatOpensWithNeutralNewFields]' started.
+Test Case '-[SadrogCoreTests.FormatCompatTests testEveryEarlierFormatOpensWithNeutralNewFields]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.FormatCompatTests testRealEarlierProjectsOpen]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/FormatCompatTests.swift:63: -[SadrogCoreTests.FormatCompatTests testRealEarlierProjectsOpen] : Test skipped - no real earlier projects on disk
+Test Case '-[SadrogCoreTests.FormatCompatTests testRealEarlierProjectsOpen]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.FormatCompatTests testSavedByThisBuildReopensIdenticallyAndEditsRoundTrip]' started.
+Test Case '-[SadrogCoreTests.FormatCompatTests testSavedByThisBuildReopensIdenticallyAndEditsRoundTrip]' passed (0.005 seconds).
+Test Suite 'FormatCompatTests' passed at 2026-11-01 11:46:59.987.
+	 Executed 4 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.006 (0.006) seconds
+Test Suite 'FrameAnnotationTests' started at 2026-11-01 11:46:59.987.
+Test Case '-[SadrogCoreTests.FrameAnnotationTests testFrameOnlyPaintsARingAndLeavesEverythingElseUntouched]' started.
+Test Case '-[SadrogCoreTests.FrameAnnotationTests testFrameOnlyPaintsARingAndLeavesEverythingElseUntouched]' passed (0.055 seconds).
+Test Case '-[SadrogCoreTests.FrameAnnotationTests testSwitchingBackToSpotlightDarkensOutsideAndPersists]' started.
+Test Case '-[SadrogCoreTests.FrameAnnotationTests testSwitchingBackToSpotlightDarkensOutsideAndPersists]' passed (0.000 seconds).
+Test Suite 'FrameAnnotationTests' passed at 2026-11-01 11:47:00.042.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.055 (0.055) seconds
+Test Suite 'FreezeFrameTests' started at 2026-11-01 11:47:00.042.
+Test Case '-[SadrogCoreTests.FreezeFrameTests testAtTheEdgesOfAClipAndTrimsKeepTheFrame]' started.
+Test Case '-[SadrogCoreTests.FreezeFrameTests testAtTheEdgesOfAClipAndTrimsKeepTheFrame]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.FreezeFrameTests testExportedLengthAndHeldPicture]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/FreezeFrameTests.swift:31: -[SadrogCoreTests.FreezeFrameTests testExportedLengthAndHeldPicture] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.FreezeFrameTests testExportedLengthAndHeldPicture]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.FreezeFrameTests testInsertsHeldClipCutsTheSourceAndUndoes]' started.
+Test Case '-[SadrogCoreTests.FreezeFrameTests testInsertsHeldClipCutsTheSourceAndUndoes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.FreezeFrameTests testPersists]' started.
+Test Case '-[SadrogCoreTests.FreezeFrameTests testPersists]' passed (0.000 seconds).
+Test Suite 'FreezeFrameTests' passed at 2026-11-01 11:47:00.044.
+	 Executed 4 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'GroupMoveTests' started at 2026-11-01 11:47:00.044.
+Test Case '-[SadrogCoreTests.GroupMoveTests testBoundCalloutBecomesIndependentWhenMovedOutOfEveryClip]' started.
+Test Case '-[SadrogCoreTests.GroupMoveTests testBoundCalloutBecomesIndependentWhenMovedOutOfEveryClip]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.GroupMoveTests testLockedLaneRefusesTheWholeGroupAndOverlapToo]' started.
+Test Case '-[SadrogCoreTests.GroupMoveTests testLockedLaneRefusesTheWholeGroupAndOverlapToo]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.GroupMoveTests testMainBlockMove]' started.
+Test Case '-[SadrogCoreTests.GroupMoveTests testMainBlockMove]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.GroupMoveTests testMovesTogetherKeepingDistancesInOneUndoStep]' started.
+Test Case '-[SadrogCoreTests.GroupMoveTests testMovesTogetherKeepingDistancesInOneUndoStep]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.GroupMoveTests testStopsAtZero]' started.
+Test Case '-[SadrogCoreTests.GroupMoveTests testStopsAtZero]' passed (0.000 seconds).
+Test Suite 'GroupMoveTests' passed at 2026-11-01 11:47:00.045.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'GuardStopProtocolTests' started at 2026-11-01 11:47:00.045.
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testDisabledHookIgnoresRequests]' started.
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testDisabledHookIgnoresRequests]' passed (0.003 seconds).
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testEveryCauseUsesTheSameFinalization]' started.
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testEveryCauseUsesTheSameFinalization]' passed (0.006 seconds).
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testNoConfirmationTimesOutAndStillClosesTheProbe]' started.
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testNoConfirmationTimesOutAndStillClosesTheProbe]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testRepeatedRequestAndRaceWithSourceLossFinalizeOnce]' started.
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testRepeatedRequestAndRaceWithSourceLossFinalizeOnce]' passed (0.003 seconds).
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testStopRequestIsConfirmedOnlyAfterFinalizationThenProbeCloses]' started.
+Test Case '-[SadrogCoreTests.GuardStopProtocolTests testStopRequestIsConfirmedOnlyAfterFinalizationThenProbeCloses]' passed (0.003 seconds).
+Test Suite 'GuardStopProtocolTests' passed at 2026-11-01 11:47:00.060.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.015 (0.015) seconds
+Test Suite 'IntegratedMontageFlowTests' started at 2026-11-01 11:47:00.060.
+Test Case '-[SadrogCoreTests.IntegratedMontageFlowTests testWholeFlowUndoRedoReopenAndStems]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DetachAudioTests.swift:108: -[SadrogCoreTests.IntegratedMontageFlowTests testWholeFlowUndoRedoReopenAndStems] : Test skipped - C5
+Test Case '-[SadrogCoreTests.IntegratedMontageFlowTests testWholeFlowUndoRedoReopenAndStems]' skipped (0.000 seconds).
+Test Suite 'IntegratedMontageFlowTests' passed at 2026-11-01 11:47:00.061.
+	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'L10nDateTests' started at 2026-11-01 11:47:00.061.
+Test Case '-[SadrogCoreTests.L10nDateTests testDatesUseTheAppLanguage]' started.
+Test Case '-[SadrogCoreTests.L10nDateTests testDatesUseTheAppLanguage]' passed (0.001 seconds).
+Test Suite 'L10nDateTests' passed at 2026-11-01 11:47:00.061.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'LensPreviewExportTests' started at 2026-11-01 11:47:00.061.
+Test Case '-[SadrogCoreTests.LensPreviewExportTests testLensLooksTheSameInPreviewAndInExport]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/LensPreviewExportTests.swift:12: -[SadrogCoreTests.LensPreviewExportTests testLensLooksTheSameInPreviewAndInExport] : Test skipped - synthetic clips
+Test Case '-[SadrogCoreTests.LensPreviewExportTests testLensLooksTheSameInPreviewAndInExport]' skipped (0.000 seconds).
+Test Suite 'LensPreviewExportTests' passed at 2026-11-01 11:47:00.062.
+	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'LensTests' started at 2026-11-01 11:47:00.062.
+Test Case '-[SadrogCoreTests.LensTests testLensDoesNotTouchOtherCalloutModes]' started.
+Test Case '-[SadrogCoreTests.LensTests testLensDoesNotTouchOtherCalloutModes]' passed (0.086 seconds).
+Test Case '-[SadrogCoreTests.LensTests testNearTheFrameEdgeTheAreaIsKeptInsideAndNothingIsCut]' started.
+Test Case '-[SadrogCoreTests.LensTests testNearTheFrameEdgeTheAreaIsKeptInsideAndNothingIsCut]' passed (0.117 seconds).
+Test Case '-[SadrogCoreTests.LensTests testOffByDefaultOldProjectsAndPersistence]' started.
+Test Case '-[SadrogCoreTests.LensTests testOffByDefaultOldProjectsAndPersistence]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.LensTests testPlacementMovesTheMagnifiedAreaAndKeepsContent]' started.
+Test Case '-[SadrogCoreTests.LensTests testPlacementMovesTheMagnifiedAreaAndKeepsContent]' passed (0.116 seconds).
+Test Case '-[SadrogCoreTests.LensTests testTooLargeAFactorIsLimitedToWhatFitsInTheFrame]' started.
+Test Case '-[SadrogCoreTests.LensTests testTooLargeAFactorIsLimitedToWhatFitsInTheFrame]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.LensTests testWholeSelectionIsShownMagnifiedWithAllFourCorners]' started.
+Test Case '-[SadrogCoreTests.LensTests testWholeSelectionIsShownMagnifiedWithAllFourCorners]' passed (0.127 seconds).
+Test Suite 'LensTests' passed at 2026-11-01 11:47:00.509.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.447 (0.448) seconds
+Test Suite 'LocalizationTests' started at 2026-11-01 11:47:00.509.
+Test Case '-[SadrogCoreTests.LocalizationTests testEveryKeyHasEnglishAndSpanish]' started.
+Test Case '-[SadrogCoreTests.LocalizationTests testEveryKeyHasEnglishAndSpanish]' passed (0.129 seconds).
+Test Case '-[SadrogCoreTests.LocalizationTests testLookupFormatAndFallback]' started.
+Test Case '-[SadrogCoreTests.LocalizationTests testLookupFormatAndFallback]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.LocalizationTests testPlaceholdersMatchInEveryLanguage]' started.
+Test Case '-[SadrogCoreTests.LocalizationTests testPlaceholdersMatchInEveryLanguage]' passed (0.008 seconds).
+Test Suite 'LocalizationTests' passed at 2026-11-01 11:47:00.648.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.138 (0.138) seconds
+Test Suite 'LosslessSyncTests' started at 2026-11-01 11:47:00.648.
+Test Case '-[SadrogCoreTests.LosslessSyncTests testInOutFramesAudioStartImpulseAlignmentManifestAndNoPartialOnFailure]' started.
+Test Case '-[SadrogCoreTests.LosslessSyncTests testInOutFramesAudioStartImpulseAlignmentManifestAndNoPartialOnFailure]' passed (0.349 seconds).
+Test Suite 'LosslessSyncTests' passed at 2026-11-01 11:47:00.997.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.349 (0.349) seconds
+Test Suite 'MarkersRangeTests' started at 2026-11-01 11:47:00.997.
+Test Case '-[SadrogCoreTests.MarkersRangeTests testMarkersAreSortedClampedUniqueAndUndoable]' started.
+Test Case '-[SadrogCoreTests.MarkersRangeTests testMarkersAreSortedClampedUniqueAndUndoable]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MarkersRangeTests testPersistsAndOlderFilesHaveNone]' started.
+Test Case '-[SadrogCoreTests.MarkersRangeTests testPersistsAndOlderFilesHaveNone]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MarkersRangeTests testRangeKeepsInBeforeOutAndClamps]' started.
+Test Case '-[SadrogCoreTests.MarkersRangeTests testRangeKeepsInBeforeOutAndClamps]' passed (0.000 seconds).
+Test Suite 'MarkersRangeTests' passed at 2026-11-01 11:47:00.998.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MarqueeAutoscrollTests' started at 2026-11-01 11:47:00.998.
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testBottomAndTopEdgesScrollVerticallyWithinContent]' started.
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testBottomAndTopEdgesScrollVerticallyWithinContent]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testCornerFollowsTheScrolledOffsets]' started.
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testCornerFollowsTheScrolledOffsets]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testNoHorizontalScrollWhenTheTimelineIsNotZoomed]' started.
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testNoHorizontalScrollWhenTheTimelineIsNotZoomed]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testPointerInTheMiddleDoesNotScrollAndCornerIsInContentCoordinates]' started.
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testPointerInTheMiddleDoesNotScrollAndCornerIsInContentCoordinates]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testRightAndLeftEdgesScrollHorizontallyAndStayClamped]' started.
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testRightAndLeftEdgesScrollHorizontallyAndStayClamped]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testSpeedGrowsTowardTheEdgeAndHasAMinimum]' started.
+Test Case '-[SadrogCoreTests.MarqueeAutoscrollTests testSpeedGrowsTowardTheEdgeAndHasAMinimum]' passed (0.000 seconds).
+Test Suite 'MarqueeAutoscrollTests' passed at 2026-11-01 11:47:01.000.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MixDeliveryTests' started at 2026-11-01 11:47:01.000.
+Test Case '-[SadrogCoreTests.MixDeliveryTests testCancelLeavesNoFiles]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MixDeliveryTests.swift:74: -[SadrogCoreTests.MixDeliveryTests testCancelLeavesNoFiles] : Test skipped - C5
+Test Case '-[SadrogCoreTests.MixDeliveryTests testCancelLeavesNoFiles]' skipped (0.001 seconds).
+Test Case '-[SadrogCoreTests.MixDeliveryTests testDeliveryAlignmentDurationLevelsAndNoOverwrite]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MixDeliveryTests.swift:41: -[SadrogCoreTests.MixDeliveryTests testDeliveryAlignmentDurationLevelsAndNoOverwrite] : Test skipped - C5
+Test Case '-[SadrogCoreTests.MixDeliveryTests testDeliveryAlignmentDurationLevelsAndNoOverwrite]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixDeliveryTests testMasterModelUndoPersistAndMix]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MixDeliveryTests.swift:31: -[SadrogCoreTests.MixDeliveryTests testMasterModelUndoPersistAndMix] : Test skipped - C5
+Test Case '-[SadrogCoreTests.MixDeliveryTests testMasterModelUndoPersistAndMix]' skipped (0.001 seconds).
+Test Suite 'MixDeliveryTests' passed at 2026-11-01 11:47:01.002.
+	 Executed 3 tests, with 3 tests skipped and 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MixPeakBoundTests' started at 2026-11-01 11:47:01.002.
+Test Case '-[SadrogCoreTests.MixPeakBoundTests testDissolvesDoubleTheMainBoundAndLayersAreAdded]' started.
+Test Case '-[SadrogCoreTests.MixPeakBoundTests testDissolvesDoubleTheMainBoundAndLayersAreAdded]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixPeakBoundTests testMasterAppliesLastAndEmptyIsZero]' started.
+Test Case '-[SadrogCoreTests.MixPeakBoundTests testMasterAppliesLastAndEmptyIsZero]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixPeakBoundTests testUsesTheLoudestRecordingNotTheFirstNorTheSum]' started.
+Test Case '-[SadrogCoreTests.MixPeakBoundTests testUsesTheLoudestRecordingNotTheFirstNorTheSum]' passed (0.000 seconds).
+Test Suite 'MixPeakBoundTests' passed at 2026-11-01 11:47:01.002.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'MixedMoveTests' started at 2026-11-01 11:47:01.002.
+Test Case '-[SadrogCoreTests.MixedMoveTests testLandingOnAnUnselectedItemOfTheSameRowIsRefusedWholeAndNothingChanges]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testLandingOnAnUnselectedItemOfTheSameRowIsRefusedWholeAndNothingChanges]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testLinkedSoundIsCarriedEvenWhenNotSelected]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testLinkedSoundIsCarriedEvenWhenNotSelected]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testLockedOverlayLaneRefusesTheWholeMove]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testLockedOverlayLaneRefusesTheWholeMove]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testMovesEarlierToTheFront]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testMovesEarlierToTheFront]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testNonAdjacentClipsLockedV1AndDissolveAreRefusedWholeWithNoChange]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testNonAdjacentClipsLockedV1AndDissolveAreRefusedWholeWithNoChange]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testOneUndoStepRestoresEverything]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testOneUndoStepRestoresEverything]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testSegmentCameraTitleSoundAndEffectMoveLaterKeepingEveryRelation]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testSegmentCameraTitleSoundAndEffectMoveLaterKeepingEveryRelation]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testSurvivesSaveAndReopen]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testSurvivesSaveAndReopen]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.MixedMoveTests testWhenTheItemsWouldGoBelowZeroTheNearestAllowedBoundaryIsUsed]' started.
+Test Case '-[SadrogCoreTests.MixedMoveTests testWhenTheItemsWouldGoBelowZeroTheNearestAllowedBoundaryIsUsed]' passed (0.000 seconds).
+Test Suite 'MixedMoveTests' passed at 2026-11-01 11:47:01.006.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'MontageTests' started at 2026-11-01 11:47:01.006.
+Test Case '-[SadrogCoreTests.MontageTests testHiddenOverlayAndHiddenMainAreNotRendered]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MontageTests.swift:52: -[SadrogCoreTests.MontageTests testHiddenOverlayAndHiddenMainAreNotRendered] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.MontageTests testHiddenOverlayAndHiddenMainAreNotRendered]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testHiddenOverlayPastTheMainTrackKeepsTheDurationAndShowsBackground]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MontageTests.swift:85: -[SadrogCoreTests.MontageTests testHiddenOverlayPastTheMainTrackKeepsTheDurationAndShowsBackground] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.MontageTests testHiddenOverlayPastTheMainTrackKeepsTheDurationAndShowsBackground]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testLaneFlagsRenameUndoAndPersistence]' started.
+Test Case '-[SadrogCoreTests.MontageTests testLaneFlagsRenameUndoAndPersistence]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testMutedLanesKeepTheirTracksAndGetSilenceFromTheAudioMix]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MontageTests.swift:69: -[SadrogCoreTests.MontageTests testMutedLanesKeepTheirTracksAndGetSilenceFromTheAudioMix] : Test skipped - synthetic media not available
+Test Case '-[SadrogCoreTests.MontageTests testMutedLanesKeepTheirTracksAndGetSilenceFromTheAudioMix]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testRelinkMediaMovesEveryUseAndUndoes]' started.
+Test Case '-[SadrogCoreTests.MontageTests testRelinkMediaMovesEveryUseAndUndoes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testSnapBlockUsesEitherEdgeAndKeepsLength]' started.
+Test Case '-[SadrogCoreTests.MontageTests testSnapBlockUsesEitherEdgeAndKeepsLength]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testSnapPointsExcludeTheDraggedItemAndIncludePlayhead]' started.
+Test Case '-[SadrogCoreTests.MontageTests testSnapPointsExcludeTheDraggedItemAndIncludePlayhead]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testSnapToNearestWithinThreshold]' started.
+Test Case '-[SadrogCoreTests.MontageTests testSnapToNearestWithinThreshold]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MontageTests testViewerFitAndZoomGeometry]' started.
+Test Case '-[SadrogCoreTests.MontageTests testViewerFitAndZoomGeometry]' passed (0.000 seconds).
+Test Suite 'MontageTests' passed at 2026-11-01 11:47:01.009.
+	 Executed 9 tests, with 3 tests skipped and 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'MotionTests' started at 2026-11-01 11:47:01.009.
+Test Case '-[SadrogCoreTests.MotionTests testEasingChangesTheCurveNotTheEnds]' started.
+Test Case '-[SadrogCoreTests.MotionTests testEasingChangesTheCurveNotTheEnds]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MotionTests testEditingIsUndoableAndASplitKeepsTheRightPieces]' started.
+Test Case '-[SadrogCoreTests.MotionTests testEditingIsUndoableAndASplitKeepsTheRightPieces]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MotionTests testExportedFadeInIsDarkThenFull]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MotionTests.swift:79: -[SadrogCoreTests.MotionTests testExportedFadeInIsDarkThenFull] : Test skipped - synthetic source not available
+Test Case '-[SadrogCoreTests.MotionTests testExportedFadeInIsDarkThenFull]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MotionTests testExportedPicturesFollowTheKeyframesAndFades]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MotionTests.swift:69: -[SadrogCoreTests.MotionTests testExportedPicturesFollowTheKeyframesAndFades] : Test skipped - synthetic source not available
+Test Case '-[SadrogCoreTests.MotionTests testExportedPicturesFollowTheKeyframesAndFades]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MotionTests testFadesRampTheOpacityAtTheEdges]' started.
+Test Case '-[SadrogCoreTests.MotionTests testFadesRampTheOpacityAtTheEdges]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MotionTests testPersistsAndOlderProjectsLookTheSame]' started.
+Test Case '-[SadrogCoreTests.MotionTests testPersistsAndOlderProjectsLookTheSame]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MotionTests testThreeStatesNeedAKeyframe]' started.
+Test Case '-[SadrogCoreTests.MotionTests testThreeStatesNeedAKeyframe]' passed (0.000 seconds).
+Test Suite 'MotionTests' passed at 2026-11-01 11:47:01.011.
+	 Executed 7 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'MouseTests' started at 2026-11-01 11:47:01.011.
+Test Case '-[SadrogCoreTests.MouseTests testArchiveCarriesThePointerTrack]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MouseTests.swift:96: -[SadrogCoreTests.MouseTests testArchiveCarriesThePointerTrack] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.MouseTests testArchiveCarriesThePointerTrack]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MouseTests testCollectionStartsOnlyWhenAskedAndIgnoresPauses]' started.
+Test Case '-[SadrogCoreTests.MouseTests testCollectionStartsOnlyWhenAskedAndIgnoresPauses]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MouseTests testFollowKeepsThePointerNearCentreAndInsideThePicture]' started.
+Test Case '-[SadrogCoreTests.MouseTests testFollowKeepsThePointerNearCentreAndInsideThePicture]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.MouseTests testHighlightAndClickRingAreRendered]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/MouseTests.swift:76: -[SadrogCoreTests.MouseTests testHighlightAndClickRingAreRendered] : Test skipped - needs synthetic colour clips (not distributed)
+Test Case '-[SadrogCoreTests.MouseTests testHighlightAndClickRingAreRendered]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.MouseTests testInterpolationClicksAndSyncOffset]' started.
+Test Case '-[SadrogCoreTests.MouseTests testInterpolationClicksAndSyncOffset]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MouseTests testNormalizeClampsToTheCapturedFrame]' started.
+Test Case '-[SadrogCoreTests.MouseTests testNormalizeClampsToTheCapturedFrame]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MouseTests testTrackFileRoundTripAndNoPrivateFields]' started.
+Test Case '-[SadrogCoreTests.MouseTests testTrackFileRoundTripAndNoPrivateFields]' passed (0.001 seconds).
+Test Suite 'MouseTests' passed at 2026-11-01 11:47:01.014.
+	 Executed 7 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'MoveToOverlayTests' started at 2026-11-01 11:47:01.014.
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testBlockersAndLastClip]' started.
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testBlockersAndLastClip]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testMoveKeepsPropertiesLinksAndClosesV1]' started.
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testMoveKeepsPropertiesLinksAndClosesV1]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testOccupiedRowRefused]' started.
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testOccupiedRowRefused]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testOneUndoStepRedoSaveReopen]' started.
+Test Case '-[SadrogCoreTests.MoveToOverlayTests testOneUndoStepRedoSaveReopen]' passed (0.001 seconds).
+Test Suite 'MoveToOverlayTests' passed at 2026-11-01 11:47:01.016.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MultiSourceTests' started at 2026-11-01 11:47:01.016.
+Test Case '-[SadrogCoreTests.MultiSourceTests testConfigReadsOldFormsAndKeepsSourcesSeparate]' started.
+Test Case '-[SadrogCoreTests.MultiSourceTests testConfigReadsOldFormsAndKeepsSourcesSeparate]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.MultiSourceTests testRecordingOpensEverySourceOnItsOwnRow]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/CameraTests.swift:128: -[SadrogCoreTests.MultiSourceTests testRecordingOpensEverySourceOnItsOwnRow] : Test skipped
+Test Case '-[SadrogCoreTests.MultiSourceTests testRecordingOpensEverySourceOnItsOwnRow]' skipped (0.000 seconds).
+Test Suite 'MultiSourceTests' passed at 2026-11-01 11:47:01.017.
+	 Executed 2 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'PanelPlacementTests' started at 2026-11-01 11:47:01.017.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testBarelyVisibleCountsAsLost]' started.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testBarelyVisibleCountsAsLost]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.PanelPlacementTests testDefaultIsTopRightOfFirstScreen]' started.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testDefaultIsTopRightOfFirstScreen]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.PanelPlacementTests testNoScreensStillReturnsAFrame]' started.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testNoScreensStillReturnsAFrame]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.PanelPlacementTests testPartlyOffScreenIsPulledFullyInside]' started.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testPartlyOffScreenIsPulledFullyInside]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.PanelPlacementTests testPositionOnSecondScreenIsKeptWhileItExists]' started.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testPositionOnSecondScreenIsKeptWhileItExists]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.PanelPlacementTests testRecoversWhenTheMonitorDisappeared]' started.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testRecoversWhenTheMonitorDisappeared]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.PanelPlacementTests testValidSavedPositionIsKeptExactly]' started.
+Test Case '-[SadrogCoreTests.PanelPlacementTests testValidSavedPositionIsKeptExactly]' passed (0.000 seconds).
+Test Suite 'PanelPlacementTests' passed at 2026-11-01 11:47:01.018.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ProbeGuardTests' started at 2026-11-01 11:47:01.018.
+Test Case '-[SadrogCoreTests.ProbeGuardTests testMonitorHardDeadlineAndCompletion]' started.
+Test Case '-[SadrogCoreTests.ProbeGuardTests testMonitorHardDeadlineAndCompletion]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProbeGuardTests testMonitorStopsAStalledProbe]' started.
+Test Case '-[SadrogCoreTests.ProbeGuardTests testMonitorStopsAStalledProbe]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProbeGuardTests testParse]' started.
+Test Case '-[SadrogCoreTests.ProbeGuardTests testParse]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProbeGuardTests testPreflightCatchesTheC5Incident]' started.
+Test Case '-[SadrogCoreTests.ProbeGuardTests testPreflightCatchesTheC5Incident]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProbeGuardTests testPreflightPassesOnRealSoundAndPicture]' started.
+Test Case '-[SadrogCoreTests.ProbeGuardTests testPreflightPassesOnRealSoundAndPicture]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProbeGuardTests testPreflightTimesOutWithoutBeeps]' started.
+Test Case '-[SadrogCoreTests.ProbeGuardTests testPreflightTimesOutWithoutBeeps]' passed (0.000 seconds).
+Test Suite 'ProbeGuardTests' passed at 2026-11-01 11:47:01.020.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'ProjectArchiveTests' started at 2026-11-01 11:47:01.020.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testCancellationLeavesNoPartialArchive]' started.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testCancellationLeavesNoPartialArchive]' passed (0.011 seconds).
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testCopiesMediaRewritesPathsAndLeavesOriginals]' started.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testCopiesMediaRewritesPathsAndLeavesOriginals]' passed (0.011 seconds).
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testCopyOfArchiveIsIndependentOfTheOriginal]' started.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testCopyOfArchiveIsIndependentOfTheOriginal]' passed (0.014 seconds).
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testIdenticalFilenamesInDifferentDirectoriesStaySeparate]' started.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testIdenticalFilenamesInDifferentDirectoriesStaySeparate]' passed (0.012 seconds).
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testMissingMediaAbortsWithoutAnyArchive]' started.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testMissingMediaAbortsWithoutAnyArchive]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testMovedArchiveFindsItsMedia]' started.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testMovedArchiveFindsItsMedia]' passed (0.011 seconds).
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testOrdinaryProjectIsNotTreatedAsArchive]' started.
+Test Case '-[SadrogCoreTests.ProjectArchiveTests testOrdinaryProjectIsNotTreatedAsArchive]' passed (0.002 seconds).
+Test Suite 'ProjectArchiveTests' passed at 2026-11-01 11:47:01.083.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.062 (0.063) seconds
+Test Suite 'ProjectTests' started at 2026-11-01 11:47:01.083.
+Test Case '-[SadrogCoreTests.ProjectTests testCompositionAndExportOfSyntheticRecording]' started.
+Test Case '-[SadrogCoreTests.ProjectTests testCompositionAndExportOfSyntheticRecording]' passed (0.231 seconds).
+Test Case '-[SadrogCoreTests.ProjectTests testMoveReorders]' started.
+Test Case '-[SadrogCoreTests.ProjectTests testMoveReorders]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProjectTests testSaveLoadAndVersionGuard]' started.
+Test Case '-[SadrogCoreTests.ProjectTests testSaveLoadAndVersionGuard]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.ProjectTests testSplitDeleteUndoRedo]' started.
+Test Case '-[SadrogCoreTests.ProjectTests testSplitDeleteUndoRedo]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProjectTests testSplitTooCloseToEdgeIgnored]' started.
+Test Case '-[SadrogCoreTests.ProjectTests testSplitTooCloseToEdgeIgnored]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ProjectTests testTrimBounds]' started.
+Test Case '-[SadrogCoreTests.ProjectTests testTrimBounds]' passed (0.000 seconds).
+Test Suite 'ProjectTests' passed at 2026-11-01 11:47:01.317.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.234 (0.235) seconds
+Test Suite 'RealMediaExportTests' started at 2026-11-01 11:47:01.317.
+Test Case '-[SadrogCoreTests.RealMediaExportTests testReencodeRealRecording]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/ProjectTests.swift:77: -[SadrogCoreTests.RealMediaExportTests testReencodeRealRecording] : Test skipped - no real media
+Test Case '-[SadrogCoreTests.RealMediaExportTests testReencodeRealRecording]' skipped (0.000 seconds).
+Test Suite 'RealMediaExportTests' passed at 2026-11-01 11:47:01.318.
+	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'RecordFlowTests' started at 2026-11-01 11:47:01.318.
+Test Case '-[SadrogCoreTests.RecordFlowTests testAbandonedStartReleasesPreparation]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testAbandonedStartReleasesPreparation]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testBlockerStopsBeforeCountdown]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testBlockerStopsBeforeCountdown]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testCancelDuringCountdownBlocksDelayedStart]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testCancelDuringCountdownBlocksDelayedStart]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testCancelDuringSourceRefreshNeverStarts]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testCancelDuringSourceRefreshNeverStarts]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testDoublePressNeverStartsTwice]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testDoublePressNeverStartsTwice]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testIdentificationClosesOnPressAndBeforeStart]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testIdentificationClosesOnPressAndBeforeStart]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testPauseResumeAndStopFromPause]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testPauseResumeAndStopFromPause]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testPressWhileStartingIsIgnored]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testPressWhileStartingIsIgnored]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordFlowTests testStopCauseIsVisibleWhenIdle]' started.
+Test Case '-[SadrogCoreTests.RecordFlowTests testStopCauseIsVisibleWhenIdle]' passed (0.001 seconds).
+Test Suite 'RecordFlowTests' passed at 2026-11-01 11:47:01.326.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+Test Suite 'RecordingAudioTests' started at 2026-11-01 11:47:01.326.
+Test Case '-[SadrogCoreTests.RecordingAudioTests testCutClipKeepsEachTrackAlignedWithTheVideo]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/RecordingAudioTests.swift:22: -[SadrogCoreTests.RecordingAudioTests testCutClipKeepsEachTrackAlignedWithTheVideo] : Test skipped - probe recording not available
+Test Case '-[SadrogCoreTests.RecordingAudioTests testCutClipKeepsEachTrackAlignedWithTheVideo]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testDuplicateNamesAreMadeDistinct]' started.
+Test Case '-[SadrogCoreTests.RecordingAudioTests testDuplicateNamesAreMadeDistinct]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testEveryTrackIsInTheCompositionInSyncAndSameLength]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/RecordingAudioTests.swift:22: -[SadrogCoreTests.RecordingAudioTests testEveryTrackIsInTheCompositionInSyncAndSameLength] : Test skipped - probe recording not available
+Test Case '-[SadrogCoreTests.RecordingAudioTests testEveryTrackIsInTheCompositionInSyncAndSameLength]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testExportIsOneMixedTrackAndRespectsSourceMute]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/RecordingAudioTests.swift:22: -[SadrogCoreTests.RecordingAudioTests testExportIsOneMixedTrackAndRespectsSourceMute] : Test skipped - probe recording not available
+Test Case '-[SadrogCoreTests.RecordingAudioTests testExportIsOneMixedTrackAndRespectsSourceMute]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testMissingManifestAndExtraTracksGetNumberedNames]' started.
+Test Case '-[SadrogCoreTests.RecordingAudioTests testMissingManifestAndExtraTracksGetNumberedNames]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testMixMutesOnlyTheChosenSource]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/RecordingAudioTests.swift:22: -[SadrogCoreTests.RecordingAudioTests testMixMutesOnlyTheChosenSource] : Test skipped - probe recording not available
+Test Case '-[SadrogCoreTests.RecordingAudioTests testMixMutesOnlyTheChosenSource]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testMutedSourcesRoundTripAndOldProjectsDecode]' started.
+Test Case '-[SadrogCoreTests.RecordingAudioTests testMutedSourcesRoundTripAndOldProjectsDecode]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testNamesFollowManifestIndexNotArrayOrder]' started.
+Test Case '-[SadrogCoreTests.RecordingAudioTests testNamesFollowManifestIndexNotArrayOrder]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingAudioTests testReadsSourcesJsonNextToTheRecording]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/RecordingAudioTests.swift:22: -[SadrogCoreTests.RecordingAudioTests testReadsSourcesJsonNextToTheRecording] : Test skipped - probe recording not available
+Test Case '-[SadrogCoreTests.RecordingAudioTests testReadsSourcesJsonNextToTheRecording]' skipped (0.000 seconds).
+Test Suite 'RecordingAudioTests' passed at 2026-11-01 11:47:01.330.
+	 Executed 9 tests, with 5 tests skipped and 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'RecordingDocumentRateTests' started at 2026-11-01 11:47:01.330.
+Test Case '-[SadrogCoreTests.RecordingDocumentRateTests testExistingProjectsAreNotMigrated]' started.
+Test Case '-[SadrogCoreTests.RecordingDocumentRateTests testExistingProjectsAreNotMigrated]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordingDocumentRateTests testNewDocumentUsesConfiguredCaptureRateAndKeepsRealTiming]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/DocumentFormatTests.swift:58: -[SadrogCoreTests.RecordingDocumentRateTests testNewDocumentUsesConfiguredCaptureRateAndKeepsRealTiming] : Test skipped - C5 not available
+Test Case '-[SadrogCoreTests.RecordingDocumentRateTests testNewDocumentUsesConfiguredCaptureRateAndKeepsRealTiming]' skipped (0.000 seconds).
+Test Suite 'RecordingDocumentRateTests' passed at 2026-11-01 11:47:01.332.
+	 Executed 2 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'RecordingFinishTests' started at 2026-11-01 11:47:01.332.
+Test Case '-[SadrogCoreTests.RecordingFinishTests testCleanNameTrimsAndRemovesPathCharacters]' started.
+Test Case '-[SadrogCoreTests.RecordingFinishTests testCleanNameTrimsAndRemovesPathCharacters]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingFinishTests testDefaultNameUsesDateAndTime]' started.
+Test Case '-[SadrogCoreTests.RecordingFinishTests testDefaultNameUsesDateAndTime]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingFinishTests testFormatClampsAbsurdValues]' started.
+Test Case '-[SadrogCoreTests.RecordingFinishTests testFormatClampsAbsurdValues]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingFinishTests testFormatFollowsTheRecordingWithEvenSides]' started.
+Test Case '-[SadrogCoreTests.RecordingFinishTests testFormatFollowsTheRecordingWithEvenSides]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingFinishTests testUnusedTemporaryDocumentIsDiscardedButNeverOneWithContent]' started.
+Test Case '-[SadrogCoreTests.RecordingFinishTests testUnusedTemporaryDocumentIsDiscardedButNeverOneWithContent]' passed (0.003 seconds).
+Test Suite 'RecordingFinishTests' passed at 2026-11-01 11:47:01.336.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'RecordingIdentityTests' started at 2026-11-01 11:47:01.336.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testDeliveryPlanNamesEachRecordingsStems]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testDeliveryPlanNamesEachRecordingsStems]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testDetachedAudioKeepsItsRecordingsSettings]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testDetachedAudioKeepsItsRecordingsSettings]' passed (0.317 seconds).
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testExportedStemsCarryTheirOwnRecordingsChannel]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testExportedStemsCarryTheirOwnRecordingsChannel]' passed (0.546 seconds).
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testMixLevelsFollowTheClipsRecording]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testMixLevelsFollowTheClipsRecording]' passed (0.317 seconds).
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testReopenKeepsRecordingsAndLegacyFilesSplitToEveryRecording]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testReopenKeepsRecordingsAndLegacyFilesSplitToEveryRecording]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testReorderAndCopyKeepTheAssociation]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testReorderAndCopyKeepTheAssociation]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testSettingsStayOnTheirRecording]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testSettingsStayOnTheirRecording]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testStemOfOneRecordingSilencesTheOther]' started.
+Test Case '-[SadrogCoreTests.RecordingIdentityTests testStemOfOneRecordingSilencesTheOther]' passed (0.324 seconds).
+Test Suite 'RecordingIdentityTests' passed at 2026-11-01 11:47:02.843.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 1.506 (1.507) seconds
+Test Suite 'RecordingKeyFollowsMediaTests' started at 2026-11-01 11:47:02.843.
+Test Case '-[SadrogCoreTests.RecordingKeyFollowsMediaTests testMapMediaCarriesSoundSettings]' started.
+Test Case '-[SadrogCoreTests.RecordingKeyFollowsMediaTests testMapMediaCarriesSoundSettings]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RecordingKeyFollowsMediaTests testRelinkCarriesSoundSettings]' started.
+Test Case '-[SadrogCoreTests.RecordingKeyFollowsMediaTests testRelinkCarriesSoundSettings]' passed (0.000 seconds).
+Test Suite 'RecordingKeyFollowsMediaTests' passed at 2026-11-01 11:47:02.844.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RecordingWriterTests' started at 2026-11-01 11:47:02.844.
+Test Case '-[SadrogCoreTests.RecordingWriterTests testJournalRoundTrip]' started.
+Test Case '-[SadrogCoreTests.RecordingWriterTests testJournalRoundTrip]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.RecordingWriterTests testWriteFragmentedAndJournal]' started.
+Test Case '-[SadrogCoreTests.RecordingWriterTests testWriteFragmentedAndJournal]' passed (0.165 seconds).
+Test Suite 'RecordingWriterTests' passed at 2026-11-01 11:47:03.010.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.166 (0.166) seconds
+Test Suite 'RectCropPlacementTests' started at 2026-11-01 11:47:03.010.
+Test Case '-[SadrogCoreTests.RectCropPlacementTests testKeptPixelsStayPut]' started.
+Test Case '-[SadrogCoreTests.RectCropPlacementTests testKeptPixelsStayPut]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RectCropPlacementTests testRectCropAloneActivatesTheCompositorAndSurvivesSaveLoad]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/RectCropPlacementTests.swift:35: -[SadrogCoreTests.RectCropPlacementTests testRectCropAloneActivatesTheCompositorAndSurvivesSaveLoad] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.RectCropPlacementTests testRectCropAloneActivatesTheCompositorAndSurvivesSaveLoad]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.RectCropPlacementTests testRemovingCropRestoresPlacement]' started.
+Test Case '-[SadrogCoreTests.RectCropPlacementTests testRemovingCropRestoresPlacement]' passed (0.000 seconds).
+Test Suite 'RectCropPlacementTests' passed at 2026-11-01 11:47:03.011.
+	 Executed 3 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RowHeightTests' started at 2026-11-01 11:47:03.011.
+Test Case '-[SadrogCoreTests.RowHeightTests testDeletingTheLastItemOfARowDropsItsHeightKeyAndUndoRedoKeepIt]' started.
+Test Case '-[SadrogCoreTests.RowHeightTests testDeletingTheLastItemOfARowDropsItsHeightKeyAndUndoRedoKeepIt]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RowHeightTests testHeightFollowsTheTrackOnMoveSwapAndRemove]' started.
+Test Case '-[SadrogCoreTests.RowHeightTests testHeightFollowsTheTrackOnMoveSwapAndRemove]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RowHeightTests testOneRowIsResizedWithoutTouchingTheOthersOrTheLane]' started.
+Test Case '-[SadrogCoreTests.RowHeightTests testOneRowIsResizedWithoutTouchingTheOthersOrTheLane]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RowHeightTests testPersistenceAndOldFilesWithoutTheKey]' started.
+Test Case '-[SadrogCoreTests.RowHeightTests testPersistenceAndOldFilesWithoutTheKey]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RowHeightTests testRemovingAnEmptyTrackShiftsHeightsAndDropsItsOwn]' started.
+Test Case '-[SadrogCoreTests.RowHeightTests testRemovingAnEmptyTrackShiftsHeightsAndDropsItsOwn]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.RowHeightTests testResizingTheWholeLaneStartsFromAutomaticRows]' started.
+Test Case '-[SadrogCoreTests.RowHeightTests testResizingTheWholeLaneStartsFromAutomaticRows]' passed (0.000 seconds).
+Test Suite 'RowHeightTests' passed at 2026-11-01 11:47:03.012.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'RowMoveTests' started at 2026-11-01 11:47:03.012.
+Test Case '-[SadrogCoreTests.RowMoveTests testMoveRowShiftsTheOthersAndNamesFollow]' started.
+Test Case '-[SadrogCoreTests.RowMoveTests testMoveRowShiftsTheOthersAndNamesFollow]' passed (0.000 seconds).
+Test Suite 'RowMoveTests' passed at 2026-11-01 11:47:03.013.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'SafePublishTests' started at 2026-11-01 11:47:03.013.
+Test Case '-[SadrogCoreTests.SafePublishTests testCancellationLeavesNothingAndKeepsForeignFile]' started.
+Test Case '-[SadrogCoreTests.SafePublishTests testCancellationLeavesNothingAndKeepsForeignFile]' passed (0.206 seconds).
+Test Case '-[SadrogCoreTests.SafePublishTests testCancelledRealExportLeavesNoPartial]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/SafePublishTests.swift:71: -[SadrogCoreTests.SafePublishTests testCancelledRealExportLeavesNoPartial] : Test skipped - synthetic clip
+Test Case '-[SadrogCoreTests.SafePublishTests testCancelledRealExportLeavesNoPartial]' skipped (0.002 seconds).
+Test Case '-[SadrogCoreTests.SafePublishTests testErrorBeforeAndDuringWritingKeepsForeignFileAndLeavesNothing]' started.
+Test Case '-[SadrogCoreTests.SafePublishTests testErrorBeforeAndDuringWritingKeepsForeignFileAndLeavesNothing]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.SafePublishTests testExistingDestinationIsRefusedAndKeptIdentical]' started.
+Test Case '-[SadrogCoreTests.SafePublishTests testExistingDestinationIsRefusedAndKeptIdentical]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.SafePublishTests testExplicitReplaceSwapsWholeResult]' started.
+Test Case '-[SadrogCoreTests.SafePublishTests testExplicitReplaceSwapsWholeResult]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.SafePublishTests testFolderResultIsPublishedToo]' started.
+Test Case '-[SadrogCoreTests.SafePublishTests testFolderResultIsPublishedToo]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.SafePublishTests testRealExportsHonourTheContract]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/SafePublishTests.swift:52: -[SadrogCoreTests.SafePublishTests testRealExportsHonourTheContract] : Test skipped - synthetic clip
+Test Case '-[SadrogCoreTests.SafePublishTests testRealExportsHonourTheContract]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.SafePublishTests testSuccessPublishesWholeAndLeavesNoTemporary]' started.
+Test Case '-[SadrogCoreTests.SafePublishTests testSuccessPublishesWholeAndLeavesNoTemporary]' passed (0.001 seconds).
+Test Suite 'SafePublishTests' passed at 2026-11-01 11:47:03.228.
+	 Executed 8 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.214 (0.215) seconds
+Test Suite 'SelectionOpsTests' started at 2026-11-01 11:47:03.228.
+Test Case '-[SadrogCoreTests.SelectionOpsTests testGroupMoveKeepsDistancesAndIdentityInOneUndoStep]' started.
+Test Case '-[SadrogCoreTests.SelectionOpsTests testGroupMoveKeepsDistancesAndIdentityInOneUndoStep]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.SelectionOpsTests testGroupMoveRefusedWhenALaneIsLocked]' started.
+Test Case '-[SadrogCoreTests.SelectionOpsTests testGroupMoveRefusedWhenALaneIsLocked]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionAllLanesAtTheSameInstant]' started.
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionAllLanesAtTheSameInstant]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionCutsOnlySelectedCrossingItems]' started.
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionCutsOnlySelectedCrossingItems]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionIgnoresItemsNotCrossedAndRefusesLockedWhole]' started.
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionIgnoresItemsNotCrossedAndRefusesLockedWhole]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionSaveReopen]' started.
+Test Case '-[SadrogCoreTests.SelectionOpsTests testSplitSelectionSaveReopen]' passed (0.001 seconds).
+Test Suite 'SelectionOpsTests' passed at 2026-11-01 11:47:03.231.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'SessionRecoveryTests' started at 2026-11-01 11:47:03.231.
+Test Case '-[SadrogCoreTests.SessionRecoveryTests testGarbageMediaIsUnreadableAndMarkedFailed]' started.
+Test Case '-[SadrogCoreTests.SessionRecoveryTests testGarbageMediaIsUnreadableAndMarkedFailed]' passed (0.077 seconds).
+Test Case '-[SadrogCoreTests.SessionRecoveryTests testMissingMediaIsUnreadable]' started.
+Test Case '-[SadrogCoreTests.SessionRecoveryTests testMissingMediaIsUnreadable]' passed (0.003 seconds).
+Test Suite 'SessionRecoveryTests' passed at 2026-11-01 11:47:03.311.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.080 (0.080) seconds
+Test Suite 'SourceGainTests' started at 2026-11-01 11:47:03.311.
+Test Case '-[SadrogCoreTests.SourceGainTests testExportLevelFollowsGainAndClippingIsVisible]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/SourceGainTests.swift:39: -[SadrogCoreTests.SourceGainTests testExportLevelFollowsGainAndClippingIsVisible] : Test skipped - C5 not available
+Test Case '-[SadrogCoreTests.SourceGainTests testExportLevelFollowsGainAndClippingIsVisible]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.SourceGainTests testMixCarriesGainAndMuteWins]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/SourceGainTests.swift:21: -[SadrogCoreTests.SourceGainTests testMixCarriesGainAndMuteWins] : Test skipped - C5 not available
+Test Case '-[SadrogCoreTests.SourceGainTests testMixCarriesGainAndMuteWins]' skipped (0.000 seconds).
+Test Case '-[SadrogCoreTests.SourceGainTests testModelUndoPersistenceAndLegacy]' started.
+Test Case '-[SadrogCoreTests.SourceGainTests testModelUndoPersistenceAndLegacy]' passed (0.000 seconds).
+Test Suite 'SourceGainTests' passed at 2026-11-01 11:47:03.312.
+	 Executed 3 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'SourceSoundIsolationTests' started at 2026-11-01 11:47:03.312.
+Test Case '-[SadrogCoreTests.SourceSoundIsolationTests testCopyCutAndTrimKeepEverySourceSetting]' started.
+Test Case '-[SadrogCoreTests.SourceSoundIsolationTests testCopyCutAndTrimKeepEverySourceSetting]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.SourceSoundIsolationTests testEditingOneSourceLeavesTheOtherUntouched]' started.
+Test Case '-[SadrogCoreTests.SourceSoundIsolationTests testEditingOneSourceLeavesTheOtherUntouched]' passed (0.000 seconds).
+Test Suite 'SourceSoundIsolationTests' passed at 2026-11-01 11:47:03.313.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'StemTimingTests' started at 2026-11-01 11:47:03.313.
+Test Case '-[SadrogCoreTests.StemTimingTests testDelayIsMeasuredSeparatelyFromContamination]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/TwoTrackExportTests.swift:67: -[SadrogCoreTests.StemTimingTests testDelayIsMeasuredSeparatelyFromContamination] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.StemTimingTests testDelayIsMeasuredSeparatelyFromContamination]' skipped (0.000 seconds).
+Test Suite 'StemTimingTests' passed at 2026-11-01 11:47:03.313.
+	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'StorageTests' started at 2026-11-01 11:47:03.313.
+Test Case '-[SadrogCoreTests.StorageTests testInsufficientSpaceThrows]' started.
+Test Case '-[SadrogCoreTests.StorageTests testInsufficientSpaceThrows]' passed (0.009 seconds).
+Test Case '-[SadrogCoreTests.StorageTests testMissingDestinationThrows]' started.
+Test Case '-[SadrogCoreTests.StorageTests testMissingDestinationThrows]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.StorageTests testValidTempDestination]' started.
+Test Case '-[SadrogCoreTests.StorageTests testValidTempDestination]' passed (0.008 seconds).
+Test Suite 'StorageTests' passed at 2026-11-01 11:47:03.331.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.017 (0.017) seconds
+Test Suite 'StrokeAnnotationTests' started at 2026-11-01 11:47:03.331.
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testArrowHeadIsWiderThanTheShaft]' started.
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testArrowHeadIsWiderThanTheShaft]' passed (0.033 seconds).
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testBoxAndPointsOfAHorizontalLine]' started.
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testBoxAndPointsOfAHorizontalLine]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testMaskPaintsOnlyTheStroke]' started.
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testMaskPaintsOnlyTheStroke]' passed (0.032 seconds).
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testPersistsAndOlderCalloutsKeepTheirLook]' started.
+Test Case '-[SadrogCoreTests.StrokeAnnotationTests testPersistsAndOlderCalloutsKeepTheirLook]' passed (0.000 seconds).
+Test Suite 'StrokeAnnotationTests' passed at 2026-11-01 11:47:03.396.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.065 (0.066) seconds
+Test Suite 'SyntheticTwoTrackTests' started at 2026-11-01 11:47:03.396.
+Test Case '-[SadrogCoreTests.SyntheticTwoTrackTests testBothTracksAtKnownAmplitudesWithMuteAndGain]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/TwoTrackExportTests.swift:67: -[SadrogCoreTests.SyntheticTwoTrackTests testBothTracksAtKnownAmplitudesWithMuteAndGain] : Test skipped - synthetic colour clips not available
+Test Case '-[SadrogCoreTests.SyntheticTwoTrackTests testBothTracksAtKnownAmplitudesWithMuteAndGain]' skipped (0.000 seconds).
+Test Suite 'SyntheticTwoTrackTests' passed at 2026-11-01 11:47:03.397.
+	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'TextAnimationTests' started at 2026-11-01 11:47:03.397.
+Test Case '-[SadrogCoreTests.TextAnimationTests testCuttingKeepsThePicture]' started.
+Test Case '-[SadrogCoreTests.TextAnimationTests testCuttingKeepsThePicture]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.TextAnimationTests testEntranceAndExitShapes]' started.
+Test Case '-[SadrogCoreTests.TextAnimationTests testEntranceAndExitShapes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TextAnimationTests testMovingATitleMovesItsRestingPlace]' started.
+Test Case '-[SadrogCoreTests.TextAnimationTests testMovingATitleMovesItsRestingPlace]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TextAnimationTests testSavedAndReopened]' started.
+Test Case '-[SadrogCoreTests.TextAnimationTests testSavedAndReopened]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TextAnimationTests testUnderlineAndOutlineAreDrawn]' started.
+Test Case '-[SadrogCoreTests.TextAnimationTests testUnderlineAndOutlineAreDrawn]' passed (0.017 seconds).
+Test Suite 'TextAnimationTests' passed at 2026-11-01 11:47:03.417.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.019 (0.020) seconds
+Test Suite 'TextStyleTests' started at 2026-11-01 11:47:03.417.
+Test Case '-[SadrogCoreTests.TextStyleTests testBoldShadowAndBoxChangeThePixels]' started.
+Test Case '-[SadrogCoreTests.TextStyleTests testBoldShadowAndBoxChangeThePixels]' passed (0.004 seconds).
+Test Case '-[SadrogCoreTests.TextStyleTests testMultilineTitleIsTallerAndKeepsItsLines]' started.
+Test Case '-[SadrogCoreTests.TextStyleTests testMultilineTitleIsTallerAndKeepsItsLines]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TextStyleTests testStylesRoundTripAndOldFilesStillOpen]' started.
+Test Case '-[SadrogCoreTests.TextStyleTests testStylesRoundTripAndOldFilesStillOpen]' passed (0.000 seconds).
+Test Suite 'TextStyleTests' passed at 2026-11-01 11:47:03.421.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'ThemeContrastTests' started at 2026-11-01 11:47:03.421.
+Test Case '-[SadrogCoreTests.ThemeContrastTests testPairsReadableInDarkAndLight]' started.
+Test Case '-[SadrogCoreTests.ThemeContrastTests testPairsReadableInDarkAndLight]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ThemeContrastTests testSelectionRingIsYellowAndVisibleInBothThemes]' started.
+Test Case '-[SadrogCoreTests.ThemeContrastTests testSelectionRingIsYellowAndVisibleInBothThemes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ThemeContrastTests testSurfacesKeepTheirHierarchyInBothThemes]' started.
+Test Case '-[SadrogCoreTests.ThemeContrastTests testSurfacesKeepTheirHierarchyInBothThemes]' passed (0.000 seconds).
+Test Suite 'ThemeContrastTests' passed at 2026-11-01 11:47:03.422.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'TimelineLayoutTests' started at 2026-11-01 11:47:03.422.
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testDefaultAndPartialOrderAreCompleted]' started.
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testDefaultAndPartialOrderAreCompleted]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testEditorOneUndoPerOperationAndOnlyPresentationChanges]' started.
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testEditorOneUndoPerOperationAndOnlyPresentationChanges]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testHeightClampsAndResets]' started.
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testHeightClampsAndResets]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testMoveKeepsEveryLaneOnceAndHeightsFollowTheLane]' started.
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testMoveKeepsEveryLaneOnceAndHeightsFollowTheLane]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testSavedAndReopenedKeepsLayoutAndOldFilesDecodeToDefault]' started.
+Test Case '-[SadrogCoreTests.TimelineLayoutTests testSavedAndReopenedKeepsLayoutAndOldFilesDecodeToDefault]' passed (0.001 seconds).
+Test Suite 'TimelineLayoutTests' passed at 2026-11-01 11:47:03.424.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'TrackRowsTests' started at 2026-11-01 11:47:03.424.
+Test Case '-[SadrogCoreTests.TrackRowsTests testCreateRenameRemoveEmptyRowAndReload]' started.
+Test Case '-[SadrogCoreTests.TrackRowsTests testCreateRenameRemoveEmptyRowAndReload]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TrackRowsTests testLockedLaneRefusesRowEdits]' started.
+Test Case '-[SadrogCoreTests.TrackRowsTests testLockedLaneRefusesRowEdits]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TrackRowsTests testPlaceMovesTimeAndRowAtomicallyAndRefusesCollisionWithoutLoss]' started.
+Test Case '-[SadrogCoreTests.TrackRowsTests testPlaceMovesTimeAndRowAtomicallyAndRefusesCollisionWithoutLoss]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.TrackRowsTests testSwapChangesStackingOrderOfVideoAndKeepsTimes]' started.
+Test Case '-[SadrogCoreTests.TrackRowsTests testSwapChangesStackingOrderOfVideoAndKeepsTimes]' passed (0.000 seconds).
+Test Suite 'TrackRowsTests' passed at 2026-11-01 11:47:03.425.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'TwoTrackExportTests' started at 2026-11-01 11:47:03.425.
+Test Case '-[SadrogCoreTests.TwoTrackExportTests testUnmutedExportKeepsMicrophone]' started.
+/private/tmp/claude-501/-Users-gordasgdc-Developer-gdc-lut-lab/2b3bc429-7f78-42d1-af7a-45bff1e4bdd0/scratchpad/sadrog-public/Tests/SadrogCoreTests/TwoTrackExportTests.swift:19: -[SadrogCoreTests.TwoTrackExportTests testUnmutedExportKeepsMicrophone] : Test skipped - C5 not available
+Test Case '-[SadrogCoreTests.TwoTrackExportTests testUnmutedExportKeepsMicrophone]' skipped (0.000 seconds).
+Test Suite 'TwoTrackExportTests' passed at 2026-11-01 11:47:03.426.
+	 Executed 1 test, with 1 test skipped and 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'UpdateManifestTests' started at 2026-11-01 11:47:03.426.
+Test Case '-[SadrogCoreTests.UpdateManifestTests testDecodeCompareAndNotes]' started.
+Test Case '-[SadrogCoreTests.UpdateManifestTests testDecodeCompareAndNotes]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.UpdateManifestTests testRejectsForeignHostsAndBadHash]' started.
+Test Case '-[SadrogCoreTests.UpdateManifestTests testRejectsForeignHostsAndBadHash]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.UpdateManifestTests testStreamedSHA256]' started.
+Test Case '-[SadrogCoreTests.UpdateManifestTests testStreamedSHA256]' passed (0.000 seconds).
+Test Suite 'UpdateManifestTests' passed at 2026-11-01 11:47:03.427.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'UserManualTests' started at 2026-11-01 11:47:03.427.
+Test Case '-[SadrogCoreTests.UserManualTests testEachLanguageHasItsOwnStablePDFAddress]' started.
+Test Case '-[SadrogCoreTests.UserManualTests testEachLanguageHasItsOwnStablePDFAddress]' passed (0.000 seconds).
+Test Suite 'UserManualTests' passed at 2026-11-01 11:47:03.427.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'ViewerPickTests' started at 2026-11-01 11:47:03.427.
+Test Case '-[SadrogCoreTests.ViewerPickTests testFrontToBackOrderAndCircleCornersFallThroughToTheScreen]' started.
+Test Case '-[SadrogCoreTests.ViewerPickTests testFrontToBackOrderAndCircleCornersFallThroughToTheScreen]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ViewerPickTests testHigherRowIsInFront]' started.
+Test Case '-[SadrogCoreTests.ViewerPickTests testHigherRowIsInFront]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ViewerPickTests testRotatedRectangleAndCoveredItemCycling]' started.
+Test Case '-[SadrogCoreTests.ViewerPickTests testRotatedRectangleAndCoveredItemCycling]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.ViewerPickTests testTitleOnlyInItsTimeAndTransparentOrHiddenItemsDoNotBlock]' started.
+Test Case '-[SadrogCoreTests.ViewerPickTests testTitleOnlyInItsTimeAndTransparentOrHiddenItemsDoNotBlock]' passed (0.000 seconds).
+Test Suite 'ViewerPickTests' passed at 2026-11-01 11:47:03.428.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'WindowFollowTests' started at 2026-11-01 11:47:03.428.
+Test Case '-[SadrogCoreTests.WindowFollowTests testEditorCommandIsOneUndoStepAndSurvivesTrimAndReopen]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testEditorCommandIsOneUndoStepAndSurvivesTrimAndReopen]' passed (0.001 seconds).
+Test Case '-[SadrogCoreTests.WindowFollowTests testFollowsTheWindowWhenItMoves]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testFollowsTheWindowWhenItMoves]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowFollowTests testMissingWindowGoesBackToFullFrameAndUnknownIdIsRefused]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testMissingWindowGoesBackToFullFrameAndUnknownIdIsRefused]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowFollowTests testSourceStartOffsetsTheClock]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testSourceStartOffsetsTheClock]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowFollowTests testTrackBelongsToItsRecordingNotToTheFolder]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testTrackBelongsToItsRecordingNotToTheFolder]' passed (0.002 seconds).
+Test Case '-[SadrogCoreTests.WindowFollowTests testWindowFillingTheFrameDoesNotZoom]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testWindowFillingTheFrameDoesNotZoom]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowFollowTests testWindowsSeenListsWhoWasInFront]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testWindowsSeenListsWhoWasInFront]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowFollowTests testZoomFillsTheWindowAndCentresIt]' started.
+Test Case '-[SadrogCoreTests.WindowFollowTests testZoomFillsTheWindowAndCentresIt]' passed (0.000 seconds).
+Test Suite 'WindowFollowTests' passed at 2026-11-01 11:47:03.432.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'WindowSizeTests' started at 2026-11-01 11:47:03.432.
+Test Case '-[SadrogCoreTests.WindowSizeTests testWindowPixelsUseDisplayScale]' started.
+Test Case '-[SadrogCoreTests.WindowSizeTests testWindowPixelsUseDisplayScale]' passed (0.000 seconds).
+Test Suite 'WindowSizeTests' passed at 2026-11-01 11:47:03.432.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'WindowTrackTests' started at 2026-11-01 11:47:03.432.
+Test Case '-[SadrogCoreTests.WindowTrackTests testLookupGlidesWithinOneWindowAndCutsBetweenWindows]' started.
+Test Case '-[SadrogCoreTests.WindowTrackTests testLookupGlidesWithinOneWindowAndCutsBetweenWindows]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowTrackTests testNormalizeCutsAtTheCaptureEdge]' started.
+Test Case '-[SadrogCoreTests.WindowTrackTests testNormalizeCutsAtTheCaptureEdge]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowTrackTests testPickTakesTheTopmostOrdinaryWindowThatIsNotOurs]' started.
+Test Case '-[SadrogCoreTests.WindowTrackTests testPickTakesTheTopmostOrdinaryWindowThatIsNotOurs]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowTrackTests testRecorderKeepsChangesAndHeartbeatAndHonoursPause]' started.
+Test Case '-[SadrogCoreTests.WindowTrackTests testRecorderKeepsChangesAndHeartbeatAndHonoursPause]' passed (0.000 seconds).
+Test Case '-[SadrogCoreTests.WindowTrackTests testSaveLoadNextToTheMediaAndNoTitleIsStored]' started.
+Test Case '-[SadrogCoreTests.WindowTrackTests testSaveLoadNextToTheMediaAndNoTitleIsStored]' passed (0.001 seconds).
+Test Suite 'WindowTrackTests' passed at 2026-11-01 11:47:03.434.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'SadrogCoreTests.xctest' passed at 2026-11-01 11:47:03.434.
+	 Executed 395 tests, with 70 tests skipped and 0 failures (0 unexpected) in 44.661 (44.698) seconds
+Test Suite 'All tests' passed at 2026-11-01 11:47:03.434.
+	 Executed 395 tests, with 70 tests skipped and 0 failures (0 unexpected) in 44.661 (44.699) seconds
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+done

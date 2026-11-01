@@ -1,5 +1,11 @@
 # SADROG — changelog
 
+## 1.2.1
+- Timeline: the Blade tool cuts the whole selection — with several items selected, one click on one of them cuts every selected item that crosses that instant (V1, camera, detached sound, titles…), at exactly the same time, as one Undo step; a click on an item outside the selection cuts only that item; a locked track refuses the cut as a whole. The vertical guide turns yellow and shows how many items will be cut.
+- Timeline: selected items have a clear yellow outline with a dark edge (it turned brown in the Light theme), visible over thumbnails, waveforms and any track colour; hover and the drop destination (blue) are distinct from the selection.
+- Plug-in windows: a second plug-in window no longer opens exactly over the first — it is offset and kept inside the screen.
+- Docs: rectangle-selection section of the manuals and the product page (RO/EN/ES) describes the Blade on a selection and the selection outline; the screenshots with a selected item were retaken; README unchanged; install and price text unchanged.
+
 ## 1.2.0
 - Timeline: mixed selection move — video clips from the main track, camera, titles, highlights and sounds selected together move as one: the clip block is re-inserted at the nearest boundary between clips, the other items shift by the same distance, detached sound travels with its clip, and the timing relationship between them stays identical. While dragging, a dashed outline shows where the block lands; an impossible destination (locked track, overlap, non-adjacent clips, a transition between them) is explained and nothing changes. One Undo step.
 - Export: the compressed export can no longer wait forever — each stream is finished as soon as it runs out and a writer that stops advancing is stopped with a clear message instead of leaving the export hanging.

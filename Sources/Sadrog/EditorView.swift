@@ -773,7 +773,7 @@ struct MaterialCell: View {
                 Image(systemName: audioOnly ? "waveform" : "film").font(Theme.F.glyph).foregroundStyle(.white).padding(4).background(RoundedRectangle(cornerRadius: 3).fill(.black.opacity(0.62))).padding(4)
                 if missing { Rectangle().fill(.black.opacity(0.55)); Label(T("Lipsă"), systemImage: "exclamationmark.triangle.fill").font(Theme.F.label).foregroundStyle(Theme.C.warn).frame(maxWidth: .infinity, maxHeight: .infinity) }
             }.aspectRatio(16 / 9, contentMode: .fit).clipShape(shape).overlay(Edge.outline(shape, Color.black.opacity(0.5)))
-                .overlay { if selected { shape.strokeBorder(Theme.C.sel, lineWidth: 2) } }
+                .overlay { if selected { shape.strokeBorder(Theme.C.selRing, lineWidth: 2.5) } }
             Text(name).font(Theme.F.caption).lineLimit(1).truncationMode(.middle)
             Text(timecode(duration)).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).monospacedDigit()
         }.contentShape(Rectangle())
@@ -1667,7 +1667,7 @@ struct TimelinePanel: View {
         HStack(spacing: 10) {
             ControlGroup2 {
                 Button { m.tool = .select } label: { Image(systemName: "cursorarrow") }.buttonStyle(ToolButtonStyle(active: m.tool == .select)).help(T("Selectare (A)")).accessibilityLabel(T("Unealta Selectare")).keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("a", modifiers: []))
-                Button { m.tool = .blade } label: { Image(systemName: "scissors") }.buttonStyle(ToolButtonStyle(active: m.tool == .blade)).help(T("Foarfecă (B): clic pe o pistă taie în punctul indicat; Esc revine la Selectare")).accessibilityLabel(T("Unealta Foarfecă")).keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("b", modifiers: []))
+                Button { m.tool = .blade } label: { Image(systemName: "scissors") }.buttonStyle(ToolButtonStyle(active: m.tool == .blade)).help(T("Foarfecă (B): clic taie elementul din punctul indicat; cu mai multe elemente selectate, clic pe unul dintre ele taie toată selecția la același moment; Esc revine la Selectare")).accessibilityLabel(T("Unealta Foarfecă")).keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("b", modifiers: []))
             }
             ControlGroup2 {
             Button { m.followPlayhead.toggle() } label: { Image(systemName: "scope") }.buttonStyle(ToolButtonStyle(active: m.followPlayhead)).help(m.followPlayhead ? T("Urmărire cursor activă: timeline-ul se deplasează la redare ca să-l păstreze vizibil. Clic oprește.") : T("Urmărire oprită (ai derulat manual). Clic: revii la cursor și reiei urmărirea.")).accessibilityLabel(T("Urmărire cursor")).accessibilityValue(m.followPlayhead ? T("activă") : T("oprită"))
@@ -1966,7 +1966,7 @@ struct TimelinePanel: View {
     }
     /// Hover text of a timeline item: what it is and what dragging does (the real gestures: move, trim at the edges, blade tool cuts).
     private func itemHelp(_ it: Item) -> String {
-        if m.tool == .blade { return T("Unealta Lamă: clic taie elementul în punctul indicat.") }
+        if m.tool == .blade { return T("Unealta Lamă: clic taie elementul în punctul indicat; pe un element dintr-o selecție multiplă taie toată selecția.") }
         switch it.lane {
         case .main: return T("Clip de pe pista principală: trage pentru a-l muta între clipuri; trage marginile pentru a-l tăia; clic dreapta pentru mai multe comenzi.")
         case .overlay: return T("Element video suprapus: trage pentru a-l muta (și pe altă pistă); trage marginile pentru a-l tăia; clic dreapta pentru mai multe comenzi.")
@@ -2066,9 +2066,9 @@ struct TimelinePanel: View {
                 let isNew = rp.row >= m.project.rowCount(isV ? .v2 : .a2)
                 let sl = isNew ? (isV ? -1 : m.project.rowCount(.a2)) : (isV ? m.slot(.v2, rp.row) : rp.row), rh = isNew ? 24 : geo.rowHeight(li, slot: sl)
                 let top = isNew ? (isV ? geo.y(li) - rh : geo.y(li) + geo.heights[li]) : geo.rowTop(li, slot: sl)
-                RoundedRectangle(cornerRadius: 4).stroke(rp.free ? Theme.C.sel : Theme.C.warn, style: StrokeStyle(lineWidth: 2, dash: rp.free ? [] : [5, 3]))
-                    .background((rp.free ? Theme.C.sel : Theme.C.warn).opacity(0.12)).frame(width: width, height: rh).offset(y: top).allowsHitTesting(false).zIndex(2)
-                    .overlay(alignment: .leading) { if isNew { Text(T("Pistă nouă")).font(Theme.F.small).foregroundStyle(Theme.C.sel).padding(.leading, 8).allowsHitTesting(false) } }
+                RoundedRectangle(cornerRadius: 4).stroke(rp.free ? Theme.C.accent : Theme.C.warn, style: StrokeStyle(lineWidth: 2, dash: rp.free ? [] : [5, 3]))
+                    .background((rp.free ? Theme.C.accent : Theme.C.warn).opacity(0.12)).frame(width: width, height: rh).offset(y: top).allowsHitTesting(false).zIndex(2)
+                    .overlay(alignment: .leading) { if isNew { Text(T("Pistă nouă")).font(Theme.F.small).foregroundStyle(Theme.C.accent).padding(.leading, 8).allowsHitTesting(false) } }
             }
             // effects that belong to a clip or an overlay live INSIDE its tile: one band per effect over exactly its interval, stacked from the tile's bottom edge in start order
             ForEach(items.filter(\.attached), id: \.id) { it in
@@ -2080,7 +2080,12 @@ struct TimelinePanel: View {
                 }
             }
             if let h = m.hoverCut, m.tool == .blade {
-                Rectangle().fill(Theme.C.text.opacity(0.9)).frame(width: 1, height: geo.total - rulerH).offset(x: CGFloat(h) * pps, y: rulerH).allowsHitTesting(false)
+                let whole = m.bladeCutsSelection(hit: hoverItem)
+                Rectangle().fill(whole ? Theme.C.sel : Theme.C.text.opacity(0.9)).frame(width: whole ? 2 : 1, height: geo.total - rulerH).offset(x: CGFloat(h) * pps - (whole ? 0.5 : 0), y: rulerH).allowsHitTesting(false)
+                if whole {
+                    Text(L10n.f("Taie %d elemente", m.selectedIDs.count)).font(Theme.F.monoSmall).foregroundStyle(Theme.C.bg0).padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(RoundedRectangle(cornerRadius: 4).fill(Theme.C.sel)).offset(x: CGFloat(h) * pps + 8, y: rulerH + 4).allowsHitTesting(false)
+                }
                 Image(systemName: "scissors").font(Theme.F.small).foregroundStyle(Theme.C.bg0).padding(3).background(Circle().fill(Theme.C.text)).offset(x: CGFloat(h) * pps - 10, y: rulerH - 14).allowsHitTesting(false)
             }
             if let tp = m.trimPreview, let it = item(tp.clip) {
@@ -2201,7 +2206,10 @@ struct TimelinePanel: View {
                     if !moved && !marqueeCancelled { if marqueeBase.isEmpty { m.select(nil) }; m.seek(max(0, min(m.project.timelineEnd, Double(v.location.x / pps)))) }      // a click in free space empties the selection
                     endMarquee()
                 case .blade?:
-                    if abs(v.location.x - v.startLocation.x) < 4, let l = laneHit(v.startLocation.y, geo) { m.splitAt(min(m.project.timelineEnd, max(0, Double(v.location.x / pps))), lane: laneKind(l)) }
+                    if abs(v.location.x - v.startLocation.x) < 4, let l = laneHit(v.startLocation.y, geo) {
+                        let t = min(m.project.timelineEnd, max(0, Double(v.startLocation.x / pps)))      // the instant is computed ONCE; the vertical position only picks the item
+                        m.bladeCut(at: t, hit: itemAt(v.startLocation, pps: pps, geo: geo)?.id, lane: laneKind(l))
+                    }
                 default: break
                 }
                 m.rowPreview = nil
@@ -2255,18 +2263,13 @@ struct TimelinePanel: View {
     /// Near the edge of the visible area the timeline scrolls (sideways and up/down) while the rectangle keeps growing under the stationary pointer.
     private func autoscrollMarquee(pps: CGFloat, geo: Geo, width: CGFloat) {
         guard let mq = marquee, !marqueeCancelled else { return }
-        let viewW = width / CGFloat(max(1, m.zoom)), edge: CGFloat = 28
-        var dx: CGFloat = 0, dy: CGFloat = 0
-        if marqueeScreen.x < edge { dx = -max(4, (edge - marqueeScreen.x) / 2) } else if marqueeScreen.x > viewW - edge { dx = max(4, (marqueeScreen.x - (viewW - edge)) / 2) }
-        if marqueeScreen.y < rulerH + edge { dy = -max(4, (rulerH + edge - marqueeScreen.y) / 2) } else if marqueeScreen.y > viewportH - edge { dy = max(4, (marqueeScreen.y - (viewportH - edge)) / 2) }
-        if m.zoom <= 1.01 { dx = 0 }
-        if dy != 0 && geo.total <= viewportH { dy = 0 }
-        guard dx != 0 || dy != 0 else { return }
-        let nx = max(0, min(max(0, width - viewW), scrollOffset + dx)), ny = max(0, min(max(0, geo.total - viewportH), vOff + dy))
-        let rdx = nx - scrollOffset, rdy = ny - vOff
-        if rdx != 0 { hPos.scrollTo(x: nx); scrollOffset = nx }
-        if rdy != 0 { vPos.scrollTo(y: ny); vOff = ny }
-        marquee = (mq.a, CGPoint(x: marqueeScreen.x + scrollOffset, y: marqueeScreen.y + vOff))
+        let viewW = width / CGFloat(max(1, m.zoom))
+        let st = MarqueeAutoscroll.step(pointer: marqueeScreen, viewW: viewW, contentW: width, viewportH: viewportH, contentH: geo.total, rulerH: rulerH,
+                                        zoom: m.zoom, offsetX: scrollOffset, offsetY: vOff)
+        guard st.offsetX != scrollOffset || st.offsetY != vOff else { return }
+        if st.offsetX != scrollOffset { hPos.scrollTo(x: st.offsetX); scrollOffset = st.offsetX }
+        if st.offsetY != vOff { vPos.scrollTo(y: st.offsetY); vOff = st.offsetY }
+        marquee = (mq.a, st.corner)
         applyMarquee(pps: pps, geo: geo)
     }
     private func endMarquee() {
@@ -2424,7 +2427,8 @@ struct ClipOutline: ViewModifier {
             .overlay(shape.strokeBorder(Color.black.opacity(selected ? 0 : 0.55), lineWidth: 1))
             .overlay { if !selected { shape.inset(by: 1).strokeBorder(LinearGradient(colors: [.white.opacity(hover ? 0.34 : 0.13), .clear], startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.4)), lineWidth: 1) } }
             .overlay { if hover && !selected { shape.strokeBorder(Color.white.opacity(0.5), lineWidth: 1) } }
-            .overlay { if selected || editing { shape.strokeBorder(Theme.C.sel, lineWidth: 2) } }
+            .overlay { if selected || editing { shape.stroke(Theme.C.selHalo.opacity(0.85), lineWidth: 5) } }      // dark halo: half of it outside the clip, so the ring reads on any backdrop
+            .overlay { if selected || editing { shape.strokeBorder(Theme.C.selRing, lineWidth: 2.5) } }
     }
 }
 extension View { func clipOutline(selected: Bool, hover: Bool, editing: Bool) -> some View { modifier(ClipOutline(selected: selected, hover: hover, editing: editing)) } }

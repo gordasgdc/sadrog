@@ -113,16 +113,25 @@ extension EditorModel {
     /// Replaces the selection with `ids` (the first stays the one the Inspector edits). Used by the rectangle selection.
     func setSelection(_ ids: [UUID]) { selection = ids.first; extra = Set(ids.dropFirst()); if ids.count != 1 { cropEditing = false; endFraming() } }
     /// „Taie elementele selectate la cursor”: only the selected items that cross the playhead are cut (one undo step); the others, and the other tracks, are not touched.
-    func splitSelected() {
+    func splitSelected() { splitSelected(at: time) }
+    /// The ONE implementation of the multi-item cut (menu command and Blade tool): the same time `t` for every selected item that crosses it, one undo step.
+    func splitSelected(at t: Double) {
         let ids = selectedIDs; guard !ids.isEmpty else { return }
         var r: SplitSelection = .nothing
-        apply { r = $0.splitSelection(ids, at: self.time) }
+        apply { r = $0.splitSelection(ids, at: t) }
         switch r {
         case .split: message = ""
         case .locked: message = T("Nu se poate tăia: o pistă a unui element selectat de la cursor este blocată; nu s-a modificat nimic.")
         case .nothing: message = T("Niciun element selectat nu este traversat de cursor (o evidențiere se scurtează, nu se taie).")
         }
     }
+    /// Blade click at time `t` on item `hit` (nil = empty space of lane `lane`). With a multi-selection and a click on one of its items the whole selection is cut at
+    /// the same instant (computed once by the caller); otherwise only the targeted lane/item is cut, as before. A click on an unselected item never cuts the group.
+    func bladeCut(at t: Double, hit: UUID?, lane: Lane) {
+        if selectedIDs.count > 1, let h = hit, isSelected(h) { splitSelected(at: t) } else { splitAt(t, lane: lane) }
+    }
+    /// True when a Blade click on `hit` would cut the whole selection (drives the guide label).
+    func bladeCutsSelection(hit: UUID?) -> Bool { selectedIDs.count > 1 && hit.map(isSelected) == true }
     func selectAll() {
         let all = project.clips.map(\.id) + project.layers.map(\.id) + project.texts.map(\.id) + project.callouts.map(\.id)
         guard let f = all.first else { return }

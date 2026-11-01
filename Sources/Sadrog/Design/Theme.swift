@@ -21,6 +21,8 @@ enum Theme {
         static let accent = Color(ThemePalette.accent)   // primary action / focus
         static let accentInk = Color.white
         static let sel = Color(ThemePalette.sel)      // clip selection
+        static let selRing = Color(ThemePalette.selRing)   // outline of selected timeline items (yellow, both themes)
+        static let selHalo = Color(hex: ThemePalette.selHalo)
         static let playhead = Color(ThemePalette.playhead)
         static let record = Color(ThemePalette.record)
         static let warn = Color(ThemePalette.warn)

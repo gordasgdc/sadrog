@@ -39,6 +39,18 @@ final class SelectionOpsTests: XCTestCase {
         XCTAssertTrue(e.undo()); XCTAssertEqual(e.project.clips.count, 1); XCTAssertEqual(e.project.texts.count, 1); XCTAssertEqual(e.project.layers.filter { $0.kind == .audio }.count, 1)
         XCTAssertTrue(e.redo()); XCTAssertEqual(e.project.clips.count, 2)
     }
+    /// The Blade tool and the menu command share this one operation: V1, camera (V2), detached sound and title cut at EXACTLY the same instant, one undo step.
+    func testSplitSelectionAllLanesAtTheSameInstant() throws {
+        let (e, clip, aud, cam, txt, _) = setup(); let t = 5.0
+        XCTAssertEqual(e.splitSelection([clip, aud, cam, txt], at: t), .split(4))
+        let ends = e.project.clips.map { $0.duration } + e.project.layers.map { $0.start }
+        XCTAssertEqual(e.project.clips[0].duration, t, accuracy: 1e-12)
+        for l in e.project.layers where l.start < t { XCTAssertEqual(l.start + l.duration, t, accuracy: 1e-9, "layer piece ends at the cut") }
+        XCTAssertEqual(e.project.layers.filter { $0.start == t }.count, 2, "camera and sound second halves start at the cut")
+        XCTAssertEqual(e.project.texts.first { $0.start < t }!.start + e.project.texts.first { $0.start < t }!.duration, t, accuracy: 1e-9)
+        XCTAssertEqual(e.project.texts.filter { $0.start == t }.count, 1); _ = ends
+        XCTAssertTrue(e.undo()); XCTAssertEqual(e.project.clips.count, 1); XCTAssertEqual(e.project.layers.count, 2); XCTAssertEqual(e.project.texts.count, 1)
+    }
     func testSplitSelectionIgnoresItemsNotCrossedAndRefusesLockedWhole() throws {
         let (e, clip, aud, _, txt, _) = setup()
         XCTAssertEqual(e.splitSelection([txt], at: 9), .nothing)            // title ends at 7

@@ -161,6 +161,23 @@ final class PluginWindow: NSObject, NSWindowDelegate {
         self.model = model; self.source = source; self.recording = media; self.effectID = effect.id; self.effect = effect; self.title = title; self.saved = effect.state
     }
 
+    /// A second (third…) plug-in window must not open exactly over the first: it is offset by a title-bar step from the last one still open,
+    /// and kept inside the visible area of the screen. Windows the user has moved are never touched (only NEW windows are placed).
+    static func cascade(_ w: NSWindow) {
+        let others = NSApp.windows.filter { $0 !== w && $0.isVisible && $0.delegate is PluginWindow }
+        guard let last = others.max(by: { $0.windowNumber < $1.windowNumber }) else { return }
+        var f = w.frame
+        f.origin = NSPoint(x: last.frame.minX + 28, y: last.frame.minY - 28)
+        let vis = (last.screen ?? NSScreen.main)?.visibleFrame ?? .zero
+        if vis != .zero {
+            f.origin.x = min(max(f.origin.x, vis.minX), max(vis.minX, vis.maxX - f.width))
+            f.origin.y = min(max(f.origin.y, vis.minY), max(vis.minY, vis.maxY - f.height))
+            // at the bottom/right edge the cascade wraps back to the top-left corner of the visible area
+            if f.origin.y <= vis.minY || f.maxX >= vis.maxX { f.origin = NSPoint(x: vis.minX + 40, y: vis.maxY - f.height - 40) }
+        }
+        w.setFrame(f, display: false)
+    }
+
     func open() async {
         let id = effect.component, name = effect.name
         guard AUCatalog.installed(id) != nil else { fail(L10n.f("Pluginul „%@” nu e instalat pe acest Mac.", "\(name)")); return }
@@ -184,6 +201,7 @@ final class PluginWindow: NSObject, NSWindowDelegate {
         let w = NSWindow(contentRect: NSRect(origin: .zero, size: size), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
         w.title = title; w.contentViewController = vc; w.setContentSize(size); w.isReleasedWhenClosed = false; w.delegate = self
         w.center()
+        Self.cascade(w)
         // Auxiliary window of the project: a CHILD of the editor window — always above it (clicks, scrolling and playback in the timeline never bury it),
         // hidden/shown together with the app (never left over another application), and below modal dialogs. No window level, no timer.
         if let parent = NSApp.mainWindow ?? NSApp.keyWindow ?? NSApp.windows.first(where: { $0.isVisible && $0.canBecomeMain }), parent !== w { parent.addChildWindow(w, ordered: .above) }

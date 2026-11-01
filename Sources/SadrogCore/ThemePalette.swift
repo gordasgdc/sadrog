@@ -16,6 +16,10 @@ public enum ThemePalette {
     public static let textFaint = Pair(dark: 0x8E9098, light: 0x62646D)
     public static let accent = Pair(dark: 0x0A84FF, light: 0x0A62D0)
     public static let sel = Pair(dark: 0xF3CA52, light: 0xA86F00)
+    /// The outline of a selected timeline item: one clear yellow in both appearances (the old `sel` turns brown in Light). It is always drawn with a dark halo
+    /// (`selHalo`), so it stays visible over thumbnails, waveforms, the track colours and the light panel; `sel` keeps its other uses (tool highlight, lock, guides).
+    public static let selRing = Pair(dark: 0xFFD60A, light: 0xFFC800)
+    public static let selHalo: UInt32 = 0x1A1A1C
     public static let playhead = Pair(dark: 0xEF655D, light: 0xD2403A)
     public static let record = Pair(dark: 0xFF5256, light: 0xE0292E)
     public static let warn = Pair(dark: 0xF5A524, light: 0xA85F00)
