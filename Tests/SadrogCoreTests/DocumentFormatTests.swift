@@ -30,7 +30,7 @@ final class DocumentFormatTests: XCTestCase {
         p.canvas = DocumentFormat(width: 640, height: 640, fps: 25)
         let b = try await CompositionBuilder.buildFull(p)
         XCTAssertEqual(b.renderSize, CGSize(width: 640, height: 640)); XCTAssertNotNil(b.videoComposition(for: p))
-        let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/doc-\(UUID().uuidString).mov"); defer { try? FileManager.default.removeItem(at: out) }
+        let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/doc-\(UUID().uuidString).mov"); defer { try? FileManager.default.removeItem(at: out) }
         try await ProjectExporter.export(p, to: out)
         let vts = try await AVURLAsset(url: out).loadTracks(withMediaType: .video); let v = try XCTUnwrap(vts.first)
         let size = try await v.load(.naturalSize), rate = try await v.load(.nominalFrameRate)
@@ -53,7 +53,7 @@ final class DocumentFormatTests: XCTestCase {
 
 /// Frame-rate rule for documents made from SADROG recordings (decision 2026-10-29).
 final class RecordingDocumentRateTests: XCTestCase {
-    static let c5 = "\(TestRoot.path)/evidence/capture_probes/C5/SADROG-6C7145EC-CD59-44A8-875E-758B8E931335"
+    static let c5 = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/evidence/capture_probes/C5/SADROG-6C7145EC-CD59-44A8-875E-758B8E931335"
     func testNewDocumentUsesConfiguredCaptureRateAndKeepsRealTiming() async throws {
         try XCTSkipUnless(FileManager.default.fileExists(atPath: Self.c5 + "/session.json"), "C5 not available")
         let j = try SessionJournal.read(from: URL(fileURLWithPath: Self.c5))
@@ -72,7 +72,7 @@ final class RecordingDocumentRateTests: XCTestCase {
     }
     func testExistingProjectsAreNotMigrated() throws {
         // a project saved before this rule (no canvas) stays "same as source" when loaded and saved again
-        let dir = URL(fileURLWithPath: "\(TestRoot.path)/temp/legacy-\(UUID().uuidString)"); defer { try? FileManager.default.removeItem(at: dir) }
+        let dir = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/legacy-\(UUID().uuidString)"); defer { try? FileManager.default.removeItem(at: dir) }
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         let json = #"{"formatVersion":6,"name":"vechi","clips":[]}"#
         try Data(json.utf8).write(to: dir.appendingPathComponent(ProjectStore.fileName))

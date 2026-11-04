@@ -25,7 +25,7 @@ final class CalloutTests: XCTestCase {
         e.redo()
         e.trimCalloutEnd(a.id, by: 1); XCTAssertEqual(e.project.callouts[0].duration, 1, accuracy: 1e-9)
         e.trimCalloutStart(a.id, by: 0.5); XCTAssertEqual(e.project.callouts[0].start, 1.5, accuracy: 1e-9)
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/callout-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/callout-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f)
         XCTAssertEqual(try ProjectStore.load(from: f), e.project)
         var p = SadrogProject(name: "x"); p.callouts = [Callout(start: 0, duration: 4)]
@@ -113,9 +113,8 @@ final class CalloutTests: XCTestCase {
 
     /// Demo frames for the report: dark outside (rectangle, circle, freehand) and blurred inside, on the demo project's own material.
     func testWritesDemoFramesForTheShapes() async throws {
-        let root = "\(TestRoot.path)"
+        let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG"
         let f = URL(fileURLWithPath: root + "/ui_screens/dest_editor/SADROG-5A1D0C11-2B7E-4C55-9A31-0E5D7F2A6B90/project.sadrogproj")
-        try XCTSkipUnless(FileManager.default.fileExists(atPath: f.path), "needs the private demo project")
         var p = try ProjectStore.load(from: f)
         try XCTSkipUnless(FileManager.default.fileExists(atPath: p.clips[0].media), "demo media not available")
         var c = p.clips[0]; c.duration = 4; c.transform = Transform(); c.endTransform = nil

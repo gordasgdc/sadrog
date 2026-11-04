@@ -5,7 +5,7 @@ import AVFoundation
 
 /// Several keyframes, easing and visual fades: the maths, the editing, the persistence — and the pictures the exporter really writes (synthetic colour source).
 final class MotionTests: XCTestCase {
-    let src = "\(TestRoot.path)/synthetic/inout/colors_beep.mov"   // SYNTHETIC: 1 s each red, green, blue…
+    let src = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic/inout/colors_beep.mov"   // SYNTHETIC: 1 s each red, green, blue…
     let a = Transform(x: -0.25), k = Transform(x: 0.25)
 
     func testThreeStatesNeedAKeyframe() {
@@ -62,7 +62,7 @@ final class MotionTests: XCTestCase {
         ctx.draw(img, in: CGRect(x: -x, y: -(img.height - 1 - y), width: img.width, height: img.height)); return (Int(px[0]), Int(px[1]), Int(px[2]))
     }
     func render(_ p: SadrogProject) async throws -> URL {
-        let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/motion-\(UUID().uuidString).mov")
+        let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/motion-\(UUID().uuidString).mov")
         try await ProjectExporter.export(p, to: out, mode: .reencode(preset: AVAssetExportPresetHighestQuality)); return out
     }
     func testExportedPicturesFollowTheKeyframesAndFades() async throws {

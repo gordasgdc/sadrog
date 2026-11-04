@@ -22,7 +22,7 @@ final class CalloutTargetsTests: XCTestCase {
         let (e, a, _) = twoClips()
         var ids: [UUID] = []
         for s in [4.0, 1.0, 2.5] { var c = Callout(start: s, duration: 3); c.clipID = a; ids.append(c.id); XCTAssertTrue(e.addCallout(c)) }
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/co-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/co-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f)
         XCTAssertEqual(try ProjectStore.load(from: f).callouts.map(\.id), ids)       // composition order = array order, stable
     }

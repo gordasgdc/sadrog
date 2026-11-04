@@ -86,22 +86,22 @@ struct EditorTimelineMenu: View {
     var body: some View {
         TrackMenuItems(e: e)
         Divider()
-        Button(T("Adaugă marcaj")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.addMarkerHere() } }.keyboardShortcut("m", modifiers: .option)
-        Button(T("Marcajul următor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.goToMarker(next: true) } }.keyboardShortcut(".", modifiers: .option).disabled(e.project.markers.isEmpty)
-        Button(T("Marcajul anterior")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.goToMarker(next: false) } }.keyboardShortcut(",", modifiers: .option).disabled(e.project.markers.isEmpty)
-        Button(T("Îngheață cadrul")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.freezeHere() } }.keyboardShortcut("f", modifiers: .option)
+        Button(T("Adaugă marcaj")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.addMarkerHere() } }.shortcut("timeline.marker")
+        Button(T("Marcajul următor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.goToMarker(next: true) } }.shortcut("timeline.markerNext").disabled(e.project.markers.isEmpty)
+        Button(T("Marcajul anterior")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.goToMarker(next: false) } }.shortcut("timeline.markerPrev").disabled(e.project.markers.isEmpty)
+        Button(T("Îngheață cadrul")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.freezeHere() } }.shortcut("timeline.freeze")
         Divider()
-        Button(T("Setează In la cursor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.setIn() } }.keyboardShortcut("i", modifiers: .option)
-        Button(T("Setează Out la cursor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.setOut() } }.keyboardShortcut("o", modifiers: .option)
+        Button(T("Setează In la cursor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.setIn() } }.shortcut("range.in")
+        Button(T("Setează Out la cursor")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.setOut() } }.shortcut("range.out")
         Button(T("Șterge In și Out")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.clearRange() } }.disabled(e.project.rangeIn == nil && e.project.rangeOut == nil)
     }
 }
 struct EditorClipMenu: View {
     @ObservedObject var e: EditorModel
     var body: some View {
-        Button(T("Duplică")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.duplicateSelection() } }.keyboardShortcut("d", modifiers: .command).disabled(!e.hasSelection)
-        Button(T("Redenumește…")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.promptRename() } }.keyboardShortcut("r", modifiers: [.command, .option]).disabled(!e.hasSelection)
-        Button(T("Detașează sunetul")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.detachAudio() } }.keyboardShortcut("d", modifiers: [.command, .option]).disabled(!e.canDetachAudio())
+        Button(T("Duplică")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.duplicateSelection() } }.shortcut("clip.duplicate").disabled(!e.hasSelection)
+        Button(T("Redenumește…")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.promptRename() } }.shortcut("clip.rename").disabled(!e.hasSelection)
+        Button(T("Detașează sunetul")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.detachAudio() } }.shortcut("clip.detachAudio").disabled(!e.canDetachAudio())
         Button(T("Reatașează sunetul")) { EditCommand.run(Selector(("sadrogNoop:"))) { e.reattachAudio() } }.disabled(!e.canReattachAudio())
         Divider()
         Menu(T("Blochează pista")) {

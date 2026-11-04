@@ -42,7 +42,7 @@ final class RectCropPlacementTests: XCTestCase {
         XCTAssertTrue(p.needsCompositing)
         let built = try await CompositionBuilder.buildFull(p)
         XCTAssertNotNil(built.videoComposition(for: p), "the crop must be drawn")
-        let dir = URL(fileURLWithPath: "\(TestRoot.path)/temp/rc-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: dir) }
+        let dir = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/rc-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: dir) }
         try ProjectStore.save(p, to: dir)
         let back = try ProjectStore.load(from: dir)
         XCTAssertEqual(back.clips[0].rectCrop?.left, 0.25); XCTAssertTrue(back.needsCompositing)

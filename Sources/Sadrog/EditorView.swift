@@ -138,31 +138,31 @@ struct EditorView: View {
         .background(shortcuts)
     }
 
+    /// Keys that have no menu item (editing keys act only while no text field has the keyboard); the combinations come from Settings ▸ Shortcuts.
     private var shortcuts: some View {
         Group {
-            Button("") { if m.tool == .blade { m.tool = .select } }.keyboardShortcut(m.textEditing ? nil : KeyboardShortcut(.escape, modifiers: []))
-            Button("") { m.tool = .select }.keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("v", modifiers: []))
-            Button("") { m.step(frames: -1) }.keyboardShortcut(m.textEditing ? nil : KeyboardShortcut(.leftArrow, modifiers: []))
-            Button("") { m.step(frames: 1) }.keyboardShortcut(m.textEditing ? nil : KeyboardShortcut(.rightArrow, modifiers: []))
-            Button("") { m.addMarkerHere() }.keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("m", modifiers: []))
-            Button("") { m.setIn() }.keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("i", modifiers: []))
-            Button("") { m.setOut() }.keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("o", modifiers: []))
+            ForEach(["tool.escape", "tool.selectAlt", "play.stepBack", "play.stepForward", "key.marker", "key.in", "key.out",
+                     "timeline.zoomIn", "timeline.zoomOut", "timeline.fit", "timeline.tracksTaller", "timeline.tracksShorter",
+                     "keyframe.add", "keyframe.delete", "keyframe.next", "keyframe.prev", "audio.fadeIn", "audio.fadeOut",
+                     "inspector.video", "inspector.sound", "inspector.time", "inspector.cursor"], id: \.self) { id in
+                Button("") { m.perform(id) }.shortcut(id, typing: m.textEditing)
+            }
         }.opacity(0).frame(width: 0, height: 0).accessibilityHidden(true)
     }
 
     private var topBar: some View {
         ZStack {
             HStack(spacing: Theme.S.md) {
-                Button { m.closeAllPluginWindows(); close() } label: { Label(T("Înregistrări"), systemImage: "chevron.left") }.buttonStyle(.gloss(.ghost, compact: true)).help(T("Înapoi la pregătirea capturii"))
+                Button { m.closeAllPluginWindows(); close() } label: { Label(T("Înregistrări"), systemImage: "chevron.left") }.buttonStyle(.gloss(.ghost, compact: true)).help(T("Înapoi la ecranul de start (înregistrare nouă, document nou, Recente)"))
                 LogoMark(small: true).frame(width: 24, height: 14).foregroundStyle(Theme.C.textDim)
-                IconButton(symbol: "sidebar.left", label: showLib ? T("Ascunde biblioteca (⌃⌘S)") : T("Arată biblioteca (⌃⌘S)")) { showLib.toggle() }
+                IconButton(symbol: "sidebar.left", label: Shortcuts.shared.tip(showLib ? T("Ascunde biblioteca") : T("Arată biblioteca"), "view.library")) { showLib.toggle() }
                 Spacer()
                 Menu {
                     Button { addRecording() } label: { Label(T("Înregistrare nouă în acest proiect…"), systemImage: "record.circle") }
                     Button { m.importMaterials() } label: { Label(T("Importă video sau sunet…"), systemImage: "square.and.arrow.down") }
                 } label: { Label(T("Adaugă"), systemImage: "plus") }
                     .menuStyle(.borderlessButton).fixedSize().help(T("Adaugă o înregistrare nouă sau importă un fișier existent")).accessibilityLabel(T("Adaugă înregistrare sau fișier"))
-                IconButton(symbol: "sidebar.right", label: showInsp ? T("Ascunde inspectorul (⌥⌘I)") : T("Arată inspectorul (⌥⌘I)")) { showInsp.toggle() }
+                IconButton(symbol: "sidebar.right", label: Shortcuts.shared.tip(showInsp ? T("Ascunde inspectorul") : T("Arată inspectorul"), "view.inspector")) { showInsp.toggle() }
                 Button { m.openExport() } label: { Label(T("Exportă"), systemImage: "square.and.arrow.up") }
                     .buttonStyle(.gloss(.primary)).disabled(m.project.clips.isEmpty || !m.missing.isEmpty)
             }
@@ -209,10 +209,10 @@ struct EditorView: View {
     private var transportControls: some View {
         HStack(spacing: 4) {
             IconButton(symbol: "backward.end.fill", label: T("La clipul anterior")) { m.jump(next: false) }
-            IconButton(symbol: "backward.frame.fill", label: T("Un cadru înapoi"), shortcutHint: "←") { m.step(frames: -1) }
+            IconButton(symbol: "backward.frame.fill", label: T("Un cadru înapoi"), shortcutHint: Shortcuts.shared.combo("play.stepBack")?.display) { m.step(frames: -1) }
             Button { m.togglePlay() } label: { Image(systemName: m.playing ? "pause.fill" : "play.fill").font(Theme.F.iconLarge).frame(width: 34, height: 24) }
-                .buttonStyle(.gloss(.secondary, compact: true)).keyboardShortcut(m.textEditing ? nil : KeyboardShortcut(.space, modifiers: [])).help(m.playing ? T("Pauză (Spațiu)") : T("Redă (Spațiu)")).accessibilityLabel(m.playing ? T("Pauză") : T("Redă"))
-            IconButton(symbol: "forward.frame.fill", label: T("Un cadru înainte"), shortcutHint: "→") { m.step(frames: 1) }
+                .buttonStyle(.gloss(.secondary, compact: true)).shortcut("play.toggle", typing: m.textEditing).help(Shortcuts.shared.tip(m.playing ? T("Pauză") : T("Redă"), "play.toggle")).accessibilityLabel(m.playing ? T("Pauză") : T("Redă"))
+            IconButton(symbol: "forward.frame.fill", label: T("Un cadru înainte"), shortcutHint: Shortcuts.shared.combo("play.stepForward")?.display) { m.step(frames: 1) }
             IconButton(symbol: "forward.end.fill", label: T("La clipul următor")) { m.jump(next: true) }
         }
     }
@@ -225,9 +225,9 @@ struct EditorView: View {
     private var transportViewTools: some View {
         HStack(spacing: 4) {
             IconButton(symbol: "squareshape.split.2x2.dotted", label: m.alignOn ? T("Aliniere pe canvas activă: ghidaje galbene la margini, centru și alte elemente (⌘ în timpul tragerii o ocolește)") : T("Aliniere pe canvas oprită"), active: m.alignOn) { m.alignOn.toggle() }
-            IconButton(symbol: "minus.magnifyingglass", label: T("Micșorează previzualizarea"), shortcutHint: "⌘−") { m.stepView(false) }
+            IconButton(symbol: "minus.magnifyingglass", label: T("Micșorează previzualizarea"), shortcutHint: Shortcuts.shared.combo("view.previewZoomOut")?.display) { m.stepView(false) }
             viewMenu
-            IconButton(symbol: "plus.magnifyingglass", label: T("Mărește previzualizarea"), shortcutHint: "⌘+") { m.stepView(true) }
+            IconButton(symbol: "plus.magnifyingglass", label: T("Mărește previzualizarea"), shortcutHint: Shortcuts.shared.combo("view.previewZoomIn")?.display) { m.stepView(true) }
         }
     }
 
@@ -819,6 +819,7 @@ struct FineSlider: View {
     @Binding var value: Double
     let range: ClosedRange<Double>; let label: String
     var editing: (Bool) -> Void
+    var onDoubleClick: (() -> Void)? = nil
     @Environment(\.isEnabled) private var enabled
     @State private var hover = false
     @State private var pressed = false
@@ -842,6 +843,7 @@ struct FineSlider: View {
                 if !pressed { pressed = true; editing(true) }
                 let q = max(0, min(1, Double((v.location.x - handle / 2) / span))); value = lo + q * (hi - lo)
             }.onEnded { _ in pressed = false; editing(false) })
+            .simultaneousGesture(TapGesture(count: 2).onEnded { onDoubleClick?() })
         }
         .frame(height: 22).opacity(enabled ? 1 : 0.4)
         .onHover { hover = $0 }
@@ -865,21 +867,31 @@ struct FineSlider: View {
 struct NumberRow: View {
     let label: String, unit: String; let range: ClosedRange<Double>
     let value: Binding<Double>; var commit: () -> Void; var decimals = 0
+    /// Declared default of this parameter (display units); nil = no reset offered. Double-click on the slider or the label, or the context menu, sets it as ONE undo step.
+    var reset: Double? = nil
+    private var isDefault: Bool { reset.map { abs(value.wrappedValue - $0) < pow(10, -Double(decimals)) / 2 } ?? true }
+    private func doReset() { guard let r = reset, !isDefault else { return }; value.wrappedValue = r; commit() }
     private var field: some View { ScrubField(label: label, unit: unit, range: range, value: value, decimals: decimals, boxWidth: 66, commit: commit) }
-    private var slider: some View { FineSlider(value: value, range: range, label: label) { if !$0 { commit() } } }
+    private var slider: some View { FineSlider(value: value, range: range, label: label, editing: { if !$0 { commit() } }, onDoubleClick: reset == nil ? nil : doReset) }
+    private var title: some View { Text(label).font(Theme.F.body).lineLimit(1).contentShape(Rectangle()).onTapGesture(count: 2) { doReset() } }
     var body: some View {
         // one row when the slider gets at least 110 pt; otherwise label + field on top and a full-width slider below (same fonts)
         // a label longer than the 70 pt column (e.g. "Fade la început", "Fundido de entrada") would be cut with an ellipsis: those go straight to the stacked layout
         let stacked = VStack(spacing: 2) {
-            HStack(spacing: 8) { Text(label).font(Theme.F.body).lineLimit(1); Spacer(minLength: 4); field }.frame(height: 26)
+            HStack(spacing: 8) { title; Spacer(minLength: 4); field }.frame(height: 26)
             slider
         }
-        if label.count > 10 { stacked } else {
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) { Text(label).font(Theme.F.body).frame(width: 70, alignment: .leading).lineLimit(1); slider.frame(minWidth: 110); field }.frame(height: 28)
-                stacked
+        Group {
+            if label.count > 10 { stacked } else {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { title.frame(width: 70, alignment: .leading); slider.frame(minWidth: 110); field }.frame(height: 28)
+                    stacked
+                }
             }
         }
+        .contextMenu { if reset != nil { Button(T("Resetează la valoarea implicită")) { doReset() }.disabled(isDefault) } }
+        .accessibilityAction(named: Text(T("Resetează la valoarea implicită"))) { doReset() }
+        .help(reset == nil ? "" : T("Dublu-clic pe slider sau pe etichetă = valoarea implicită (un singur pas Undo)"))
     }
 }
 
@@ -995,8 +1007,9 @@ struct MotionControls: View {
                     }
                 }
             }
-            NumberRow(label: T("Fade la început"), unit: "s", range: 0...max(0.1, dur / 2), value: Binding(get: { mo.fadeIn }, set: { v in m.liveMotion { $0.fadeIn = v } }), commit: { m.commitMotion() }, decimals: 1)
-            NumberRow(label: T("Fade la sfârșit"), unit: "s", range: 0...max(0.1, dur / 2), value: Binding(get: { mo.fadeOut }, set: { v in m.liveMotion { $0.fadeOut = v } }), commit: { m.commitMotion() }, decimals: 1)
+            KeyEditRows(m: m)
+            NumberRow(label: T("Fade la început"), unit: "s", range: 0...max(0.1, dur / 2), value: Binding(get: { mo.fadeIn }, set: { v in m.liveMotion { $0.fadeIn = v } }), commit: { m.commitMotion() }, decimals: 1, reset: 0)
+            NumberRow(label: T("Fade la sfârșit"), unit: "s", range: 0...max(0.1, dur / 2), value: Binding(get: { mo.fadeOut }, set: { v in m.liveMotion { $0.fadeOut = v } }), commit: { m.commitMotion() }, decimals: 1, reset: 0)
         }
     }
 }
@@ -1207,10 +1220,11 @@ struct FadeGroup: View {
         InspectorGroup(T("Fade"), action: ("arrow.counterclockwise", T("Fără fade"), e.fadeIn == 0 && e.fadeOut == 0, { var v = m.audioEdit(id); v.fadeIn = 0; v.fadeOut = 0; m.commitAudio(id, v) })) {
             NumberRow(label: T("Fade-in"), unit: "s", range: 0...max(0.01, d - e.fadeOut),
                       value: Binding(get: { m.audioEdit(id).fadeIn }, set: { var v = m.audioEdit(id); v.fadeIn = $0; m.liveAudioEdit(id, v) }),
-                      commit: { m.commitAudio(id) }, decimals: 2)
+                      commit: { m.commitAudio(id) }, decimals: 2, reset: 0)
             NumberRow(label: T("Fade-out"), unit: "s", range: 0...max(0.01, d - e.fadeIn),
                       value: Binding(get: { m.audioEdit(id).fadeOut }, set: { var v = m.audioEdit(id); v.fadeOut = $0; m.liveAudioEdit(id, v) }),
-                      commit: { m.commitAudio(id) }, decimals: 2)
+                      commit: { m.commitAudio(id) }, decimals: 2, reset: 0)
+            if e.fadeIn > 0 || e.fadeOut > 0 { FadeShapeRows(m: m, id: id) }
             let f = e.effectiveFades(duration: d)
             if abs(f.fadeIn - e.fadeIn) > 0.005 || abs(f.fadeOut - e.fadeOut) > 0.005 {
                 Text(verbatim: String(format: T("Clipul e mai scurt decât fade-urile: se aplică %.2f s + %.2f s (proporțional)."), f.fadeIn, f.fadeOut)).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
@@ -1219,23 +1233,27 @@ struct FadeGroup: View {
     }
 }
 
-enum InspCat: Hashable { case image, sound, info
-    var title: String { switch self { case .image: return T("Imagine"); case .sound: return T("Sunet"); case .info: return T("Timp și sursă") } }
+enum InspCat: Hashable { case image, sound, time, cursor
+    var title: String { switch self { case .image: return T("Video"); case .sound: return T("Sunet"); case .time: return T("Timp"); case .cursor: return T("Cursor") } }
+    var icon: String { switch self { case .image: return "film"; case .sound: return "waveform"; case .time: return "clock"; case .cursor: return "cursorarrow.rays" } }
 }
 
 struct InspectorPanel: View {
     @ObservedObject var m: EditorModel
     @State private var cat: InspCat = .image
-    @State private var jump: InspCat?
-    /// The categories this selection really has (a category with nothing in it is not offered).
+    /// The categories this selection really has (a category with nothing in it is not offered). Exactly one is shown at a time.
     private var categories: [InspCat] {
         guard m.selection != nil, m.selectedCallout == nil, m.selectedText == nil, m.selectedMedia != nil else { return [] }
         var out: [InspCat] = []
         if m.selectedTransform != nil { out.append(.image) }
         if m.selectedLayer?.kind == .audio || (m.selectedClip.flatMap { m.media[$0.media]?.hasAudio } == true) { out.append(.sound) }
-        out.append(.info)
+        out.append(.time)
+        if m.selectedClip != nil { out.append(.cursor) }
         return out
     }
+    private var current: InspCat? { categories.contains(cat) ? cat : categories.first }
+    /// With no tab strip (titles, project) everything is shown; otherwise only the selected category.
+    private func show(_ c: InspCat) -> Bool { categories.count <= 1 || current == c }
     private func bind(_ kp: WritableKeyPath<Transform, Double>, _ k: Double) -> Binding<Double> {
         Binding(get: { (m.selectedTransform?[keyPath: kp] ?? 0) * k },
                 set: { v in
@@ -1261,26 +1279,25 @@ struct InspectorPanel: View {
                 Spacer()
             }.padding(.horizontal, Theme.S.md).frame(height: 40).overlay(alignment: .bottom) { Rectangle().fill(Theme.C.line).frame(height: 1) }
             if categories.count > 1 {
-                Picker("", selection: Binding(get: { cat }, set: { cat = $0; jump = $0 })) { ForEach(categories, id: \.self) { Text($0.title).tag($0) } }
+                Picker("", selection: Binding(get: { current ?? .image }, set: { cat = $0 })) { ForEach(categories, id: \.self) { Text($0.title).tag($0) } }
                     .labelsHidden().pickerStyle(.segmented).padding(.horizontal, Theme.S.md).padding(.vertical, 8).accessibilityLabel(T("Categorii"))
+                    .help(T("Alege ce parte a elementului editezi: imagine, sunet, timp sau cursor. Schimbarea filei nu modifică proiectul."))
                     .overlay(alignment: .bottom) { Rectangle().fill(Theme.C.line.opacity(0.7)).frame(height: 1) }
             }
-            ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     if let c = m.selectedCallout { CalloutGroup(m: m, c: c).id(c.id) }
                     if m.selection != nil, m.selectedMedia != nil || m.selectedText != nil {
                         let media = m.selectedMedia; let start = m.selectedStart, dur = m.selectedDuration
                         if let t = m.selectedText { TitleGroup(m: m, t: t).id(t.id) }
-                        Color.clear.frame(height: 0).id(InspCat.image)
-                        if m.selectedTransform != nil {
+                        if show(.image), m.selectedTransform != nil {
                             InspectorGroup(transformTitle, action: ("arrow.counterclockwise", T("Resetează transformarea"), m.selectedTransform == resetValue, { if let id = m.selection { m.liveTransform(id, resetValue); m.commitTransform(id, resetValue) } })) {
                                 let w = Double(m.renderSize.width), h = Double(m.renderSize.height)
-                                NumberRow(label: T("Poziție X"), unit: "px", range: -w...w, value: bind(\.x, w), commit: commit).help(T("Față de centrul cadrului; pozitiv = spre dreapta"))
-                                NumberRow(label: T("Poziție Y"), unit: "px", range: -h...h, value: bind(\.y, h), commit: commit).help(T("Față de centrul cadrului; negativ = în sus"))
-                                NumberRow(label: T("Scară"), unit: "%", range: 5...300, value: bind(\.scale, 100), commit: commit)
-                                NumberRow(label: T("Rotație"), unit: "°", range: -180...180, value: bind(\.rotation, 1), commit: commit).help(T("Pozitiv = în sensul acelor de ceasornic"))
-                                NumberRow(label: T("Opacitate"), unit: "%", range: 0...100, value: bind(\.opacity, 100), commit: commit)
+                                NumberRow(label: T("Poziție X"), unit: "px", range: -w...w, value: bind(\.x, w), commit: commit, reset: 0).help(T("Față de centrul cadrului; pozitiv = spre dreapta"))
+                                NumberRow(label: T("Poziție Y"), unit: "px", range: -h...h, value: bind(\.y, h), commit: commit, reset: resetValue.y * h).help(T("Față de centrul cadrului; negativ = în sus"))
+                                NumberRow(label: T("Scară"), unit: "%", range: 5...300, value: bind(\.scale, 100), commit: commit, reset: 100)
+                                NumberRow(label: T("Rotație"), unit: "°", range: -180...180, value: bind(\.rotation, 1), commit: commit, reset: 0).help(T("Pozitiv = în sensul acelor de ceasornic"))
+                                NumberRow(label: T("Opacitate"), unit: "%", range: 0...100, value: bind(\.opacity, 100), commit: commit, reset: 100)
                             }
                             InspectorGroup(T("Animație")) {
                                 Toggle(T("Animat între două stări"), isOn: Binding(get: { m.selectedAnimated }, set: { m.setAnimated($0) })).toggleStyle(.switch).controlSize(.small).font(Theme.F.body)
@@ -1294,20 +1311,31 @@ struct InspectorPanel: View {
                                     Button { m.presetSlowZoom() } label: { Label(T("Zoom lent (+20%)"), systemImage: "plus.magnifyingglass") }.buttonStyle(.gloss(.secondary, compact: true)).fixedSize()
                                         .help(T("Pornește animația cu un zoom simplu; apoi poți muta sau redimensiona starea finală"))
                                 }
-                                MotionControls(m: m)
+                                HStack(spacing: 8) {
+                    Text(T("Banda de chei")).font(Theme.F.body).lineLimit(1).fixedSize(horizontal: true, vertical: false)
+                    Picker("", selection: Binding(get: { m.keyBandProp }, set: { m.keyBandProp = $0 })) {
+                        Text(T("Toate")).tag(ProjectEditor.KeyProperty?.none)
+                        Text(T("Poziție X")).tag(ProjectEditor.KeyProperty?.some(.x)); Text(T("Poziție Y")).tag(ProjectEditor.KeyProperty?.some(.y))
+                        Text(T("Scară")).tag(ProjectEditor.KeyProperty?.some(.scale)); Text(T("Rotație")).tag(ProjectEditor.KeyProperty?.some(.rotation)); Text(T("Opacitate")).tag(ProjectEditor.KeyProperty?.some(.opacity))
+                    }.labelsHidden().accessibilityLabel(T("Proprietatea afișată în banda de chei")).help(T("Banda de chei de pe pistă arată doar cheile care schimbă această proprietate"))
+                }
+                MotionControls(m: m)
                             }
                         }
-                        if m.selectedVideoID != nil, let md = m.selectedMedia, m.media[md]?.hasVideo == true { RectCropGroup(m: m); PresenterGroup(m: m) }
-                        if let c = m.selectedClip, m.project.clips.first?.id != c.id {
+                        if show(.image), m.selectedVideoID != nil, let md = m.selectedMedia, m.media[md]?.hasVideo == true { RectCropGroup(m: m); PresenterGroup(m: m) }
+                        if show(.image), let c = m.selectedClip, m.project.clips.first?.id != c.id {
                             InspectorGroup(T("Tranziție")) {
                                 let room = m.maxDissolve(of: c.id)
-                                NumberRow(label: T("Dizolvare"), unit: "s", range: 0...max(0.1, room), value: Binding(get: { c.dissolve }, set: { v in m.setDissolve(c.id, v) }), commit: {}, decimals: 1)
+                                NumberRow(label: T("Dizolvare"), unit: "s", range: 0...max(0.1, room), value: Binding(get: { c.dissolve }, set: { v in m.setDissolve(c.id, v) }), commit: {}, decimals: 1, reset: 0)
                                     .disabled(room < 0.1)
                                 Text(room < 0.1 ? T("Prea puțin material în clipuri pentru o dizolvare.") : T("Se suprapune cu clipul dinainte; sunetul se amestecă la fel, iar linia timpului se scurtează."))
                                     .font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
                             }
                         }
-                        if let c = m.selectedClip, m.selectedMouseTrack != nil {
+                        if show(.cursor), let c = m.selectedClip, m.selectedMouseTrack == nil, categories.count > 1 {
+                            Text(T("Această înregistrare nu are metadate de mouse (sau clipul e importat): poziția cursorului nu se poate reconstitui. Efectele de cursor cer o înregistrare făcută cu SADROG.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true).padding(.top, Theme.S.md).id(c.id)
+                        }
+                        if show(.cursor), let c = m.selectedClip, m.selectedMouseTrack != nil {
                             InspectorGroup(T("Cursor")) {
                                 let fx = c.mouseFX ?? MouseFX(highlight: false, clickRing: false)
                                 Toggle(T("Evidențiază cursorul"), isOn: Binding(get: { fx.highlight }, set: { v in var n = fx; n.highlight = v; m.setMouseFX(c.id, n) })).toggleStyle(.switch).controlSize(.small).font(Theme.F.body)
@@ -1316,7 +1344,14 @@ struct InspectorPanel: View {
                                     .help(T("Mărește cadrul (×1,8) și îl mută după cursor; rezultatul sunt chei obișnuite, pe care le poți edita la Animație"))
                             }
                         }
-                        if let c = m.selectedClip, let wt = m.selectedWindowTrack {
+                        if show(.cursor), let c = m.selectedClip, m.selectedKeyTrack != nil {
+                            InspectorGroup(T("Comenzi de tastă")) {
+                                Toggle(T("Arată comenzile de tastă"), isOn: Binding(get: { c.keyFX?.show ?? false }, set: { v in m.setKeyFX(c.id, KeyFX(show: v)) })).toggleStyle(.switch).controlSize(.small).font(Theme.F.body)
+                                    .help(T("Arată, ca tastă pe ecran, comenzile înregistrate (de exemplu ⌘K), în partea de jos a imaginii; apare și în export"))
+                                Text(T("Doar comenzile salvate la înregistrare; nu există text tastat.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                        if show(.image), let c = m.selectedClip, let wt = m.selectedWindowTrack {
                             InspectorGroup(T("Fereastră din prim-plan")) {
                                 let seen = wt.windowsSeen
                                 Picker(T("Fereastră"), selection: $m.followWindowChoice) {
@@ -1328,13 +1363,12 @@ struct InspectorPanel: View {
                                 Text(T("Fereastra vine din metadatele înregistrate, nu dintr-o zonă desenată. Fără citire recentă, cadrul revine la imaginea întreagă.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
                             }
                         }
-                        else if let c = m.selectedClip, !c.held {
+                        else if show(.image), let c = m.selectedClip, !c.held {
                             InspectorGroup(T("Fereastră din prim-plan")) {
                                 Text(T("Această înregistrare nu are metadate de fereastră (citirea ferestrei era oprită sau fișierul nu îi aparține). Nu se poate urmări nicio fereastră; poți încadra manual la Animație.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
                             }
                         }
-                        Color.clear.frame(height: 0).id(InspCat.sound)
-                        if let id = m.selection, let l = m.selectedLayer, l.kind == .audio, l.linkedClip != nil {
+                        if show(.sound), let id = m.selection, let l = m.selectedLayer, l.kind == .audio, l.linkedClip != nil {
                             InspectorGroup(T("Legat de imagine")) {
                                 let inSync = m.detachedAudioInSyncFlag(id)
                                 Text(m.hasLinkedPart(id) ? (inSync ? T("Sunet detașat din clip, încă sincron cu imaginea. Îl poți muta, tăia sau șterge separat.") : T("Sunet detașat din clip și mutat sau tăiat: nu mai este sincron cu imaginea.")) : T("Imaginea de care era legat a fost ștearsă; sunetul rămâne independent."))
@@ -1345,19 +1379,21 @@ struct InspectorPanel: View {
                                 }.controlSize(.small)
                             }
                         }
-                        if let id = m.selection, m.selectedLayer?.kind == .audio {
+                        if show(.sound), let id = m.selection, m.selectedLayer?.kind == .audio {
                             // A2 item: the same controls as a recording source (volume in dB, reset, mute) plus its fades
                             InspectorGroup(T("Sunet"), action: ("arrow.counterclockwise", T("Volum la 0 dB (neutru)"), m.audioEdit(id).gainDB == 0, { var e = m.audioEdit(id); e.gainDB = 0; m.commitAudio(id, e) })) {
                                 Toggle(T("Sunet activ"), isOn: Binding(get: { !m.audioEdit(id).muted }, set: { on in var e = m.audioEdit(id); e.muted = !on; m.commitAudio(id, e) }))
                                     .toggleStyle(.switch).controlSize(.mini).font(Theme.F.body).frame(height: 24).help(T("Oprit = mut în previzualizare și export; volumul și fade-urile se păstrează"))
                                 NumberRow(label: T("Volum"), unit: "dB", range: SadrogProject.gainRange,
                                           value: Binding(get: { m.audioEdit(id).gainDB }, set: { var e = m.audioEdit(id); e.gainDB = $0; m.liveAudioEdit(id, e) }),
-                                          commit: { m.commitAudio(id) }, decimals: 1)
+                                          commit: { m.commitAudio(id) }, decimals: 1, reset: 0)
                                     .disabled(m.audioEdit(id).muted).opacity(m.audioEdit(id).muted ? 0.45 : 1)
                             }
                             FadeGroup(m: m, id: id)
+                            AutomationGroup(m: m, id: id)
+                            CrossfadeGroup(m: m, id: id)
                         }
-                        if let id = m.selection, let c = m.selectedClip, m.media[c.media]?.hasAudio == true {
+                        if show(.sound), let id = m.selection, let c = m.selectedClip, m.media[c.media]?.hasAudio == true {
                             InspectorGroup(T("Sunet și imagine")) {
                                 Text(c.audioDetached ? T("Sunetul acestui clip este un element separat pe A2; imaginea rămâne aici.") : T("Sunetul este legat de imagine: se mută, taie și șterge împreună."))
                                     .font(Theme.F.caption).foregroundStyle(Theme.C.textDim).fixedSize(horizontal: false, vertical: true)
@@ -1368,9 +1404,10 @@ struct InspectorPanel: View {
                                     } else { Button(T("Detașează sunetul")) { m.detachAudio(id) } }
                                 }.controlSize(.small)
                             }
-                            if !c.audioDetached { FadeGroup(m: m, id: id) }
+                            if !c.audioDetached { FadeGroup(m: m, id: id); AutomationGroup(m: m, id: id); CrossfadeGroup(m: m, id: id) }
                         }
-                        if m.selectedClip != nil || m.selectedLayer?.keepsSource == true, !m.mainSources.isEmpty {
+                        if show(.time), let id = m.selection, m.selectedClip != nil || m.selectedLayer != nil { SpeedGroup(m: m, id: id) }
+                        if show(.sound), m.selectedClip != nil || m.selectedLayer?.keepsSource == true, !m.mainSources.isEmpty {
                             // the clip's linked sound: every recorded source with its own switch (same state as the A1 lane headers)
                             InspectorGroup(T("Sunet")) {
                                 if m.recordingsInUse.count > 1 {      // several recordings: say which file these switches belong to
@@ -1403,7 +1440,7 @@ struct InspectorPanel: View {
                                         }.frame(height: 24)
                                         NumberRow(label: T("Volum"), unit: "dB", range: SadrogProject.gainRange,
                                                   value: Binding(get: { m.displayGain(src.index) }, set: { m.liveSourceGain(src.index, $0) }),
-                                                  commit: { m.commitSourceGain(src.index) }, decimals: 1)
+                                                  commit: { m.commitSourceGain(src.index) }, decimals: 1, reset: 0)
                                             .disabled(m.isSourceMuted(src.index)).opacity(m.isSourceMuted(src.index) ? 0.45 : 1)
                                         EffectsRow(m: m, k: src.index)
                                     }.disabled(m.isOff(m.selectedLayer?.keepsSource == true ? .a2 : .a1)).padding(.bottom, 4)
@@ -1419,8 +1456,7 @@ struct InspectorPanel: View {
                                 if m.isOff(.a1) { Text(T("Pista A1 e mută; sursele se pot porni după ce o activezi.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint) }
                             }
                         }
-                        Color.clear.frame(height: 0).id(InspCat.info)
-                        InspectorGroup(T("Timp")) {
+                        if show(.time) { InspectorGroup(T("Timp")) {
                             if m.selectedText != nil {
                                 let hi = max(30, m.project.timelineEnd + 30)
                                 NumberRow(label: T("Început"), unit: "s", range: 0...hi, value: Binding(get: { m.selectedText?.start ?? 0 }, set: { v in m.liveTitle { $0.start = max(0, v) } }), commit: { m.commitTitle() }, decimals: 2)
@@ -1430,7 +1466,8 @@ struct InspectorPanel: View {
                                 InfoRow(label: T("Început"), value: tc(start, fps: m.fps)); InfoRow(label: T("Durată"), value: tc(dur, fps: m.fps)); InfoRow(label: T("Sfârșit"), value: tc(start + dur, fps: m.fps))
                             }
                         }
-                        if let media {
+                        }
+                        if show(.time), let media {
                             InspectorGroup(T("Sursă")) {
                                 InfoRow(label: T("Fișier"), value: URL(fileURLWithPath: media).lastPathComponent)
                                 if let i = m.media[media], i.hasVideo { InfoRow(label: T("Cadru"), value: "\(Int(i.size.width))×\(Int(i.size.height))"); InfoRow(label: T("Cadre/s"), value: String(format: "%.0f", i.fps)) }
@@ -1439,7 +1476,7 @@ struct InspectorPanel: View {
                     } else if m.selectedCallout == nil {
                         DocumentGroup(m: m)
                         InspectorGroup(T("Mix"), action: ("arrow.counterclockwise", T("Volum general la 0 dB"), m.project.masterGainDB == 0, { m.commitMasterGain(0) })) {
-                            NumberRow(label: T("Volum mix"), unit: "dB", range: SadrogProject.gainRange, value: Binding(get: { m.masterDisplay }, set: { m.liveMasterGain($0) }), commit: { m.commitMasterGain() }, decimals: 1)
+                            NumberRow(label: T("Volum mix"), unit: "dB", range: SadrogProject.gainRange, value: Binding(get: { m.masterDisplay }, set: { m.liveMasterGain($0) }), commit: { m.commitMasterGain() }, decimals: 1, reset: 0)
                                 .help(T("Se aplică după volumele și fade-urile surselor, la previzualizare, la exportul video și la fișierul „mix” — nu la fișierele surselor separate."))
                             if let pk = m.estimatedMixPeakDB {
                                 HStack(spacing: 6) {
@@ -1458,10 +1495,9 @@ struct InspectorPanel: View {
                     }
                 }.padding(.horizontal, Theme.S.md)
             }
-            .onChange(of: jump) { _, j in if let j { withAnimation(.easeOut(duration: 0.15)) { proxy.scrollTo(j, anchor: .top) }; jump = nil } }
-            .onChange(of: m.selection) { _, _ in cat = .image; proxy.scrollTo(InspCat.image, anchor: .top) }
-            .onChange(of: m.focusedSource) { _, k in if k != nil { cat = .sound; jump = .sound } }      // choosing a sound in the A1 header opens the Sound section for it
-            }
+            .onChange(of: m.selection) { _, _ in cat = categories.first ?? .image }
+            .onChange(of: m.inspectorRequest) { _, r in if let r, categories.contains(r) { cat = r }; m.inspectorRequest = nil }
+            .onChange(of: m.focusedSource) { _, k in if k != nil, categories.contains(.sound) { cat = .sound } }      // choosing a sound in the A1 header opens the Sound tab for it
         }.frame(maxHeight: .infinity, alignment: .top).background(Theme.C.bg1)
     }
 }
@@ -1549,7 +1585,10 @@ struct TimelinePanel: View {
         func lane(at py: CGFloat) -> Int? { guard py >= ruler else { return nil }; for l in order.reversed() where py >= y(l) { return l }; return 0 }
     }
     /// The automatic geometry with the project's lane order and the heights the user gave (a lane never goes below what its content needs; the others are not squeezed).
-    private func laidOut(_ auto: Geo, nSrc: Int, needC: CGFloat, needL: CGFloat) -> Geo {
+    private func laidOut(_ autoIn: Geo, nSrc: Int, needC: CGFloat, needL: CGFloat) -> Geo {
+        // "Taller / shorter tracks" scales only the automatic heights; heights the user dragged stay as given
+        var auto = autoIn; let k = CGFloat(m.trackScale)
+        if abs(k - 1) > 0.001 { auto.t *= k; auto.v2 *= k; auto.v1 *= k; auto.a1 *= k; auto.a2 *= k; auto.c *= k }
         let layout = m.project.layout; var geo = auto; geo.order = layout.displayOrder.map { Geo.index($0) }
         geo.t = pickH(layout, .t, auto.t, need: 20 * CGFloat(auto.nT)); geo.v2 = pickH(layout, .v2, auto.v2, need: max(CGFloat(auto.nV2) * 22, CGFloat(auto.nV2) * needL)); geo.v1 = pickH(layout, .v1, auto.v1, need: max(30, needC))
         geo.a1 = pickH(layout, .a1, auto.a1, need: CGFloat(max(1, nSrc)) * 20); geo.a2 = pickH(layout, .a2, auto.a2, need: CGFloat(auto.nA2) * 20); geo.c = pickH(layout, .c, auto.c, need: max(20, CGFloat(auto.nC) * 20))
@@ -1666,12 +1705,13 @@ struct TimelinePanel: View {
     private var tools: some View {
         HStack(spacing: 10) {
             ControlGroup2 {
-                Button { m.tool = .select } label: { Image(systemName: "cursorarrow") }.buttonStyle(ToolButtonStyle(active: m.tool == .select)).help(T("Selectare (A)")).accessibilityLabel(T("Unealta Selectare")).keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("a", modifiers: []))
-                Button { m.tool = .blade } label: { Image(systemName: "scissors") }.buttonStyle(ToolButtonStyle(active: m.tool == .blade)).help(T("Foarfecă (B): clic taie elementul din punctul indicat; cu mai multe elemente selectate, clic pe unul dintre ele taie toată selecția la același moment; Esc revine la Selectare")).accessibilityLabel(T("Unealta Foarfecă")).keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("b", modifiers: []))
+                Button { m.tool = .select } label: { Image(systemName: "cursorarrow") }.buttonStyle(ToolButtonStyle(active: m.tool == .select)).help(Shortcuts.shared.tip(T("Selectare"), "tool.select")).accessibilityLabel(T("Unealta Selectare")).shortcut("tool.select", typing: m.textEditing)
+                Button { m.tool = .volume } label: { Image(systemName: "waveform.path") }.buttonStyle(ToolButtonStyle(active: m.tool == .volume)).help(Shortcuts.shared.tip(T("Volum: dublu-clic pe un element cu sunet adaugă un punct de volum; trage punctele pentru timp și nivel; Delete le șterge; Esc revine la Selectare"), "tool.volume")).accessibilityLabel(T("Unealta Volum")).shortcut("tool.volume", typing: m.textEditing)
+                Button { m.tool = .blade } label: { Image(systemName: "scissors") }.buttonStyle(ToolButtonStyle(active: m.tool == .blade)).help(Shortcuts.shared.tip(T("Foarfecă: clic taie elementul din punctul indicat; cu mai multe elemente selectate, clic pe unul dintre ele taie toată selecția la același moment; Esc revine la Selectare"), "tool.blade")).accessibilityLabel(T("Unealta Foarfecă")).shortcut("tool.blade", typing: m.textEditing)
             }
             ControlGroup2 {
             Button { m.followPlayhead.toggle() } label: { Image(systemName: "scope") }.buttonStyle(ToolButtonStyle(active: m.followPlayhead)).help(m.followPlayhead ? T("Urmărire cursor activă: timeline-ul se deplasează la redare ca să-l păstreze vizibil. Clic oprește.") : T("Urmărire oprită (ai derulat manual). Clic: revii la cursor și reiei urmărirea.")).accessibilityLabel(T("Urmărire cursor")).accessibilityValue(m.followPlayhead ? T("activă") : T("oprită"))
-            Button { m.snapOn.toggle() } label: { Image(systemName: "arrow.left.and.right.righttriangle.left.righttriangle.right") }.buttonStyle(ToolButtonStyle(active: m.snapOn)).help(m.snapOn ? T("Magnetism în timeline activ: clipurile se lipesc de margini și de cursor (S). Alinierea pe canvas e separată, în bara previzualizării.") : T("Magnetism în timeline oprit (S)")).accessibilityLabel(T("Magnetism")).accessibilityValue(m.snapOn ? "activ" : "oprit").keyboardShortcut(m.textEditing ? nil : KeyboardShortcut("s", modifiers: []))
+            Button { m.snapOn.toggle() } label: { Image(systemName: "arrow.left.and.right.righttriangle.left.righttriangle.right") }.buttonStyle(ToolButtonStyle(active: m.snapOn)).help(Shortcuts.shared.tip(m.snapOn ? T("Magnetism în timeline activ: clipurile se lipesc de margini și de cursor. Alinierea pe canvas e separată, în bara previzualizării.") : T("Magnetism în timeline oprit"), "tool.snap")).accessibilityLabel(T("Magnetism")).accessibilityValue(m.snapOn ? "activ" : "oprit").shortcut("tool.snap", typing: m.textEditing)
             }
             ControlGroup2 {
             Button { m.addTitle() } label: { Image(systemName: "textformat") }.buttonStyle(ToolButtonStyle()).help(T("Adaugă un titlu la cursor (pista T)")).accessibilityLabel(T("Adaugă titlu"))
@@ -1686,11 +1726,12 @@ struct TimelinePanel: View {
                 Button { m.drawTool = m.drawTool == .freehand ? nil : .freehand } label: { Image(systemName: "scribble") }.buttonStyle(ToolButtonStyle(active: m.drawTool == .freehand)).help(T("Contur liber: desenează cu mouse-ul în previzualizare (Esc anulează)")).accessibilityLabel(T("Contur liber"))
             }
             ControlGroup2 {
-            Button { m.split() } label: { Image(systemName: "rectangle.split.2x1") }.buttonStyle(ToolButtonStyle()).help(T("Taie la cursor (⌘K)")).accessibilityLabel(T("Taie la cursor")).keyboardShortcut("k", modifiers: .command)
-            Button { m.freezeHere() } label: { Image(systemName: "snowflake") }.buttonStyle(ToolButtonStyle()).help(T("Îngheață cadrul de la cursor (⌥F)")).accessibilityLabel(T("Îngheață cadrul"))
-            Button { m.deleteSelected() } label: { Image(systemName: "trash") }.buttonStyle(ToolButtonStyle()).help(T("Șterge elementul selectat (⌫)")).accessibilityLabel(T("Șterge elementul selectat")).disabled(m.selection == nil)
+            Button { m.split() } label: { Image(systemName: "rectangle.split.2x1") }.buttonStyle(ToolButtonStyle()).help(Shortcuts.shared.tip(T("Taie la cursor"), "timeline.split")).accessibilityLabel(T("Taie la cursor")).shortcut("timeline.split")
+            Button { m.freezeHere() } label: { Image(systemName: "snowflake") }.buttonStyle(ToolButtonStyle()).help(Shortcuts.shared.tip(T("Îngheață cadrul de la cursor"), "timeline.freeze")).accessibilityLabel(T("Îngheață cadrul"))
+            Button { m.deleteSelected() } label: { Image(systemName: "trash") }.buttonStyle(ToolButtonStyle()).help(Shortcuts.shared.tip(T("Șterge elementul selectat"), "edit.delete")).accessibilityLabel(T("Șterge elementul selectat")).disabled(m.selection == nil)
             }
             if m.tool == .blade { Text(T("Foarfecă activă — clic taie · Esc revine")).font(Theme.F.caption).foregroundStyle(Theme.C.sel).padding(.leading, 8) }
+            if m.tool == .volume { Text(T("Volum activ — dublu-clic adaugă punct · Delete șterge · Esc revine")).font(Theme.F.caption).foregroundStyle(Theme.C.sel).padding(.leading, 8) }
             Spacer()
             ControlGroup2 {
             Button { m.undo() } label: { Image(systemName: "arrow.uturn.backward") }.buttonStyle(ToolButtonStyle()).help(T("Anulează (⌘Z)")).accessibilityLabel(T("Anulează ultima modificare")).disabled(!m.canUndo)
@@ -2007,7 +2048,8 @@ struct TimelinePanel: View {
                 switch it.lane {
                 case .main:
                     if let c = m.project.clips.first(where: { $0.id == it.id }) {
-                        VideoClipFace(media: c.media, sourceStart: c.sourceStart, duration: c.duration, w: r.w, h: geo.v1, pps: pps, held: c.held, selected: sel, hover: hov, editing: ed, linked: true, scaled: !c.transform.isIdentity, title: c.label)
+                        VideoClipFace(media: c.media, sourceStart: c.sourceStart, duration: c.duration, w: r.w, h: geo.v1, pps: pps, held: c.held, speed: c.speed, selected: sel, hover: hov, editing: ed, linked: true, scaled: !c.transform.isIdentity, title: c.label)
+                            .overlay(alignment: .bottomLeading) { if sel, geo.v1 >= 40 { KeyframeBand(m: m, id: c.id, duration: c.duration, pps: pps, width: max(2, r.w - 1), height: 16, motion: c.motion, start: c.transform) } }
                             .opacity(m.isOff(.v1) ? 0.35 : 1).offset(x: r.x, y: geo.y(2)).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                         let srcs = m.mainSources
                         Group {
@@ -2022,21 +2064,23 @@ struct TimelinePanel: View {
                             } else if srcs.count > 1 {
                                 let fd = m.audioEdit(c.id).effectiveFades(duration: c.duration)
                                 MultiAudioClipFace(rows: srcs.map { s in (m.media[c.media]?.trackPeaks.indices.contains(s.index) == true ? m.media[c.media]!.trackPeaks[s.index] : [], m.isSourceMuted(s.index)) },
-                                                   from: c.sourceStart, to: c.sourceStart + c.duration, w: r.w, h: geo.a1, selected: sel, hover: hov, editing: ed,
-                                                   fadeIn: CGFloat(fd.fadeIn) * pps, fadeOut: CGFloat(fd.fadeOut) * pps)
+                                                   from: c.sourceStart, to: c.sourceStart + c.sourceSpan, w: r.w, h: geo.a1, selected: sel, hover: hov, editing: ed,
+                                                   fadeIn: CGFloat(fd.fadeIn) * pps, fadeOut: CGFloat(fd.fadeOut) * pps, inCurve: m.audioEdit(c.id).fadeInCurve, outCurve: m.audioEdit(c.id).fadeOutCurve)
                             } else {
                                 let fd = m.audioEdit(c.id).effectiveFades(duration: c.duration)
-                                AudioClipFace(peaks: m.media[c.media]?.peaks ?? [], from: c.sourceStart, to: c.sourceStart + c.duration, w: r.w, h: geo.a1, selected: sel, hover: hov, editing: ed,
-                                              fadeIn: CGFloat(fd.fadeIn) * pps, fadeOut: CGFloat(fd.fadeOut) * pps)
+                                AudioClipFace(peaks: m.media[c.media]?.peaks ?? [], from: c.sourceStart, to: c.sourceStart + c.sourceSpan, w: r.w, h: geo.a1, selected: sel, hover: hov, editing: ed,
+                                              fadeIn: CGFloat(fd.fadeIn) * pps, fadeOut: CGFloat(fd.fadeOut) * pps, inCurve: m.audioEdit(c.id).fadeInCurve, outCurve: m.audioEdit(c.id).fadeOutCurve)
                             }
                         }
-                            .overlay(alignment: .topLeading) { if (sel || hov || m.liveAudio[c.id] != nil), m.media[c.media]?.hasAudio != false { FadeHandles(m: m, id: c.id, duration: c.duration, pps: pps, width: max(2, r.w - 1)) } }
+                            .overlay(alignment: .topLeading) { if m.media[c.media]?.hasAudio != false { VolumeCurveOverlay(m: m, id: c.id, duration: c.duration, pps: pps, height: geo.a1) } }
+                            .overlay(alignment: .topLeading) { if (sel || hov || m.liveAudio[c.id] != nil), m.media[c.media]?.hasAudio != false { FadeHandles(m: m, id: c.id, duration: c.duration, pps: pps, width: max(2, r.w - 1), height: geo.a1) } }
                             .opacity(m.isOff(.a1) ? 0.35 : 1).offset(x: r.x, y: geo.y(3)).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 case .overlay:
                     if let l = m.project.layers.first(where: { $0.id == it.id }) {
                         let rowH = geo.rowHeight(1, slot: m.slot(.v2, l.row))
-                        VideoClipFace(media: l.media, sourceStart: l.sourceStart, duration: l.duration, w: r.w, h: rowH, pps: pps, selected: sel, hover: hov, editing: ed, linked: false, scaled: !l.transform.isIdentity)
+                        VideoClipFace(media: l.media, sourceStart: l.sourceStart, duration: l.duration, w: r.w, h: rowH, pps: pps, speed: l.speed, selected: sel, hover: hov, editing: ed, linked: false, scaled: !l.transform.isIdentity)
+                            .overlay(alignment: .bottomLeading) { if sel, rowH >= 40 { KeyframeBand(m: m, id: l.id, duration: l.duration, pps: pps, width: max(2, r.w - 1), height: 16, motion: l.motion, start: l.transform) } }
                             .opacity(m.isOff(.v2) ? 0.35 : 1).offset(x: r.x, y: geo.rowTop(1, slot: m.slot(.v2, l.row))).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 case .text:
@@ -2053,10 +2097,12 @@ struct TimelinePanel: View {
                     if let l = m.project.layers.first(where: { $0.id == it.id }) {
                         let ae = m.audioEdit(l.id), fd = ae.effectiveFades(duration: l.duration)
                         let rowA = geo.rowHeight(4, slot: l.row)
-                        AudioClipFace(peaks: m.media[l.media]?.peaks ?? [], from: l.sourceStart, to: l.sourceStart + l.duration, w: r.w, h: rowA, selected: sel, hover: hov, editing: ed,
+                        AudioClipFace(peaks: m.media[l.media]?.peaks ?? [], from: l.sourceStart, to: l.sourceStart + l.sourceSpan, w: r.w, h: rowA, selected: sel, hover: hov, editing: ed,
                                       label: (l.linkedClip != nil ? "⇄ " : "") + (ae.muted ? "mut · " : "") + (l.label ?? URL(fileURLWithPath: l.media).lastPathComponent) + (ae.gainDB != 0 ? String(format: "  %+.1f dB", ae.gainDB) : ""),
-                                      fadeIn: CGFloat(fd.fadeIn) * pps, fadeOut: CGFloat(fd.fadeOut) * pps, dim: ae.muted)
-                            .overlay(alignment: .topLeading) { if sel || hov || m.liveAudio[l.id] != nil { FadeHandles(m: m, id: l.id, duration: l.duration, pps: pps, width: max(2, r.w - 1)) } }
+                                      fadeIn: CGFloat(fd.fadeIn) * pps, fadeOut: CGFloat(fd.fadeOut) * pps, dim: ae.muted, inCurve: ae.fadeInCurve, outCurve: ae.fadeOutCurve)
+                            .overlay(alignment: .topLeading) { VolumeCurveOverlay(m: m, id: l.id, duration: l.duration, pps: pps, height: rowA) }
+                            .overlay(alignment: .topLeading) { if sel || hov || m.liveAudio[l.id] != nil { FadeHandles(m: m, id: l.id, duration: l.duration, pps: pps, width: max(2, r.w - 1), height: rowA) } }
+                            .overlay(alignment: .topLeading) { let xs = m.project.crossfadeSeconds(l); if xs > 0, let link = l.audio?.crossfade { CrossfadeX(m: m, id: l.id, shape: link.shape, width: CGFloat(xs) * pps, height: rowA) } }
                             .opacity(m.isOff(.a2) ? 0.35 : 1).offset(x: r.x, y: geo.rowTop(4, slot: l.row)).contextMenu { menu(it.id) }.help(itemHelp(it)).accessibilityAddTraits(.isButton).accessibilityAction { m.select(it.id) }
                     }
                 }
@@ -2436,6 +2482,7 @@ extension View { func clipOutline(selected: Bool, hover: Bool, editing: Bool) ->
 struct VideoClipFace: View {
     let media: String, sourceStart: Double, duration: Double, w: CGFloat, h: CGFloat, pps: CGFloat
     var held = false
+    var speed = 1.0
     let selected: Bool, hover: Bool, editing: Bool
     var linked = true; var scaled = false; var title: String? = nil
     private let head: CGFloat = 18
@@ -2443,7 +2490,7 @@ struct VideoClipFace: View {
         let name = title ?? URL(fileURLWithPath: media).lastPathComponent
         ZStack(alignment: .topLeading) {
             Theme.C.clipVideo
-            ThumbStrip(media: media, sourceStart: sourceStart, duration: duration, pps: pps, height: h - head, held: held).offset(y: head)
+            ThumbStrip(media: media, sourceStart: sourceStart, duration: duration, pps: pps, height: h - head, held: held, speed: speed).offset(y: head)
             HStack(spacing: 4) {
                 Text(name).font(Theme.F.smallMedium).lineLimit(1)
                 if linked { Image(systemName: "link").font(Theme.F.iconSmall).opacity(0.75) }
@@ -2501,11 +2548,12 @@ struct Grip: View {
 struct ThumbStrip: View {
     let media: String, sourceStart: Double, duration: Double, pps: CGFloat, height: CGFloat
     var held = false
+    var speed = 1.0                       // source seconds per timeline second
     var body: some View {
         let tileW = height * 16 / 9; let n = max(1, Int((CGFloat(duration) * pps / tileW).rounded(.up)))
         HStack(spacing: 0) {
             ForEach(0..<n, id: \.self) { i in
-                ThumbTile(media: media, t: held ? sourceStart : sourceStart + (Double(i) + 0.5) * Double(tileW / pps)).frame(width: tileW, height: height)
+                ThumbTile(media: media, t: held ? sourceStart : sourceStart + (Double(i) + 0.5) * Double(tileW / pps) * speed).frame(width: tileW, height: height)
             }
         }.frame(width: CGFloat(n) * tileW, height: height, alignment: .leading)
     }
@@ -2521,61 +2569,17 @@ struct ThumbTile: View {
 
 /// Direct fade handles on an audio clip (A1 clip or A2 item): two small squares on the top edge at the fade lengths, shown on hover/selection.
 /// Dragging edits the SAME AudioEdit as the inspector (live preview, one undo step on release); limits: 0 … duration − the other fade.
-struct FadeHandles: View {
-    @ObservedObject var m: EditorModel
-    let id: UUID, duration: Double, pps: CGFloat, width: CGFloat
-    @State private var start: AudioEdit?
-    var body: some View {
-        let e = m.audioEdit(id), f = e.effectiveFades(duration: duration)
-        ZStack(alignment: .topLeading) {
-            handle(x: CGFloat(f.fadeIn) * pps, help: "Fade-in: trage spre dreapta", isIn: true)
-            handle(x: width - CGFloat(f.fadeOut) * pps, help: T("Fade-out: trage spre stânga"), isIn: false)
-        }.frame(width: width, alignment: .topLeading)
-    }
-    private func handle(x: CGFloat, help: String, isIn: Bool) -> some View {
-        RoundedRectangle(cornerRadius: 1.5).fill(Theme.C.text).frame(width: 7, height: 7).overlay(RoundedRectangle(cornerRadius: 1.5).strokeBorder(Theme.C.bg0, lineWidth: 1))
-            .frame(width: 18, height: 16).contentShape(Rectangle())             // comfortable hit area around a fine mark
-            .offset(x: max(-4, min(width - 14, x - 9)), y: -3)
-            .highPriorityGesture(DragGesture(minimumDistance: 1).onChanged { v in
-                let b = start ?? m.audioEdit(id); start = b
-                var n = b; let dt = Double(v.translation.width / pps)
-                if !isIn { n.fadeOut = max(0, min(duration - b.fadeIn, ((b.fadeOut - dt) * 100).rounded() / 100)) }
-                if isIn { n.fadeIn = max(0, min(duration - b.fadeOut, ((b.fadeIn + dt) * 100).rounded() / 100)) }
-                m.liveAudioEdit(id, n)
-            }.onEnded { _ in start = nil; m.commitAudio(id) })
-            .onHover { if $0 { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() } }
-            .help(help).accessibilityLabel(isIn ? T("Mâner fade-in") : T("Mâner fade-out"))
-    }
-}
-
-/// Fade ramps drawn over an audio clip: darkened corner triangles with a light edge, `fadeIn`/`fadeOut` in points.
-struct FadeOverlay: View {
-    let fadeIn: CGFloat, fadeOut: CGFloat
-    var body: some View {
-        GeometryReader { g in
-            let W = g.size.width, H = g.size.height
-            if fadeIn > 0.5 {
-                Path { p in p.move(to: .init(x: 0, y: 0)); p.addLine(to: .init(x: min(fadeIn, W), y: 0)); p.addLine(to: .init(x: 0, y: H)); p.closeSubpath() }.fill(.black.opacity(0.38))
-                Path { p in p.move(to: .init(x: 0, y: H)); p.addLine(to: .init(x: min(fadeIn, W), y: 0)) }.stroke(Theme.C.text.opacity(0.85), lineWidth: 1)
-            }
-            if fadeOut > 0.5 {
-                Path { p in p.move(to: .init(x: W, y: 0)); p.addLine(to: .init(x: max(0, W - fadeOut), y: 0)); p.addLine(to: .init(x: W, y: H)); p.closeSubpath() }.fill(.black.opacity(0.38))
-                Path { p in p.move(to: .init(x: max(0, W - fadeOut), y: 0)); p.addLine(to: .init(x: W, y: H)) }.stroke(Theme.C.text.opacity(0.85), lineWidth: 1)
-            }
-        }.allowsHitTesting(false)
-    }
-}
-
 struct AudioClipFace: View {
     let peaks: [Float], from: Double, to: Double, w: CGFloat, h: CGFloat, selected: Bool, hover: Bool, editing: Bool
     var label: String? = nil
     var fadeIn: CGFloat = 0, fadeOut: CGFloat = 0, dim = false
+    var inCurve = FadeCurve.linear, outCurve = FadeCurve.linear
     var body: some View {
         ZStack(alignment: .topLeading) {
             Theme.C.clipAudio
             Rectangle().fill(Theme.C.wave.opacity(0.28)).frame(height: 1)
             WaveShape(peaks: peaks, from: from, to: to, perSecond: 20).fill(Theme.C.wave).padding(.vertical, 5).opacity(dim ? 0.3 : 1)
-            FadeOverlay(fadeIn: fadeIn, fadeOut: fadeOut)
+            FadeOverlay(fadeIn: fadeIn, fadeOut: fadeOut, inCurve: inCurve, outCurve: outCurve)
             if let label { Text(label).font(Theme.F.smallMedium).foregroundStyle(.white).lineLimit(1).padding(.horizontal, 6).padding(.top, 2).frame(width: max(2, w - 1), alignment: .leading) }
         }
         .frame(width: max(2, w - 1), height: h).clipOutline(selected: selected, hover: hover, editing: editing)
@@ -2588,6 +2592,7 @@ struct AudioClipFace: View {
 struct MultiAudioClipFace: View {
     let rows: [(peaks: [Float], muted: Bool)]; let from: Double, to: Double, w: CGFloat, h: CGFloat, selected: Bool, hover: Bool, editing: Bool
     var fadeIn: CGFloat = 0, fadeOut: CGFloat = 0
+    var inCurve = FadeCurve.linear, outCurve = FadeCurve.linear
     var body: some View {
         let rh = h / CGFloat(max(1, rows.count))
         VStack(spacing: 0) {
@@ -2599,7 +2604,7 @@ struct MultiAudioClipFace: View {
                 }.frame(height: rh).overlay(alignment: .bottom) { if k < rows.count - 1 { Rectangle().fill(.black.opacity(0.35)).frame(height: 1) } }
             }
         }
-        .overlay(FadeOverlay(fadeIn: fadeIn, fadeOut: fadeOut))
+        .overlay(FadeOverlay(fadeIn: fadeIn, fadeOut: fadeOut, inCurve: inCurve, outCurve: outCurve))
         .frame(width: max(2, w - 1), height: h).clipOutline(selected: selected, hover: hover, editing: editing)
         .accessibilityElement(children: .ignore).accessibilityLabel(L10n.f("Clip audio cu %@ surse", "\(rows.count)")).accessibilityValue(selected ? T("selectat") : "")
     }

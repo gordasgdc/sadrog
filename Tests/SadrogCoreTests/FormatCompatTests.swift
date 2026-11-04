@@ -49,7 +49,7 @@ final class FormatCompatTests: XCTestCase {
     }
     /// Real projects written by earlier builds (demos b48…b70 and sessions of the audio evidence), when the external disk has them.
     func testRealEarlierProjectsOpen() throws {
-        let root = "\(TestRoot.path)"
+        let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG"
         let fm = FileManager.default
         var found = 0
         for sub in ["builds/intermediar/demo", "evidence/editor_audio_2026-10-29/sessions"] {

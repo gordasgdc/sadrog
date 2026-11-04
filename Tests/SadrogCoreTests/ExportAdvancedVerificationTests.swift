@@ -8,7 +8,7 @@ import CoreMedia
 /// Tolerances: the encoder runs variable rate, so the AVERAGE rate is accepted within ±30 % of the request (measured spread is far smaller); key-frame distance within one frame
 /// of the request; audio AAC rate within ±25 % (AAC encoders quantise to their own steps); events within 70 ms (flash width / AAC priming).
 final class ExportAdvancedVerificationTests: XCTestCase {
-    static let root = "\(TestRoot.path)"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG"
     var src: String { Self.root + "/synthetic/export_probe/probe12s.mov" }
     private func out(_ n: String) -> URL { URL(fileURLWithPath: Self.root + "/temp/advx-\(n)-\(UUID().uuidString).mov") }
     private let doc = CGSize(width: 1280, height: 720)

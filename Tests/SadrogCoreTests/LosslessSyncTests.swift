@@ -6,7 +6,7 @@ import ImageIO
 /// Lossless PNG+WAV as a complete delivery: non-zero In/Out, frame count and rate, sound start/length, an impulse that must line up with the picture change,
 /// the manifest, and no partial result after an error or a cancel. Uses a synthetic clip made here (dark picture, white from T, a one-sample-burst click at T).
 final class LosslessSyncTests: XCTestCase {
-    static let root = "\(TestRoot.path)/temp"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp"
     let T = 1.5, fps = 30.0, dur = 3.0
     private func makeClip(_ url: URL) async throws {
         let w = try AVAssetWriter(outputURL: url, fileType: .mov)
@@ -37,7 +37,7 @@ final class LosslessSyncTests: XCTestCase {
         ctx.draw(img, in: CGRect(x: 0, y: 0, width: 1, height: 1)); return Int(px[0])
     }
     func testInOutFramesAudioStartImpulseAlignmentManifestAndNoPartialOnFailure() async throws {
-        guard FileManager.default.fileExists(atPath: TestRoot.path) else { throw XCTSkip("external storage") }
+        guard FileManager.default.fileExists(atPath: "/Volumes/CristiGordas/TESTE") else { throw XCTSkip("external storage") }
         let clip = URL(fileURLWithPath: Self.root + "/sync-\(UUID().uuidString).mov"); defer { try? FileManager.default.removeItem(at: clip) }
         try await makeClip(clip)
         var p = SadrogProject(name: "t", clips: [Clip(media: clip.path, sourceStart: 0, duration: dur)]); p.canvas = DocumentFormat(width: 320, height: 180, fps: 30)

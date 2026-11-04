@@ -4,7 +4,7 @@ import AVFoundation
 
 /// The export destination contract: nothing existing is overwritten or deleted without an explicit request; results are written to an operation-owned temporary item and published whole.
 final class SafePublishTests: XCTestCase {
-    static let root = "\(TestRoot.path)"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG"
     var dir: URL!
     override func setUpWithError() throws {
         try XCTSkipUnless(FileManager.default.fileExists(atPath: Self.root + "/temp"), "external test storage")

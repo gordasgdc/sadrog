@@ -72,7 +72,7 @@ final class MixedMoveTests: XCTestCase {
     }
     func testSurvivesSaveAndReopen() throws {
         let f = fixture(); _ = f.e.moveGroup(sel(f), by: 4)
-        let dir = URL(fileURLWithPath: "\(TestRoot.path)/temp/mixed-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: dir) }
+        let dir = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/mixed-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: dir) }
         try ProjectStore.save(f.e.project, to: dir)
         let back = try ProjectStore.load(from: dir)
         XCTAssertEqual(back.clips.map(\.id), [f.a.id, f.c.id, f.b.id]); XCTAssertEqual(back.texts[0].start, 9, accuracy: 1e-9)

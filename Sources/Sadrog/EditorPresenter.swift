@@ -120,10 +120,10 @@ struct PresenterGroup: View {
                     }
                     Spacer(minLength: 0)
                 }.frame(height: 28)
-                NumberRow(label: T("Încadrare"), unit: "%", range: 100...400, value: bind({ $0.zoom * 100 }, { $0.zoom = $1 / 100 }), commit: { m.commitCrop() })
+                NumberRow(label: T("Încadrare"), unit: "%", range: 100...400, value: bind({ $0.zoom * 100 }, { $0.zoom = $1 / 100 }), commit: { m.commitCrop() }, reset: 100)
                     .help(T("Mărirea imaginii în cerc; cercul nu își schimbă mărimea. În viewer: ⌥ + tragere mută imaginea în cerc."))
-                NumberRow(label: T("Orizontal"), unit: "%", range: -100...100, value: bind({ $0.offsetX * 100 }, { $0.offsetX = $1 / 100 }), commit: { m.commitCrop() })
-                NumberRow(label: T("Vertical"), unit: "%", range: -100...100, value: bind({ $0.offsetY * 100 }, { $0.offsetY = $1 / 100 }), commit: { m.commitCrop() })
+                NumberRow(label: T("Orizontal"), unit: "%", range: -100...100, value: bind({ $0.offsetX * 100 }, { $0.offsetX = $1 / 100 }), commit: { m.commitCrop() }, reset: 0)
+                NumberRow(label: T("Vertical"), unit: "%", range: -100...100, value: bind({ $0.offsetY * 100 }, { $0.offsetY = $1 / 100 }), commit: { m.commitCrop() }, reset: 0)
                 HStack(spacing: 8) {
                     Text(T("Contur")).font(Theme.F.body).frame(width: 70, alignment: .leading)
                     Picker("", selection: Binding(get: { c.border?.style.rawValue ?? "none" }, set: { v in
@@ -173,10 +173,10 @@ struct RectCropGroup: View {
     var body: some View {
         if m.selectedCrop == nil {
             InspectorGroup(T("Decupare")) {
-                NumberRow(label: T("Stânga"), unit: "%", range: 0...90, value: bind(\.left), commit: { m.commitRectCrop() }, decimals: 1)
-                NumberRow(label: T("Dreapta"), unit: "%", range: 0...90, value: bind(\.right), commit: { m.commitRectCrop() }, decimals: 1)
-                NumberRow(label: T("Sus"), unit: "%", range: 0...90, value: bind(\.top), commit: { m.commitRectCrop() }, decimals: 1)
-                NumberRow(label: T("Jos"), unit: "%", range: 0...90, value: bind(\.bottom), commit: { m.commitRectCrop() }, decimals: 1)
+                NumberRow(label: T("Stânga"), unit: "%", range: 0...90, value: bind(\.left), commit: { m.commitRectCrop() }, decimals: 1, reset: 0)
+                NumberRow(label: T("Dreapta"), unit: "%", range: 0...90, value: bind(\.right), commit: { m.commitRectCrop() }, decimals: 1, reset: 0)
+                NumberRow(label: T("Sus"), unit: "%", range: 0...90, value: bind(\.top), commit: { m.commitRectCrop() }, decimals: 1, reset: 0)
+                NumberRow(label: T("Jos"), unit: "%", range: 0...90, value: bind(\.bottom), commit: { m.commitRectCrop() }, decimals: 1, reset: 0)
                 HStack(spacing: 8) {
                     Button { m.cropEditing.toggle() } label: { Label(T("Decupare în vizor"), systemImage: "crop") }
                         .buttonStyle(.gloss(m.cropEditing ? .primary : .secondary, compact: true)).fixedSize().disabled(m.selectedAnimated)

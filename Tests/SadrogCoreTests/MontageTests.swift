@@ -40,7 +40,7 @@ final class MontageTests: XCTestCase {
         e.setLane(.v2, off: true); e.setLane(.a2, off: true); e.rename("  Prezentare produs ")
         XCTAssertEqual(e.project.hiddenLanes, [.v2]); XCTAssertEqual(e.project.mutedLanes, [.a2]); XCTAssertEqual(e.project.name, "Prezentare produs")
         e.rename("   "); XCTAssertEqual(e.project.name, "Prezentare produs")                       // empty name refused
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/lanes-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/lanes-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f)
         let back = try ProjectStore.load(from: f)
         XCTAssertEqual(back, e.project); XCTAssertEqual(back.name, "Prezentare produs")
@@ -65,7 +65,7 @@ final class MontageTests: XCTestCase {
         try? FileManager.default.removeItem(at: url)
     }
     func testMutedLanesKeepTheirTracksAndGetSilenceFromTheAudioMix() async throws {
-        let amb = "\(TestRoot.path)/synthetic/ambient.m4a", cap = "\(TestRoot.path)/synthetic/capture2.mov"
+        let amb = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic/ambient.m4a", cap = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic/capture2.mov"
         try XCTSkipUnless(FileManager.default.fileExists(atPath: amb) && FileManager.default.fileExists(atPath: cap), "synthetic media not available")
         var p = SadrogProject(name: "t", clips: [Clip(media: cap, sourceStart: 0, duration: 4)])
         p.layers = [Layer(kind: .audio, media: amb, start: 1, duration: 3)]

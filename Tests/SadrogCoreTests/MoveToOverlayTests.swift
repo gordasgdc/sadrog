@@ -34,7 +34,7 @@ final class MoveToOverlayTests: XCTestCase {
         XCTAssertNotNil(e.moveClipToOverlay(cl[1].id)); let after = e.project
         XCTAssertTrue(e.undo()); XCTAssertEqual(e.project, before)
         XCTAssertTrue(e.redo()); XCTAssertEqual(e.project, after)
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/mto-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/mto-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f); XCTAssertEqual(try ProjectStore.load(from: f), e.project)
     }
     func testBlockersAndLastClip() throws {

@@ -6,9 +6,9 @@ import AVFoundation
 /// A synthetic recording for identity tests: a dark picture and N mono audio tracks, each a constant tone of its own amplitude
 /// (so the track order of a file can be told apart by measuring). Written under the external test area (storage policy), removed by the caller.
 enum SyntheticRecording {
-    static let root = "\(TestRoot.path)/temp"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp"
     static func make(amplitudes: [Float], duration: Double = 3) async throws -> URL {
-        guard FileManager.default.fileExists(atPath: TestRoot.path) else { throw XCTSkip("external storage") }
+        guard FileManager.default.fileExists(atPath: "/Volumes/CristiGordas/TESTE") else { throw XCTSkip("external storage") }
         let url = URL(fileURLWithPath: "\(root)/idsyn-\(UUID().uuidString).mov")
         let w = try AVAssetWriter(outputURL: url, fileType: .mov)
         let vi = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 160, AVVideoHeightKey: 90])

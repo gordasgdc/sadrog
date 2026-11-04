@@ -11,7 +11,7 @@ final class GuardStopProtocolTests: XCTestCase {
     override func tearDown() { UserDefaults.standard.removeObject(forKey: "sadrog.language"); super.tearDown() }
     var dir: URL!
     override func setUp() async throws {
-        dir = URL(fileURLWithPath: "\(TestRoot.path)/temp/guardproto-\(UUID().uuidString)")
+        dir = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/guardproto-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
     }
     override func tearDown() async throws { try? FileManager.default.removeItem(at: dir) }

@@ -300,7 +300,7 @@ dezactivat	off	desactivado
 În interior	Inside	Dentro
 În secvență	In sequence	En la secuencia
 Înalt (HEVC)	High (HEVC)	Alta (HEVC)
-Înapoi la pregătirea capturii	Back to capture setup	Volver a la preparación de la captura
+Înapoi la ecranul de start (înregistrare nouă, document nou, Recente)	Back to the start screen (new recording, new document, Recent)	Volver a la pantalla de inicio (nueva grabación, nuevo documento, Recientes)
 Încadrare	Framing	Encuadre
 Început	Start	Inicio
 Început = cursor	Start = playhead	Inicio = cursor
@@ -1283,3 +1283,171 @@ NIVEL DE INTRARE	INPUT LEVEL	NIVEL DE ENTRADA
 Format cameră	Camera format	Formato de cámara
 Capturează. Explică. Creează.	Capture. Explain. Create.	Captura. Explica. Crea.
 modul curent: %@	current mode: %@	modo actual: %@
+Adaugă un punct de volum la poziția cursorului, la nivelul curent al automatizării	Adds a volume point at the playhead, at the current automation level	Añade un punto de volumen en la posición del cursor, al nivel actual de la automatización
+Atenție: automatizarea ridică volumul până la %+.1f dB; exportul poate tăia vârfurile.	Warning: the automation raises the volume up to %+.1f dB; the export may clip peaks.	Atención: la automatización sube el volumen hasta %+.1f dB; la exportación puede recortar picos.
+Automatizare volum	Volume automation	Automatización de volumen
+Cheia anterioară	Previous key	Clave anterior
+Cheia următoare	Next key	Clave siguiente
+Cum trece valoarea de la această cheie la următoare. Treaptă = rămâne neschimbată și sare la cheia următoare	How the value goes from this key to the next. Step = stays unchanged and jumps at the next key	Cómo pasa el valor de esta clave a la siguiente. Escalón = no cambia y salta en la clave siguiente
+Curba de pe cronologie este cea aplicată. Resetarea fade-urilor păstrează punctele de volum.	The curve drawn on the timeline is the one applied. Resetting fades keeps the volume points.	La curva dibujada en la línea de tiempo es la aplicada. Restablecer los fundidos conserva los puntos de volumen.
+Curbură	Curvature	Curvatura
+Curbă S	S-curve	Curva S
+De la cheia asta	From this key	Desde esta clave
+Forma fade-in	Fade-in shape	Forma del fundido de entrada
+Forma fade-out	Fade-out shape	Forma del fundido de salida
+Fără puncte: volumul rămâne cel fix de mai sus. Valorile sunt în dB, relativ la volumul clipului; „Mut” înseamnă liniște completă.	No points: the volume stays the fixed one above. Values are in dB, relative to the clip volume; “Mute” means complete silence.	Sin puntos: el volumen es el fijo de arriba. Los valores están en dB, relativos al volumen del clip; «Mudo» significa silencio total.
+Fără sunet la viteza aceasta	No sound at this speed	Sin sonido a esta velocidad
+Ieșire lentă	Slow out	Salida lenta
+Interpolarea până la cheia următoare	Interpolation to the next key	Interpolación hasta la clave siguiente
+Intrare lentă	Slow in	Entrada lenta
+Moment	Time	Momento
+Momentul cheii	Key time	Momento de la clave
+Mut	Mute	Mudo
+Nivel	Level	Nivel
+Ordinea: volumul sursei și al clipului, apoi automatizarea, fade-urile, tranziția dintre piese, efectele și volumul general. Nimic nu se aplică de două ori.	Order: source and clip volume, then automation, fades, the transition between items, effects and the master volume. Nothing is applied twice.	Orden: volumen de la fuente y del clip, luego automatización, fundidos, transición entre piezas, efectos y volumen general. Nada se aplica dos veces.
+Pornit: sunetul accelerat sau încetinit își păstrează tonul. Oprit: tonul urcă sau coboară odată cu viteza. Se aplică întregului proiect	On: sped-up or slowed sound keeps its pitch. Off: pitch rises or falls with the speed. Applies to the whole project	Activado: el sonido acelerado o ralentizado conserva el tono. Desactivado: el tono sube o baja con la velocidad. Se aplica a todo el proyecto
+Punct la cursor	Point at playhead	Punto en el cursor
+Punctul anterior	Previous point	Punto anterior
+Punctul următor	Next point	Punto siguiente
+Păstrează înălțimea sunetului	Keep sound pitch	Conservar el tono del sonido
+Sunetul clipului este oprit cât timp viteza nu e 1×; celelalte piste nu sunt atinse	The clip’s sound is off while the speed is not 1×; other tracks are not touched	El sonido del clip está apagado mientras la velocidad no sea 1×; las demás pistas no se tocan
+Sursă %.2f s → pe cronologie %.2f s	Source %.2f s → on the timeline %.2f s	Fuente %.2f s → en la línea de tiempo %.2f s
+Treaptă	Step	Escalón
+Viteză	Speed	Velocidad
+Viteză %@	Speed %@	Velocidad %@
+Înapoi la 1×	Back to 1×	Volver a 1×
+Încetinirea repetă cadre (fără interpolare de mișcare): la viteze foarte mici mișcarea devine sacadată.	Slow motion repeats frames (no motion interpolation): at very low speeds motion looks jerky.	La cámara lenta repite fotogramas (sin interpolación de movimiento): a velocidades muy bajas el movimiento se ve entrecortado.
+Între 0,1× și 16×. 60 s de sursă la 6× devin 10 s; la 0,5× devin 120 s	Between 0.1× and 16×. 60 s of source at 6× become 10 s; at 0.5× they become 120 s	Entre 0,1× y 16×. 60 s de fuente a 6× pasan a 10 s; a 0,5× pasan a 120 s
+Șterge punctul	Delete point	Eliminar punto
+Șterge toate punctele	Delete all points	Eliminar todos los puntos
+Curba	Curve	Curva
+Curba încrucișării	Crossfade curve	Curva del fundido cruzado
+Câștig egal	Equal gain	Ganancia igual
+Câștig egal: nivelurile însumează 1. Constant pentru același sunet pe ambele părți; scade cu până la 3 dB la mijloc pentru sunete diferite.	Equal gain: levels add up to 1. Constant for the same sound on both sides; dips by up to 3 dB in the middle for different sounds.	Ganancia igual: los niveles suman 1. Constante para el mismo sonido en ambos lados; baja hasta 3 dB en el centro para sonidos distintos.
+Durata este suprapunerea reală a celor două piese: o poți schimba aici sau mutând/tăind piesele.	The duration is the real overlap of the two items: change it here or by moving/trimming the items.	La duración es el solapamiento real de las dos piezas: puedes cambiarla aquí o moviendo/recortando las piezas.
+Elimină încrucișarea	Remove crossfade	Quitar el fundido cruzado
+Fără încrucișare: piesele se aud una peste alta sau una după alta.	No crossfade: the items play over each other or one after the other.	Sin fundido cruzado: las piezas suenan una sobre otra o una tras otra.
+Nicio piesă anterioară alăturată pe care să o încrucișezi.	No adjacent previous item to crossfade with.	No hay una pieza anterior contigua con la que hacer el fundido cruzado.
+Nu există material sursă pentru suprapunere: nicio piesă nu poate fi prelungită. Taie piesele mai scurt sau suprapune-le manual.	There is no source material for the overlap: neither item can be extended. Trim the items shorter or overlap them manually.	No hay material de origen para el solapamiento: ninguna pieza se puede alargar. Recorta las piezas o solápalas a mano.
+Piesele nu pot fi încrucișate: trebuie să fie sunete independente, iar prima să se termine în a doua.	These items cannot be crossfaded: they must be independent sounds and the first must end inside the second.	Estas piezas no se pueden fundir: deben ser sonidos independientes y la primera debe terminar dentro de la segunda.
+Pista de sunet este blocată.	The sound track is locked.	La pista de sonido está bloqueada.
+Punct de volum la %@ s	Volume point at %@ s	Punto de volumen en %@ s
+Putere egală	Equal power	Potencia igual
+Putere egală: puterea rămâne constantă pentru sunete diferite; pentru același sunet pe ambele părți mijlocul urcă cu până la 3 dB.	Equal power: power stays constant for different sounds; for the same sound on both sides the middle rises by up to 3 dB.	Potencia igual: la potencia es constante para sonidos distintos; para el mismo sonido en ambos lados el centro sube hasta 3 dB.
+Sunetul tranziției	Transition sound	Sonido de la transición
+Suprapune finalul piesei anterioare cu începutul acesteia și le fuzionează cu un fade în X	Overlaps the end of the previous item with the start of this one and blends them with an X fade	Solapa el final de la pieza anterior con el inicio de esta y las mezcla con un fundido en X
+Tipul încrucișării	Crossfade type	Tipo de fundido cruzado
+Încrucișare între piese	Crossfade between items	Fundido cruzado entre piezas
+Încrucișează cu piesa anterioară	Crossfade with previous item	Fundir con la pieza anterior
+Doar filtru de joase	High-pass filter only	Solo filtro de graves
+Doar limitator	Limiter only	Solo limitador
+Doar limitator de vârfuri: nu lasă sunetul să depășească 0 dBFS.	Peak limiter only: keeps the sound from going past 0 dBFS.	Solo limitador de picos: evita que el sonido pase de 0 dBFS.
+Filtru de joase la 80 Hz, compresor ușor și expander conservator între cuvinte, limitator de vârfuri.	80 Hz high-pass, light compressor and a conservative expander between words, peak limiter.	Filtro de graves a 80 Hz, compresor suave y expansor conservador entre palabras, limitador de picos.
+Filtru la 90 Hz, compresie mai fermă pentru nivel constant, expander conservator, limitator de vârfuri.	90 Hz high-pass, firmer compression for a steady level, conservative expander, peak limiter.	Filtro a 90 Hz, compresión más firme para un nivel constante, expansor conservador, limitador de picos.
+Folosește efectele Apple din sistem, prin același gazdă ca orice plugin: fiecare treaptă apare mai sus și poate fi ocolită, mutată, deschisă sau ștearsă. Expanderul NU este eliminare inteligentă a zgomotului.	Uses the Apple effects built into macOS through the same host as any plugin: each stage appears above and can be bypassed, moved, opened or deleted. The expander is NOT intelligent noise removal.	Usa los efectos de Apple incluidos en el sistema, a través del mismo anfitrión que cualquier plugin: cada etapa aparece arriba y se puede omitir, mover, abrir o borrar. El expansor NO es una eliminación inteligente de ruido.
+Procesare de voce	Voice processing	Procesamiento de voz
+Resetează procesarea de voce	Reset voice processing	Restablecer el procesamiento de voz
+Taie zgomotul și bubuitul sub 80 Hz. Nu elimină zgomotul din banda vocii.	Cuts rumble and hum below 80 Hz. It does not remove noise inside the voice band.	Corta retumbos y zumbidos por debajo de 80 Hz. No elimina el ruido dentro de la banda de la voz.
+Voce curată	Clean voice	Voz limpia
+Voce de podcast	Podcast voice	Voz de pódcast
+Această înregistrare nu are metadate de mouse (sau clipul e importat): poziția cursorului nu se poate reconstitui. Efectele de cursor cer o înregistrare făcută cu SADROG.	This recording has no mouse metadata (or the clip is imported): the cursor position cannot be reconstructed. Cursor effects need a recording made with SADROG.	Esta grabación no tiene metadatos del ratón (o el clip está importado): no se puede reconstruir la posición del cursor. Los efectos de cursor requieren una grabación hecha con SADROG.
+Alege ce parte a elementului editezi: imagine, sunet, timp sau cursor. Schimbarea filei nu modifică proiectul.	Choose which part of the item you edit: picture, sound, time or cursor. Switching tabs does not change the project.	Elige qué parte del elemento editas: imagen, sonido, tiempo o cursor. Cambiar de pestaña no modifica el proyecto.
+Resetează la valoarea implicită	Reset to default value	Restablecer al valor predeterminado
+Dublu-clic pe slider sau pe etichetă = valoarea implicită (un singur pas Undo)	Double-click the slider or the label = default value (a single undo step)	Doble clic en el control deslizante o la etiqueta = valor predeterminado (un solo paso de deshacer)
+Unealta Volum: dublu-clic adaugă un punct; trage un punct pentru timp și nivel (⇧ fin, ⌥ fără magnetism); Delete îl șterge; Esc anulează tragerea	Volume tool: double-click adds a point; drag a point for time and level (⇧ fine, ⌥ no magnet); Delete removes it; Esc cancels the drag	Herramienta Volumen: doble clic añade un punto; arrastra un punto para tiempo y nivel (⇧ fino, ⌥ sin imán); Supr lo elimina; Esc cancela el arrastre
+Șterge punctul	Delete point	Eliminar punto
+Nivel 0 dB	Level 0 dB	Nivel 0 dB
+Volum (U): dublu-clic pe un element cu sunet adaugă un punct de volum; trage punctele pentru timp și nivel; Delete le șterge; Esc revine la Selectare	Volume (U): double-click an item with sound to add a volume point; drag points for time and level; Delete removes them; Esc returns to Select	Volumen (U): doble clic en un elemento con sonido añade un punto de volumen; arrastra los puntos para tiempo y nivel; Supr los elimina; Esc vuelve a Seleccionar
+Unealta Volum	Volume tool	Herramienta Volumen
+Volum activ — dublu-clic adaugă punct · Delete șterge · Esc revine	Volume active — double-click adds a point · Delete removes · Esc returns	Volumen activo — doble clic añade un punto · Supr elimina · Esc vuelve
+Curba de volum	Volume curve	Curva de volumen
+Lipsește de pe disc — a fost mutat sau șters. Arată în Finder deschide folderul cel mai apropiat.	Missing from disk — it was moved or deleted. Show in Finder opens the nearest existing folder.	Falta en el disco: se movió o se borró. Mostrar en Finder abre la carpeta existente más cercana.
+Fișierul lipsește de pe disc	The file is missing from disk	El archivo falta en el disco
+Arată în Finder	Show in Finder	Mostrar en Finder
+Elimină din Recente	Remove from Recent	Quitar de Recientes
+Mai multe: Arată în Finder, Elimină din Recente (nu șterge fișierele)	More: Show in Finder, Remove from Recent (does not delete files)	Más: Mostrar en Finder, Quitar de Recientes (no borra archivos)
+Acțiuni pentru intrarea din Recente	Actions for this Recent entry	Acciones de esta entrada de Recientes
+Elementul nu mai există la locul lui; am deschis cel mai apropiat folder existent.	The item is no longer at its place; opened the nearest existing folder.	El elemento ya no está en su sitio; se abrió la carpeta existente más cercana.
+Creează document și deschide	Create document and open	Crear documento y abrir
+Creează un document cu acest nume, pune înregistrarea la început și îl deschide în editor; înregistrarea rămâne și în folderul ei	Creates a document with this name, puts the recording at its start and opens it in the editor; the recording also stays in its own folder	Crea un documento con este nombre, pone la grabación al inicio y lo abre en el editor; la grabación también queda en su carpeta
+Păstrează doar înregistrarea	Keep only the recording	Conservar solo la grabación
+Nu se creează niciun document; înregistrarea rămâne pe disc și o găsești în Recente	No document is created; the recording stays on disk and is in Recent	No se crea ningún documento; la grabación queda en el disco y está en Recientes
+Fade-in: trage spre dreapta pentru durată	Fade-in: drag right for its length	Fundido de entrada: arrastra a la derecha para su duración
+Fade-out: trage spre stânga pentru durată	Fade-out: drag left for its length	Fundido de salida: arrastra a la izquierda para su duración
+Resetează curba	Reset curve	Restablecer curva
+Curbura fade-ului: trage în sus/jos (⇧ fin, Esc anulează); dublu-clic o îndreaptă; clic dreapta alege forma	Fade curvature: drag up/down (⇧ fine, Esc cancels); double-click straightens it; right-click picks the shape	Curvatura del fundido: arrastra arriba/abajo (⇧ fino, Esc cancela); doble clic la endereza; clic derecho elige la forma
+Curbură fade-in	Fade-in curvature	Curvatura del fundido de entrada
+Curbură fade-out	Fade-out curvature	Curvatura del fundido de salida
+Curba încrucișării: trage în sus/jos (⇧ fin, Esc anulează); dublu-clic o îndreaptă; clic dreapta alege tipul	Crossfade curve: drag up/down (⇧ fine, Esc cancels); double-click straightens it; right-click picks the type	Curva del fundido cruzado: arrastra arriba/abajo (⇧ fino, Esc cancela); doble clic la endereza; clic derecho elige el tipo
+Curbura încrucișării	Crossfade curvature	Curvatura del fundido cruzado
+Dublu-clic: cheie nouă	Double-click: new key	Doble clic: clave nueva
+Banda de chei: dublu-clic adaugă o cheie; trage rombul pentru timp (⇧ fin, Esc anulează); Delete șterge cheia selectată	Key band: double-click adds a key; drag a diamond for time (⇧ fine, Esc cancels); Delete removes the selected key	Banda de claves: doble clic añade una clave; arrastra el rombo para el tiempo (⇧ fino, Esc cancela); Supr elimina la clave seleccionada
+Banda de chei video	Video key band	Banda de claves de vídeo
+Treaptă	Step	Escalón
+Șterge cheia	Delete key	Eliminar clave
+Banda de chei	Key band	Banda de claves
+Proprietatea afișată în banda de chei	Property shown in the key band	Propiedad mostrada en la banda de claves
+Banda de chei de pe pistă arată doar cheile care schimbă această proprietate	The key band on the track shows only the keys that change this property	La banda de claves de la pista muestra solo las claves que cambian esta propiedad
+Cheie: clic o alege, trage pentru timp, clic dreapta pentru interpolare sau ștergere	Key: click selects, drag for time, right-click for interpolation or delete	Clave: clic la selecciona, arrastra para el tiempo, clic derecho para interpolación o eliminar
+«%@» lipsește de pe disc, deci NU l-am putut arăta. Am deschis doar folderul existent %@. Folosește «Localizează…» ca să-l găsești.	“%@” is missing from disk, so I could NOT show it. I only opened the existing folder %@. Use “Locate…” to find it.	«%@» falta en el disco, así que NO pude mostrarlo. Solo abrí la carpeta existente %@. Usa «Localizar…» para encontrarlo.
+Alege folderul în care se află acum «%@» (cel care conține project.sadrogproj)	Choose the folder where “%@” is now (the one holding project.sadrogproj)	Elige la carpeta donde está ahora «%@» (la que contiene project.sadrogproj)
+Localizează…	Locate…	Localizar…
+Lipsește de pe disc — a fost mutat sau șters. «Arată în Finder» nu îl poate arăta (deschide doar un folder părinte); «Localizează…» îl caută.	Missing from disk — moved or deleted. “Show in Finder” cannot show it (it only opens a parent folder); “Locate…” looks for it.	Falta en el disco: movido o borrado. «Mostrar en Finder» no puede mostrarlo (solo abre una carpeta superior); «Localizar…» lo busca.
+%@ este deja folosită de: %@.	%@ is already used by: %@.	%@ ya está en uso por: %@.
+%@ este rezervată de sistem sau de meniul Editare.	%@ is reserved by the system or the Edit menu.	%@ está reservada por el sistema o por el menú Edición.
+Apasă combinația…	Press the shortcut…	Pulsa la combinación…
+Categoria comenzilor	Command category	Categoría de comandos
+Caută o comandă sau o combinație	Search a command or a shortcut	Busca un comando o una combinación
+Clic, apoi apasă combinația dorită (Esc renunță)	Click, then press the shortcut you want (Esc cancels)	Haz clic y pulsa la combinación deseada (Esc cancela)
+Comandă standard de sistem: nu se schimbă	Standard system command: it cannot be changed	Comando estándar del sistema: no se puede cambiar
+Comandă standard de sistem: nu se schimbă.	Standard system command: it cannot be changed.	Comando estándar del sistema: no se puede cambiar.
+Comenzi rapide	Shortcuts	Atajos de teclado
+Editare	Edit	Edición
+Elimină combinația acestei comenzi	Remove this command's shortcut	Quitar la combinación de este comando
+Elimină combinația: %@	Remove shortcut: %@	Quitar combinación: %@
+Foarfecă: clic taie elementul din punctul indicat; cu mai multe elemente selectate, clic pe unul dintre ele taie toată selecția la același moment; Esc revine la Selectare	Blade: click cuts the item at the pointed spot; with several items selected, clicking one cuts the whole selection at the same moment; Esc returns to Select	Cuchilla: un clic corta el elemento en el punto indicado; con varios elementos seleccionados, un clic en uno corta toda la selección en el mismo momento; Esc vuelve a Seleccionar
+Inspector	Inspector	Inspector
+Magnetism în timeline activ: clipurile se lipesc de margini și de cursor. Alinierea pe canvas e separată, în bara previzualizării.	Timeline snapping on: clips stick to edges and to the playhead. Canvas alignment is separate, in the preview bar.	Imán de la línea de tiempo activo: los clips se pegan a los bordes y al cursor. La alineación del lienzo es aparte, en la barra de vista previa.
+Magnetism în timeline oprit	Timeline snapping off	Imán de la línea de tiempo desactivado
+Nicio comandă găsită.	No command found.	No se encontró ningún comando.
+Nicio combinație nu a fost schimbată	No shortcut has been changed	No se ha cambiado ninguna combinación
+Readuce toate combinațiile la valorile implicite	Restores all shortcuts to their defaults	Restablece todas las combinaciones a sus valores predeterminados
+Redare	Playback	Reproducción
+Resetează combinația: %@	Reset shortcut: %@	Restablecer combinación: %@
+Resetează toate	Reset all	Restablecer todo
+Revine la combinația implicită	Returns to the default shortcut	Vuelve a la combinación predeterminada
+Selectare	Select	Seleccionar
+Unelte	Tools	Herramientas
+Vizualizare	View	Visualización
+Volum: dublu-clic pe un element cu sunet adaugă un punct de volum; trage punctele pentru timp și nivel; Delete le șterge; Esc revine la Selectare	Volume: double-click an item with sound to add a volume point; drag points for time and level; Delete removes them; Esc returns to Select	Volumen: doble clic en un elemento con sonido añade un punto de volumen; arrastra los puntos para tiempo y nivel; Supr los elimina; Esc vuelve a Seleccionar
+Îngheață cadrul de la cursor	Freeze the frame at the playhead	Congelar el fotograma en el cursor
+Înlocuiește	Replace	Reemplazar
+Arată/ascunde biblioteca	Show/hide the library	Mostrar/ocultar la biblioteca
+Arată/ascunde inspectorul	Show/hide the inspector	Mostrar/ocultar el inspector
+Piste mai înalte	Taller tracks	Pistas más altas
+Piste mai joase	Shorter tracks	Pistas más bajas
+Marcaj la cursor (tastă simplă)	Marker at the playhead (single key)	Marcador en el cursor (tecla simple)
+In la cursor (tastă simplă)	In at the playhead (single key)	Entrada en el cursor (tecla simple)
+Out la cursor (tastă simplă)	Out at the playhead (single key)	Salida en el cursor (tecla simple)
+Unealta Selectare (alternativ)	Select tool (alternative)	Herramienta Seleccionar (alternativa)
+Unealta Volum (automatizare)	Volume tool (automation)	Herramienta Volumen (automatización)
+Înapoi la Selectare	Back to Select	Volver a Seleccionar
+Magnetism (snapping)	Snapping	Imán (snapping)
+Redă / pauză	Play / pause	Reproducir / pausa
+Șterge cheia selectată	Delete the selected keyframe	Eliminar el fotograma clave seleccionado
+Fade-in până la cursor	Fade-in up to the playhead	Fundido de entrada hasta el cursor
+Fade-out de la cursor	Fade-out from the playhead	Fundido de salida desde el cursor
+Inspector: Video	Inspector: Video	Inspector: Vídeo
+Inspector: Sunet	Inspector: Sound	Inspector: Sonido
+Inspector: Timp	Inspector: Time	Inspector: Tiempo
+Inspector: Cursor	Inspector: Cursor	Inspector: Cursor
+Chei	Keyframes	Fotogramas clave
+Arată comenzile de tastă	Show key commands	Mostrar los comandos de teclado
+Arată, ca tastă pe ecran, comenzile înregistrate (de exemplu ⌘K), în partea de jos a imaginii; apare și în export	Shows the recorded commands (for example ⌘K) as on-screen keys at the bottom of the picture; it also appears in the export	Muestra los comandos grabados (por ejemplo ⌘K) como teclas en pantalla, en la parte inferior de la imagen; también aparece en la exportación
+Comenzi de tastă	Key commands	Comandos de teclado
+Doar combinațiile cu ⌘, ⌃ sau ⌥ și tastele funcționale, doar cât înregistrezi; textul tastat nu se citește	Only combinations with ⌘, ⌃ or ⌥ and function keys, only while you record; typed text is not read	Solo las combinaciones con ⌘, ⌃ o ⌥ y las teclas de función, solo mientras grabas; el texto escrito no se lee
+Doar comenzile (de exemplu ⌘K) și tastele funcționale, doar cât ține înregistrarea, ca să le poți arăta în editor. Textul scris, parolele și tastele simple nu se citesc și nu se salvează; cere permisiunea de sistem Monitorizare intrare și nimic nu pornește la deschiderea aplicației.	Only commands (for example ⌘K) and function keys, only while the recording lasts, so you can show them in the editor. Typed text, passwords and plain keys are not read or saved; it asks for the system Input Monitoring permission and nothing starts when the app opens.	Solo los comandos (por ejemplo ⌘K) y las teclas de función, solo mientras dura la grabación, para poder mostrarlos en el editor. El texto escrito, las contraseñas y las teclas simples no se leen ni se guardan; pide el permiso del sistema Supervisión de entrada y nada se inicia al abrir la app.
+Doar comenzile salvate la înregistrare; nu există text tastat.	Only the commands saved at recording time; there is no typed text.	Solo los comandos guardados al grabar; no hay texto escrito.
+Salvează comenzile de tastatură	Save keyboard commands	Guardar los comandos de teclado
+Doar combinațiile cu ⌘, ⌃ sau ⌥ și tastele funcționale, doar cât înregistrezi; celelalte taste sunt ignorate pe loc și nu se păstrează	Only combinations with ⌘, ⌃ or ⌥ and function keys, only while you record; other keys are ignored on the spot and not kept	Solo las combinaciones con ⌘, ⌃ o ⌥ y las teclas de función, solo mientras grabas; las demás teclas se ignoran al instante y no se conservan
+Doar comenzile (de exemplu ⌘K) și tastele funcționale, doar cât ține înregistrarea, ca să le poți arăta în editor. Sistemul trimite aplicației toate apăsările de taste cât ține înregistrarea; fiecare e clasificată pe loc și se păstrează doar eticheta unei comenzi — textul scris și tastele simple se aruncă și nu ajung în niciun fișier. Cât timp un câmp securizat (parolă) cere Secure Input, sistemul nu trimite taste și nu se salvează nimic. Cere permisiunea Monitorizare intrare; nimic nu pornește la deschiderea aplicației.	Only commands (for example ⌘K) and function keys, only while the recording lasts, so you can show them in the editor. The system sends the app every key press while recording; each is classified on the spot and only the label of a command is kept — typed text and plain keys are discarded and never reach any file. While a secure field (password) asks for Secure Input, the system sends no keys and nothing is saved. It asks for the Input Monitoring permission; nothing starts when the app opens.	Solo los comandos (por ejemplo ⌘K) y las teclas de función, solo mientras dura la grabación, para poder mostrarlos en el editor. El sistema envía a la app todas las pulsaciones mientras se graba; cada una se clasifica al instante y solo se conserva la etiqueta de un comando: el texto escrito y las teclas simples se descartan y nunca llegan a ningún archivo. Mientras un campo seguro (contraseña) pide Secure Input, el sistema no envía teclas y no se guarda nada. Pide el permiso Supervisión de entrada; nada se inicia al abrir la app.

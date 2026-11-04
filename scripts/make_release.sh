@@ -5,12 +5,14 @@
 # Environment: SADROG_BUILD_DIR (default external build folder), NOTARY_PROFILE (default gdc-notary, a Keychain profile).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-EXT="${SADROG_BUILD_DIR:-$HOME/sadrog-build}"
-mkdir -p "$EXT" 2>/dev/null; [ -w "$EXT" ] || { echo "Build folder not writable: set SADROG_BUILD_DIR"; exit 2; }
+EXT="${SADROG_BUILD_DIR:-/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG}"
+[ -w "$EXT" ] || { echo "EXTERNAL TEST STORAGE NOT AVAILABLE"; exit 2; }
 ID="${SADROG_SIGN_IDENTITY:-Developer ID Application: DUMITRU CRISTINEL GORDAS (8AR6XP8MG7)}"
 PROFILE="${NOTARY_PROFILE:-gdc-notary}"
 cd "$ROOT"
 [ -z "$(git status --porcelain)" ] || { echo "Arborele are modificări necomise: un release corespunde unui commit."; exit 3; }
+# Documentation gate (docs/DOCUMENTATION_POLICY.md): translations, generated pages + PDFs, links, price rule, changelog Docs: line, recorded review.
+python3 "$ROOT/scripts/docs_check.py" || { echo "Poarta documentației a refuzat release-ul: materialele afectate lipsesc sau sunt neactualizate."; exit 7; }
 VER=$(grep -m1 'version = ' Sources/SadrogCore/AppInfo.swift | sed 's/.*"\(.*\)".*/\1/')
 OUT="$EXT/dist/$VER"; mkdir -p "$OUT"
 case "${1:-}" in

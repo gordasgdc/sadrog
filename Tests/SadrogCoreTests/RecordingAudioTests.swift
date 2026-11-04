@@ -16,7 +16,7 @@ final class RecordingAudioTests: XCTestCase {
     /// These expectations are the Romanian source texts; the interface language is pinned so the run does not depend on the Mac's language.
     override func setUp() { super.setUp(); UserDefaults.standard.set("ro", forKey: "sadrog.language") }
     override func tearDown() { UserDefaults.standard.removeObject(forKey: "sadrog.language"); super.tearDown() }
-    static let probes = "\(TestRoot.path)/evidence/capture_probes"
+    static let probes = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/evidence/capture_probes"
     static let c5 = probes + "/C5/SADROG-6C7145EC-CD59-44A8-875E-758B8E931335/capture.mov"
     static let c4 = probes + "/C4/SADROG-5EA2BB6B-993F-4EE5-AB6C-E99D881E81ED/capture.mov"
     func need(_ p: String) throws { try XCTSkipUnless(FileManager.default.fileExists(atPath: p), "probe recording not available") }
@@ -119,7 +119,7 @@ final class RecordingAudioTests: XCTestCase {
             return x
         }
         func db(_ x: ArraySlice<Float>) -> Double { 10 * log10(x.reduce(0.0) { $0 + Double($1 * $1) } / Double(max(1, x.count)) + 1e-24) }
-        let dir = "\(TestRoot.path)/temp"
+        let dir = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp"
         var p = SadrogProject(name: "t", clips: [Clip(media: Self.c5, sourceStart: 10, duration: 4)])
         func export(_ muted: Set<Int>, _ mode: ExportMode = .reencode(preset: AVAssetExportPresetHighestQuality)) async throws -> [Float] {
             p.mutedSources = muted

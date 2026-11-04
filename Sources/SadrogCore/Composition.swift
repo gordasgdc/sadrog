@@ -8,6 +8,8 @@ public struct BuiltComposition {
     public let composition: AVMutableComposition
     public let renderSize: CGSize
     let frameDuration: CMTime
+    /// Time-pitch algorithm for retimed sound (see `Retime.pitchAlgorithm`); set by `buildFull`.
+    public var pitch: AVAudioTimePitchAlgorithm = .spectral
     let mainTrack: AVMutableCompositionTrack?
     let mainTrackB: AVMutableCompositionTrack?                // second main video track, only when a cross-dissolve makes two clips overlap
     /// One composition track per audio track of the main recordings (index = track in the file: system sound, microphone, input channels…).
@@ -43,7 +45,8 @@ public struct BuiltComposition {
                 let tid = lanes[i] == 1 ? (mainTrackB ?? mt).trackID : mt.trackID
                 var mi = Item(source: .track(tid, n), start: acc, duration: c.duration, a: c.transform, b: c.endTransform, fit: true, crop: c.crop.map { CircleCropRender($0, source: n) }, rect: c.crop == nil ? c.rectCrop : nil)
                 mi.motion = c.motion; mi.dissolveIn = p.overlap(into: i); mi.guide = framingGuide == c.id && c.crop != nil
-                if let fx = c.mouseFX, !fx.isOff, !c.held, let tr = mouseTracks[c.media] ?? MouseTrack.load(besideMedia: c.media) { mi.mouse = (tr, c.sourceStart, fx) }
+                if let fx = c.mouseFX, !fx.isOff, !c.held, let tr = mouseTracks[c.media] ?? MouseTrack.load(besideMedia: c.media) { mi.mouse = (tr, c.sourceStart, c.speed, fx) }
+                if c.keyFX?.show ?? false, !c.held, let kt = KeyTrack.load(besideMedia: c.media) { mi.keys = (kt, c.sourceStart, c.speed) }
                 items.append(mi)
             }
         }
@@ -102,7 +105,7 @@ public struct BuiltComposition {
     public func audioMix(for p: SadrogProject, selection: MixSelection) -> AVMutableAudioMix? {
         // One volume timeline per composition track, built from the items placed on it: level × fade envelope. No normalisation,
         // no limiter — sources that add up above full scale can clip; the editor shows a conservative estimate instead.
-        struct Seg { var start: Double, duration: Double, level: Float, fadeIn: Double, fadeOut: Double }
+        struct Seg { var start: Double, duration: Double, level: Float, fadeIn: Double, fadeOut: Double; var env: AudioEnvelope? = nil }
         var lines: [(AVMutableCompositionTrack, [Seg])] = []
         var clipSegs: [(lane: Int, media: String, seg: Seg)] = []
         let spans = p.clipSpans, lanes = p.clipLanes
@@ -110,7 +113,14 @@ public struct BuiltComposition {
             let f = (c.audio ?? AudioEdit()).effectiveFades(duration: c.duration)
             // a cross-dissolve crossfades the sound over the same span as the picture: the outgoing clip fades out, the incoming one fades in
             let fin = max(f.fadeIn, p.overlap(into: i)), fout = max(f.fadeOut, i + 1 < p.clips.count ? p.overlap(into: i + 1) : 0)
-            clipSegs.append((lanes[i], c.media, Seg(start: spans[i].start, duration: c.duration, level: 1, fadeIn: fin, fadeOut: fout)))
+            var seg = Seg(start: spans[i].start, duration: c.duration, level: 1, fadeIn: fin, fadeOut: fout)
+            // volume curve, shaped fades or a shaped dissolve crossfade: the envelope describes the clip; otherwise the original straight-fade keyframes are written
+            var env = (c.audio ?? AudioEdit()).envelope(duration: c.duration)
+            let oi = p.overlap(into: i), oo = i + 1 < p.clips.count ? p.overlap(into: i + 1) : 0
+            if oi > 0, !c.dissolveShape.isLegacy { env.xIn = (oi, c.dissolveShape) }
+            if oo > 0, !p.clips[i + 1].dissolveShape.isLegacy { env.xOut = (oo, p.clips[i + 1].dissolveShape) }
+            if !env.isLegacy { seg.env = env }
+            clipSegs.append((lanes[i], c.media, seg))
         }
         // master applies to the full mix only; a stem renders its own source alone, every other track silent
         let master: Float = selection == .all ? SadrogProject.linear(dB: p.masterGainDB) : 1
@@ -126,15 +136,20 @@ public struct BuiltComposition {
         }
         for l in p.layers where l.kind == .audio {
             let e = l.audio ?? AudioEdit(), f = e.effectiveFades(duration: l.duration)
+            var env = e.envelope(duration: l.duration)
+            // crossfade with the item that plays before / after: a real overlap, complementary gains on the two tracks
+            let xs = p.crossfadeSeconds(l)
+            if xs > 0, let link = e.crossfade { env.xIn = (xs, link.shape) }
+            if let inc = p.layers.first(where: { $0.kind == .audio && $0.audio?.crossfade?.outgoing == l.id && p.crossfadeSeconds($0) > 0 }), let link = inc.audio?.crossfade { env.xOut = (p.crossfadeSeconds(inc), link.shape) }
             let linked = l.keepsSource      // sound detached from a clip keeps the identity of its recording source: its stem, volume and mute
             for (k, t) in (layerAudio[l.id] ?? []).enumerated() {
                 let sel = linked ? selection.includes(media: l.media, track: k) : (selection == .all || selection == .a2)
                 let src: Float = linked ? (p.isMuted(source: k, media: l.media) ? 0 : SadrogProject.linear(dB: p.gain(ofSource: k, media: l.media))) : 1
                 let lv: Float = !sel || p.mutedLanes.contains(.a2) || e.muted ? 0 : SadrogProject.linear(dB: e.gainDB) * src * master
-                lines.append((t, [Seg(start: l.start, duration: l.duration, level: lv, fadeIn: f.fadeIn, fadeOut: f.fadeOut)]))
+                lines.append((t, [Seg(start: l.start, duration: l.duration, level: lv, fadeIn: f.fadeIn, fadeOut: f.fadeOut, env: env.isLegacy && env.xIn == nil && env.xOut == nil ? nil : env)]))
             }
         }
-        let neutral = lines.allSatisfy { $0.1.allSatisfy { $0.level == 1 && $0.fadeIn == 0 && $0.fadeOut == 0 } }
+        let neutral = lines.allSatisfy { $0.1.allSatisfy { $0.level == 1 && $0.fadeIn == 0 && $0.fadeOut == 0 && $0.env == nil } }
         guard lines.count > 1 || !neutral || selection != .all else { return nil }
         func ct(_ s: Double) -> CMTime { CMTime(seconds: s, preferredTimescale: 48000) }
         let tick = 1.0 / 48000
@@ -143,8 +158,20 @@ public struct BuiltComposition {
             let ip = AVMutableAudioMixInputParameters(track: t)
             // before the first item the volume would default to 1: the mixer works in blocks, so a block straddling an item that starts
             // with a fade-in played its first ~50 ms at full level (click found 2026-10-29). Pin the level explicitly from time 0.
-            if let f = segs.first, f.start > 0 { ip.setVolume(f.fadeIn > 0 ? 0 : f.level, at: .zero) }
+            if let f = segs.first, f.start > 0 { ip.setVolume(f.env.map { Float($0.gain(at: 0)) * f.level } ?? (f.fadeIn > 0 ? 0 : f.level), at: .zero) }
             for s in segs {
+                if let env = s.env {          // shaped envelope: amplitude ramps between breakpoints, scaled by the item level
+                    let bp = env.breakpoints(); var prev = (t: bp[0].t, v: Float(bp[0].g) * s.level)
+                    ip.setVolume(prev.v, at: ct(s.start + prev.t))
+                    for q in bp.dropFirst() {
+                        let v = Float(q.g) * s.level
+                        if abs(v - prev.v) < 1e-6 { if q.t - prev.t > 2 * tick, q.t < env.duration - 2 * tick { ip.setVolume(v, at: ct(s.start + q.t)) } }
+                        else { ip.setVolumeRamp(fromStartVolume: prev.v, toEndVolume: v, timeRange: CMTimeRange(start: ct(s.start + prev.t), duration: ct(q.t - prev.t))) }
+                        prev = (q.t, v)
+                    }
+                    if prev.t < env.duration - 2 * tick { ip.setVolume(prev.v, at: ct(s.start + env.duration - tick)) }
+                    continue
+                }
                 if s.fadeIn > 0 { ip.setVolumeRamp(fromStartVolume: 0, toEndVolume: s.level, timeRange: CMTimeRange(start: ct(s.start), duration: ct(s.fadeIn))) }
                 else { ip.setVolume(s.level, at: ct(s.start)) }
                 // The mixer interpolates linearly between consecutive keyframes. A level change from one item to the next (two recordings
@@ -172,7 +199,8 @@ final class SadrogInstruction: NSObject, AVVideoCompositionInstructionProtocol {
         let start: Double, duration: Double          // timeline seconds
         let a: Transform, b: Transform?
         var motion: Motion? = nil
-        var mouse: (track: MouseTrack, sourceStart: Double, fx: MouseFX)? = nil     // main track: pointer effects drawn in the picture's own space (so they follow zoom and animation)
+        var keys: (track: KeyTrack, sourceStart: Double, speed: Double)? = nil     // main track: key commands drawn as keycaps in the picture's own space
+        var mouse: (track: MouseTrack, sourceStart: Double, speed: Double, fx: MouseFX)? = nil     // main track: pointer effects drawn in the picture's own space (so they follow zoom and animation)
         var dissolveIn = 0.0                    // main track: the item fades in over this many seconds on top of the previous clip (cross-dissolve)
         let fit: Bool
         var crop: CircleCropRender? = nil       // „Prezentator în cerc”: the picture is cut to a circle (+ outline) before it is placed
@@ -267,6 +295,38 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
         return out.cropped(to: rect)
     }
 
+
+    /// Key commands as rounded keycaps at the bottom centre of the source picture (CoreText → CGImage → CoreImage, y-up): same code for preview and export.
+    static func drawKeys(_ track: KeyTrack, at t: Double, on img: CIImage, size n: CGSize) -> CIImage {
+        let vis = track.visible(at: t)
+        guard !vis.isEmpty, n.width > 8, n.height > 8 else { return img }
+        let fs = max(12, 0.045 * n.height), pad = fs * 0.55, gap = fs * 0.4
+        var out = img, y = 0.07 * n.height
+        for item in vis.reversed() {                        // newest at the bottom, older ones above
+            let fade = item.age < 0.75 ? 1 : max(0, 1 - (item.age - 0.75) / 0.25)
+            guard let cap = keycap(item.label, fontSize: fs, padding: pad) else { continue }
+            let w = CGFloat(cap.width), h = CGFloat(cap.height)
+            var ci = CIImage(cgImage: cap)
+            if fade < 1 { ci = ci.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: fade)]) }
+            out = ci.transformed(by: CGAffineTransform(translationX: (n.width - w) / 2, y: y)).composited(over: out)
+            y += h + gap
+        }
+        return out.cropped(to: CGRect(origin: .zero, size: n))
+    }
+    static func keycap(_ text: String, fontSize: CGFloat, padding: CGFloat) -> CGImage? {
+        let font = CTFontCreateWithName("Helvetica Neue Bold" as CFString, fontSize, nil)
+        let attr = NSAttributedString(string: text, attributes: [.font: font, .foregroundColor: CGColor(red: 1, green: 1, blue: 1, alpha: 1)])
+        let line = CTLineCreateWithAttributedString(attr), tb = CTLineGetBoundsWithOptions(line, [])
+        let w = Int(ceil(tb.width + padding * 2)), h = Int(ceil(fontSize + padding * 1.2))
+        guard w > 0, h > 0, let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        let r = CGRect(x: 0, y: 0, width: w, height: h), path = CGPath(roundedRect: r, cornerWidth: CGFloat(h) * 0.28, cornerHeight: CGFloat(h) * 0.28, transform: nil)
+        ctx.addPath(path); ctx.setFillColor(CGColor(red: 0.08, green: 0.09, blue: 0.1, alpha: 0.82)); ctx.fillPath()
+        ctx.addPath(path); ctx.setStrokeColor(CGColor(red: 1, green: 1, blue: 1, alpha: 0.35)); ctx.setLineWidth(max(1, fontSize * 0.05)); ctx.strokePath()
+        ctx.textPosition = CGPoint(x: padding - tb.minX, y: (CGFloat(h) - fontSize) / 2 + fontSize * 0.22)
+        CTLineDraw(line, ctx)
+        return ctx.makeImage()
+    }
+
     func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
         guard let ins = request.videoCompositionInstruction as? SadrogInstruction, let out = request.renderContext.newPixelBuffer() else {
             request.finish(with: NSError(domain: "SADROG", code: 1)); return
@@ -274,6 +334,7 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
         let r = request.renderContext.size, rect = CGRect(origin: .zero, size: r), now = request.compositionTime.seconds
         var img = CIImage(color: CIColor(red: 0, green: 0, blue: 0)).cropped(to: rect)
         func flip(_ h: CGFloat) -> CGAffineTransform { CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: h) }
+        var keyLabels: (track: KeyTrack, at: Double)?
         var footprints: [UUID: CIImage] = [:]           // overlay id → white where that overlay's picture is (alpha), for callouts bound to it
         for it in ins.items {
             var src: CIImage; let n: CGSize; var guideSrc: CIImage?
@@ -298,7 +359,8 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
                 else { src = CIImage(cvPixelBuffer: pb); n = size }
             case .image(let image, let size): src = image; n = size
             }
-            if let mo = it.mouse { src = Self.drawPointer(mo.track, fx: mo.fx, at: mo.sourceStart + (now - it.start), on: src, size: n) }
+            if let mo = it.mouse { src = Self.drawPointer(mo.track, fx: mo.fx, at: mo.sourceStart + (now - it.start) * mo.speed, on: src, size: n) }
+            if let ky = it.keys, now >= it.start, now < it.start + it.duration { keyLabels = (ky.track, ky.sourceStart + (now - it.start) * ky.speed) }       // drawn last, in screen space: never zoomed, cropped or dimmed
             var t = Transform.state(start: it.a, end: it.b, motion: it.motion, elapsed: now - it.start, duration: it.duration)
             let m = flip(n.height).concatenating(BuiltComposition.matrix(natural: n, render: r, t, fit: it.fit)).concatenating(flip(r.height))
             var placed = src.transformed(by: m)
@@ -314,6 +376,7 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
             }
             img = placed.composited(over: img)
         }
+        if let kl = keyLabels { img = Self.drawKeys(kl.track, at: kl.at, on: img, size: r) }
         ci.render(img.cropped(to: rect), to: out, bounds: rect, colorSpace: nil)
         request.finish(withComposedVideoFrame: out)
     }
@@ -419,7 +482,9 @@ public enum CompositionBuilder {
         for (ci, c) in p.clips.enumerated() {
             let cursor = CMTime(seconds: starts[ci], preferredTimescale: 6000), vt = lanes[ci] == 1 ? vTrackB : vTrack, lane = lanes[ci]
             let asset = AVURLAsset(url: URL(fileURLWithPath: c.media))
-            let range = CMTimeRange(start: CMTime(seconds: c.sourceStart, preferredTimescale: 6000), duration: CMTime(seconds: c.duration, preferredTimescale: 6000))
+            let range = CMTimeRange(start: CMTime(seconds: c.sourceStart, preferredTimescale: 6000), duration: CMTime(seconds: c.sourceSpan, preferredTimescale: 6000))
+            let slot = CMTimeRange(start: cursor, duration: CMTime(seconds: c.duration, preferredTimescale: 6000))       // the clip's place on the timeline; a retimed clip stretches its source range into it
+            let retimed = !c.held && c.speed != 1
             if let v = try await asset.loadTracks(withMediaType: .video).first {
                 if c.held {      // freeze frame: the same source frame laid end to end, one frame at a time (a stretched single frame makes the encoder fail)
                     let nfr = Double(try await v.load(.nominalFrameRate)); let fr = nfr >= 1 ? 1 / nfr : 1.0 / 30
@@ -430,12 +495,15 @@ public enum CompositionBuilder {
                         try vt?.insertTimeRange(one, of: v, at: at)
                         if one.duration != step { vt?.scaleTimeRange(CMTimeRange(start: at, duration: one.duration), toDuration: step) }
                     }
-                } else { try vt?.insertTimeRange(range, of: v, at: cursor) }
+                } else {
+                    try vt?.insertTimeRange(range, of: v, at: cursor)
+                    if retimed { vt?.scaleTimeRange(CMTimeRange(start: cursor, duration: range.duration), toDuration: slot.duration) }
+                }
                 let size = try await v.load(.naturalSize); mainSize[c.id] = size; if padSource == nil { padSource = v; padAsset = asset }
                 if render == .zero { render = size; fps = try await v.load(.nominalFrameRate) }
             }
             // every audio track takes the SAME source range as the picture: each keeps its own start offset from the file, so sync is preserved
-            for (k, a) in (c.held || c.audioDetached ? [] : try await asset.loadTracks(withMediaType: .audio)).enumerated() {
+            for (k, a) in (c.held || c.audioDetached || (retimed && c.speedMute) ? [] : try await asset.loadTracks(withMediaType: .audio)).enumerated() {
                 let key = k + lane * BuiltComposition.laneStride       // the incoming clip of a dissolve plays on its own set of audio tracks
                 if aTracks[key] == nil { aTracks[key] = comp.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) }
                 var src = a
@@ -445,18 +513,20 @@ public enum CompositionBuilder {
                     src = pt
                 }
                 try aTracks[key]?.insertTimeRange(range, of: src, at: cursor)
+                if retimed { aTracks[key]?.scaleTimeRange(CMTimeRange(start: cursor, duration: range.duration), toDuration: slot.duration) }
             }
         }
         var layerTracks: [UUID: (AVMutableCompositionTrack, CGSize)] = [:]
         var layerAudio: [UUID: [AVMutableCompositionTrack]] = [:]
         for l in p.layers {
             let asset = AVURLAsset(url: URL(fileURLWithPath: l.media))
-            let range = CMTimeRange(start: CMTime(seconds: l.sourceStart, preferredTimescale: 6000), duration: CMTime(seconds: l.duration, preferredTimescale: 6000))
-            let at = CMTime(seconds: l.start, preferredTimescale: 6000)
+            let range = CMTimeRange(start: CMTime(seconds: l.sourceStart, preferredTimescale: 6000), duration: CMTime(seconds: l.sourceSpan, preferredTimescale: 6000))
+            let at = CMTime(seconds: l.start, preferredTimescale: 6000), slot = CMTimeRange(start: at, duration: CMTime(seconds: l.duration, preferredTimescale: 6000)), lRetimed = l.speed != 1
             switch l.kind {
             case .video:
                 guard let v = try await asset.loadTracks(withMediaType: .video).first, let t = comp.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else { continue }
                 try t.insertTimeRange(range, of: v, at: at)
+                if lRetimed { t.scaleTimeRange(CMTimeRange(start: at, duration: range.duration), toDuration: slot.duration) }
                 let size = try await v.load(.naturalSize); layerTracks[l.id] = (t, size)
                 if render == .zero { render = size; fps = try await v.load(.nominalFrameRate) }
             case .audio:
@@ -469,6 +539,7 @@ public enum CompositionBuilder {
                         src = pt
                     }
                     try t.insertTimeRange(range, of: src, at: at); layerAudio[l.id, default: []].append(t)
+                    if lRetimed { t.scaleTimeRange(CMTimeRange(start: at, duration: range.duration), toDuration: slot.duration) }
                 }
             }
         }
@@ -483,7 +554,9 @@ public enum CompositionBuilder {
             _ = padAsset; let d = min(0.1, need, src.timeRange.duration.seconds)
             try pad.insertTimeRange(CMTimeRange(start: src.timeRange.start, duration: CMTime(seconds: d, preferredTimescale: 6000)), of: src, at: CMTime(seconds: need - d, preferredTimescale: 6000))
         }
-        return BuiltComposition(composition: comp, renderSize: render, frameDuration: CMTime(value: 1, timescale: CMTimeScale(max(1, min(120, Int((fps > 1 ? fps : 30).rounded()))))), mainTrack: vTrack, mainTrackB: vTrackB, mainAudio: aTracks, mainSize: mainSize, layerTracks: layerTracks, layerAudio: layerAudio, sourceFps: Double(sourceFps))
+        var built = BuiltComposition(composition: comp, renderSize: render, frameDuration: CMTime(value: 1, timescale: CMTimeScale(max(1, min(120, Int((fps > 1 ? fps : 30).rounded()))))), mainTrack: vTrack, mainTrackB: vTrackB, mainAudio: aTracks, mainSize: mainSize, layerTracks: layerTracks, layerAudio: layerAudio, sourceFps: Double(sourceFps))
+        built.pitch = Retime.pitchAlgorithm(for: p)
+        return built
     }
 }
 
@@ -510,6 +583,7 @@ public enum ProjectExporter {
         // passthrough copies the streams as they are: it can neither composite nor apply a mute, so either forces a re-encode
         let preset: String = { if case .reencode(let n) = mode { return n } else { return vc == nil && mix == nil ? AVAssetExportPresetPassthrough : AVAssetExportPresetHighestQuality } }()
         guard let s = AVAssetExportSession(asset: built.composition, presetName: preset) else { throw CocoaError(.fileWriteUnknown) }
+        s.audioTimePitchAlgorithm = built.pitch
         if let vc { s.videoComposition = vc }
         if let mix { s.audioMix = mix }
         if let range { s.timeRange = CMTimeRange(start: CMTime(seconds: range.lowerBound, preferredTimescale: 6000), end: CMTime(seconds: range.upperBound, preferredTimescale: 6000)) }

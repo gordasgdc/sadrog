@@ -75,6 +75,8 @@ struct StartView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in if m.phase == .idle { Task { await m.refresh() } } }
         .onChange(of: page) { _, p in if p != .record { m.leaveContext() } }    // preview / identify / meters belong to the capture page only
         .onDisappear { m.leaveContext() }
+        // the recording that just ended outside a document asks where it goes — a sheet, so it cannot be missed (Esc = keep only the recording)
+        .sheet(isPresented: Binding(get: { m.finished != nil && m.addTarget == nil }, set: { if !$0 { m.dismissFinished() } })) { finishedCard.background(Theme.C.bg1) }
     }
 
     // MARK: sidebar
@@ -147,18 +149,17 @@ struct StartView: View {
                 }
                 row(T("Nume document")) { AppTextField(placeholder: T("Nume"), text: $m.finishName).frame(maxWidth: 320) }
                 HStack(spacing: 8) {
-                    Button(T("Document nou cu această înregistrare")) { Task { await m.finishIntoNewDocument() } }.buttonStyle(.gloss(.primary, compact: true))
+                    Button(T("Creează document și deschide")) { Task { await m.finishIntoNewDocument() } }.buttonStyle(.gloss(.primary, compact: true)).keyboardShortcut(.defaultAction)
+                        .help(T("Creează un document cu acest nume, pune înregistrarea la început și îl deschide în editor; înregistrarea rămâne și în folderul ei"))
                     Menu(T("Adaugă la un proiect existent")) {
                         ForEach(Array(m.documents.prefix(8).enumerated()), id: \.element.folder) { _, d in Button(d.name) { Task { await m.finishIntoProject(d.folder) } } }
                         if !m.documents.isEmpty { Divider() }
                         Button(T("Alt proiect…")) { Task { await m.finishIntoOtherProject() } }
                     }.menuStyle(.borderlessButton).fixedSize()
                     Spacer()
-                    Button(T("Păstrează în Recente")) { m.dismissFinished() }.buttonStyle(.gloss(.ghost, compact: true)).help(T("Înregistrarea rămâne pe disc; o găsești în Recente"))
+                    Button(T("Păstrează doar înregistrarea")) { m.dismissFinished() }.keyboardShortcut(.cancelAction).buttonStyle(.gloss(.ghost, compact: true)).help(T("Nu se creează niciun document; înregistrarea rămâne pe disc și o găsești în Recente"))
                 }
-            }.padding(.horizontal, 12).padding(.vertical, 10)
-            .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(Theme.C.ok.opacity(0.08)))
-            .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous).strokeBorder(Theme.C.ok.opacity(0.25), lineWidth: 0.7))
+            }.padding(22).frame(width: 560)
         }
     }
 
@@ -172,7 +173,6 @@ struct StartView: View {
                     HStack(alignment: .top, spacing: 12) { recordTitle(); permissionChip }
                     VStack(alignment: .leading, spacing: 8) { recordTitle(compact: true); permissionChip }
                 }
-                finishedCard
                 if !m.hasPermission { Notice(symbol: "lock.shield", text: T("Lipsește permisiunea „Înregistrare ecran”."), action: T("Permisiuni…")) { page = .permissions } }
                 else if !act.allowsRecordAndExport { Notice(symbol: "key", text: T("Înregistrarea și exportul cer activare. Editarea rămâne liberă."), action: T("Activare")) { page = .activation } }
                 sourcesSection
@@ -508,7 +508,7 @@ struct StartView: View {
                 VStack(spacing: 0) {
                     ForEach(Array(m.editable.enumerated()), id: \.element.journal.id) { i, e in
                         if i > 0 { HairlineDivider().opacity(0.6) }
-                        recentRow(symbol: "film", title: L10n.date(e.journal.startedAt), detail: L10n.f("fișier captură %@×%@ px", "\(e.journal.width)", "\(e.journal.height)"), tag: e.journal.state == .recovered ? T("recuperată") : nil) { Task { await m.openEditor(e) } }
+                        recentRow(symbol: "film", title: L10n.date(e.journal.startedAt), detail: L10n.f("fișier captură %@×%@ px", "\(e.journal.width)", "\(e.journal.height)"), tag: e.journal.state == .recovered ? T("recuperată") : nil, folder: e.folder, reveal: e.folder) { Task { await m.openEditor(e) } }
                     }
                 }
             }
@@ -523,20 +523,35 @@ struct StartView: View {
                 VStack(spacing: 0) {
                     ForEach(Array(m.documents.enumerated()), id: \.element.folder) { i, d in
                         if i > 0 { HairlineDivider().opacity(0.6) }
-                        recentRow(symbol: "doc", title: d.name, detail: L10n.date(d.date), tag: nil) { Task { await m.openDocument(d.folder) } }
+                        recentRow(symbol: "doc", title: d.name, detail: L10n.date(d.date), tag: nil, folder: d.folder, reveal: d.folder.appendingPathComponent("project.sadrogproj")) { Task { await m.openDocument(d.folder) } }
                     }
                 }
             }
         }
     }
-    private func recentRow(symbol: String, title: String, detail: String, tag: String?, open: @escaping () -> Void) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: symbol).foregroundStyle(Theme.C.textDim).frame(width: 18)
-            VStack(alignment: .leading, spacing: 1) { Text(title).font(Theme.F.body); Text(detail).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint) }
+    private func recentRow(symbol: String, title: String, detail: String, tag: String?, folder: URL, reveal: URL, open: @escaping () -> Void) -> some View {
+        let exists = FileManager.default.fileExists(atPath: reveal.path)
+        return HStack(spacing: 10) {
+            Image(systemName: exists ? symbol : "questionmark.folder").foregroundStyle(Theme.C.textDim).frame(width: 18)
+            VStack(alignment: .leading, spacing: 1) { Text(title).font(Theme.F.body); Text(exists ? detail : T("Lipsește de pe disc — a fost mutat sau șters. «Arată în Finder» nu îl poate arăta (deschide doar un folder părinte); «Localizează…» îl caută.")).font(Theme.F.caption).foregroundStyle(exists ? Theme.C.textFaint : Theme.C.warn).fixedSize(horizontal: false, vertical: true) }
             if let tag { Chip(text: tag, tone: .warn) }
             Spacer()
-            Button(T("Deschide")) { open() }.buttonStyle(.gloss(.secondary, compact: true))
+            Button(T("Deschide")) { open() }.buttonStyle(.gloss(.secondary, compact: true)).disabled(!exists).help(exists ? "" : T("Fișierul lipsește de pe disc"))
+            Menu {
+                Button(T("Deschide")) { open() }.disabled(!exists)
+                Button(T("Arată în Finder")) { m.revealInFinder(reveal) }
+                if !exists && reveal.lastPathComponent == "project.sadrogproj" { Button(T("Localizează…")) { Task { await m.relocateDocument(missing: folder) } } }
+                Divider()
+                Button(T("Elimină din Recente")) { m.removeFromRecent(folder) }
+            } label: { Image(systemName: "ellipsis.circle").frame(width: 24, height: 22).contentShape(Rectangle()) }
+                .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+                .help(T("Mai multe: Arată în Finder, Elimină din Recente (nu șterge fișierele)")).accessibilityLabel(T("Acțiuni pentru intrarea din Recente"))
         }.padding(.vertical, 7)
+        .contextMenu {
+            Button(T("Deschide")) { open() }.disabled(!exists)
+            Button(T("Arată în Finder")) { m.revealInFinder(reveal) }
+            Button(T("Elimină din Recente")) { m.removeFromRecent(folder) }
+        }
     }
 
     // MARK: permissions page

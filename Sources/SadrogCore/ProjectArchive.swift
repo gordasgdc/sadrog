@@ -44,6 +44,8 @@ public enum ProjectArchive {
                 if fm.fileExists(atPath: manifest.path) { try? fm.copyItem(at: manifest, to: dir.appendingPathComponent(SourcesManifest.fileName)) }
                 let mouse = MouseTrack.url(besideMedia: src)         // the pointer track travels with the recording it belongs to
                 if fm.fileExists(atPath: mouse.path) { try? fm.copyItem(at: mouse, to: dir.appendingPathComponent(MouseTrack.fileName)) }
+                let keys = KeyTrack.url(besideMedia: src)
+                if fm.fileExists(atPath: keys.path) { try? fm.copyItem(at: keys, to: dir.appendingPathComponent(KeyTrack.fileName)) }
                 let win = WindowTrack.url(besideMedia: src)           // so does the front-window track
                 if fm.fileExists(atPath: win.path) { try? fm.copyItem(at: win, to: dir.appendingPathComponent(WindowTrack.fileName)) }
                 map[src] = "Media/\(dirName)/\(url.lastPathComponent)"      // relative: the archive owns its media

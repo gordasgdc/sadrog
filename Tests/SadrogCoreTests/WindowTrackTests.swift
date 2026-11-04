@@ -47,8 +47,8 @@ final class WindowTrackTests: XCTestCase {
         XCTAssertEqual(t.window(at: 9)!.app, "B"); XCTAssertEqual(t.window(at: 9)!.windowID, 2)
     }
     func testSaveLoadNextToTheMediaAndNoTitleIsStored() throws {
-        guard FileManager.default.fileExists(atPath: TestRoot.path) else { throw XCTSkip("external storage") }
-        let dir = URL(fileURLWithPath: "\(TestRoot.path)/temp/win-\(UUID().uuidString)", isDirectory: true)
+        guard FileManager.default.fileExists(atPath: "/Volumes/CristiGordas/TESTE") else { throw XCTSkip("external storage") }
+        let dir = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/win-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true); defer { try? FileManager.default.removeItem(at: dir) }
         let t = WindowTrack(samples: [WindowSample(t: 0, x: 0, y: 0, w: 1, h: 1, app: "Safari", bundleID: "com.apple.Safari", windowID: 3)], syntheticFixture: true)
         try t.save(to: dir)

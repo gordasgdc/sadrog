@@ -31,7 +31,7 @@ enum ExportQuality: String, CaseIterable, Identifiable {
         }
     }
 }
-enum EditTool: Equatable { case select, blade }
+enum EditTool: Equatable { case select, blade, volume }
 enum ClipEdge { case start, end }
 struct MediaInfo {
     var duration: Double; var size: CGSize; var fps: Double; var peaks: [Float]; var poster: NSImage?; var hasVideo = true; var hasAudio = true
@@ -110,6 +110,10 @@ final class EditorModel: ObservableObject {
     @Published var textEditing = false
     /// Selection-drawing tool for callouts: while set, a drag in the viewer DRAWS a selection; while nil, handles move/resize the existing one.
     @Published var drawTool: DrawTool?
+    /// Multiplier on the automatic lane heights (⌃⌥= / ⌃⌥−); remembered between launches.
+    @Published var trackScale: Double = { let v = UserDefaults.standard.double(forKey: "timeline.trackScale"); return v > 0 ? v : 1 }() { didSet { UserDefaults.standard.set(trackScale, forKey: "timeline.trackScale") } }
+    /// Inspector tab asked by a command (⌥1…⌥4); the panel takes it and clears it.
+    @Published var inspectorRequest: InspCat?
     @Published var zoom = 1.0                    // 1 = fit the whole project in the visible width
     @Published var hoverCut: Double?             // blade preview position (timeline seconds)
     @Published var trimPreview: (clip: UUID, edge: ClipEdge, delta: Double)?
@@ -207,13 +211,65 @@ final class EditorModel: ObservableObject {
     var selectedMotion: Motion? { selectedClip?.motion ?? selectedLayer?.motion ?? selectedText?.motion }
     /// Seconds from the start of the selected item (playhead), when strictly inside it (keyframes cannot sit on its edges).
     var keyTimeHere: Double? { let r = time - selectedStart; return r > 0.05 && r < selectedDuration - 0.05 ? r : nil }
+    /// Property whose keys the timeline band shows (nil = every key).
+    @Published var keyBandProp: ProjectEditor.KeyProperty?
     /// Adds a keyframe at the playhead holding the state shown there, and edits it.
-    func addKeyHere() {
-        guard let id = selection, let rel = keyTimeHere, let p = selectedPair else { return }
+    func addKeyHere() { if let rel = keyTimeHere { addKey(at: rel) } }
+    /// Adds a keyframe `rel` seconds into the selected item (inside it, off its edges) holding the state shown there.
+    func addKey(at rel: Double) {
+        guard let id = selection, rel > 0.05, rel < selectedDuration - 0.05, let p = selectedPair else { return }
         var base = selectedMotion ?? Motion(); base.fadeIn = 0; base.fadeOut = 0
         let st = base.state(start: p.0, end: p.1, elapsed: rel, duration: selectedDuration)
         apply(reload: false) { $0.setKey(id, at: rel, st) }
         editingEnd = false; editingKey = selectedMotion?.keys.firstIndex { abs($0.t - rel) < 0.06 }
+    }
+    /// Moves the playhead to the next / previous keyframe of the selected item and selects it.
+    func gotoKey(next: Bool) {
+        guard let ks = selectedMotion?.keys, !ks.isEmpty else { return }
+        let rel = time - selectedStart
+        let order = ks.indices.sorted { ks[$0].t < ks[$1].t }
+        let pick = next ? order.first { ks[$0].t > rel + 0.001 } : order.last { ks[$0].t < rel - 0.001 }
+        if let i = pick { showKey(i) }
+    }
+    /// Fade of the selected sound item ends (fade-in) / starts (fade-out) at the playhead; one undo step.
+    func setFadeToPlayhead(isIn: Bool) {
+        guard let id = selection, selectedLayer?.kind == .audio || (selectedClip.flatMap { media[$0.media]?.hasAudio } == true) else { return }
+        let rel = time - selectedStart, d = selectedDuration
+        var e = audioEdit(id)
+        if isIn { e.fadeIn = max(0, min(d - e.fadeOut, (rel * 100).rounded() / 100)) } else { e.fadeOut = max(0, min(d - e.fadeIn, ((d - rel) * 100).rounded() / 100)) }
+        commitAudio(id, e)
+    }
+    /// Every editor command that has a shortcut but no menu item of its own (the menu items call their own actions; both read the same combination).
+    func perform(_ id: String) {
+        switch id {
+        case "tool.escape": if tool != .select { tool = .select }
+        case "tool.selectAlt", "tool.select": tool = .select
+        case "tool.blade": tool = .blade
+        case "tool.volume": tool = .volume
+        case "tool.snap": snapOn.toggle()
+        case "play.toggle": togglePlay()
+        case "play.stepBack": step(frames: -1)
+        case "play.stepForward": step(frames: 1)
+        case "key.marker": addMarkerHere()
+        case "key.in": setIn()
+        case "key.out": setOut()
+        case "timeline.zoomIn": zoom = min(16, zoom * 1.5)
+        case "timeline.zoomOut": zoom = max(1, zoom / 1.5)
+        case "timeline.fit": zoom = 1
+        case "timeline.tracksTaller": trackScale = min(2.5, trackScale * 1.2)
+        case "timeline.tracksShorter": trackScale = max(0.6, trackScale / 1.2)
+        case "keyframe.add": addKeyHere()
+        case "keyframe.delete": if let i = editingKey { removeKey(i) }
+        case "keyframe.next": gotoKey(next: true)
+        case "keyframe.prev": gotoKey(next: false)
+        case "audio.fadeIn": setFadeToPlayhead(isIn: true)
+        case "audio.fadeOut": setFadeToPlayhead(isIn: false)
+        case "inspector.video": inspectorRequest = .image
+        case "inspector.sound": inspectorRequest = .sound
+        case "inspector.time": inspectorRequest = .time
+        case "inspector.cursor": inspectorRequest = .cursor
+        default: break
+        }
     }
     func removeKey(_ i: Int) { guard let id = selection else { return }; apply(reload: false) { $0.removeKey(id, at: i) }; editingKey = nil }
     func showKey(_ i: Int) {
@@ -302,7 +358,7 @@ final class EditorModel: ObservableObject {
         do {
             fxPlan = await EffectRenderer.plan(project, folder: folder)
             let b = try await CompositionBuilder.buildFull(project, fx: fxPlan.ready); built = b; let comp = b.composition
-            let item = AVPlayerItem(asset: comp); item.videoComposition = b.videoComposition(for: project, framingGuide: framingGuideID); item.audioMix = b.audioMix(for: project)
+            let item = AVPlayerItem(asset: comp); item.audioTimePitchAlgorithm = b.pitch; item.videoComposition = b.videoComposition(for: project, framingGuide: framingGuideID); item.audioMix = b.audioMix(for: project)
             player.replaceCurrentItem(with: item)
             if keepTime { await player.seek(to: min(t, comp.duration), toleranceBefore: .zero, toleranceAfter: .zero) }
             if let v = try? await comp.loadTracks(withMediaType: .video).first, let s = try? await v.load(.naturalSize) { videoSize = s }
@@ -376,6 +432,8 @@ final class EditorModel: ObservableObject {
         if !ok { message = T("Fereastra aleasă nu apare în această parte a înregistrării.") }
     }
     func setMouseFX(_ id: UUID, _ fx: MouseFX) { apply { $0.setMouseFX(clip: id, fx) } }
+    var selectedKeyTrack: KeyTrack? { selectedClip.flatMap { $0.held ? nil : KeyTrack.load(besideMedia: $0.media) } }
+    func setKeyFX(_ id: UUID, _ fx: KeyFX) { apply { $0.setKeyFX(clip: id, fx) } }
     func followMouse(_ id: UUID, scale: Double) {
         guard let t = selectedMouseTrack else { return }
         apply { _ = $0.followMouse(clip: id, track: t, scale: scale) }
@@ -424,7 +482,7 @@ final class EditorModel: ObservableObject {
     /// Edge trim with ripple. `delta` seconds on the timeline: positive moves the edge right.
     func trim(clip id: Clip.ID, edge: ClipEdge, by delta: Double) {
         guard let c = project.clips.first(where: { $0.id == id }) else { return }
-        let avail = c.held ? Double.infinity : max(0, (media[c.media]?.duration ?? (c.sourceStart + c.duration)) - (c.sourceStart + c.duration))
+        let avail = c.held ? Double.infinity : max(0, ((media[c.media]?.duration ?? (c.sourceStart + c.sourceSpan)) - (c.sourceStart + c.sourceSpan)) / c.speed)    // timeline seconds the source still allows
         switch edge {
         case .start: apply { $0.trimStart(clip: id, by: delta) }
         case .end: let cut = -delta; apply { $0.trimEnd(clip: id, by: max(-avail, cut)) }
@@ -866,13 +924,15 @@ final class EditorModel: ObservableObject {
             guard let pk = processedPeaks(mediaPath, pk0) else { return nil }
             perRecording.append(pk.enumerated().reduce(0.0) { acc, e in project.isMuted(source: e.offset, media: mediaPath) ? acc : acc + Double(e.element) * Double(SadrogProject.linear(dB: mediaPath == shownMedia ? displayGain(e.offset) : project.gain(ofSource: e.offset, media: mediaPath))) })
         }
+        let a1Auto = Double(SadrogProject.linear(dB: project.clips.map { audioEdit($0.id).automationPeakDB }.max() ?? 0))
+        perRecording = perRecording.map { $0 * a1Auto }
         var a2 = 0.0
         if !project.mutedLanes.contains(.a2) {           // A2 items may overlap A1 anywhere: added to the bound (conservative)
             for l in project.layers where l.kind == .audio {
                 let e = audioEdit(l.id); if e.muted { continue }
                 let raw = media[l.media]?.sourcePeak ?? []
                 guard let pk = processedPeaks(l.media, raw) else { return nil }
-                a2 += Double(pk.reduce(0, +)) * Double(SadrogProject.linear(dB: e.gainDB))
+                a2 += Double(pk.reduce(0, +)) * Double(SadrogProject.linear(dB: e.gainDB + e.automationPeakDB))      // automation can only raise the bound
             }
         }
         let sum = MixPeakBound.linear(perRecording: perRecording, dissolves: project.clips.contains { $0.dissolve > 0 }, layers: a2, masterLinear: Double(SadrogProject.linear(dB: liveMaster ?? project.masterGainDB)))

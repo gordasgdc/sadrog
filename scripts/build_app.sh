@@ -2,8 +2,8 @@
 # Builds SADROG.app into the external build folder and signs it. Usage: scripts/build_app.sh [identity]
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-EXT="${SADROG_BUILD_DIR:-$HOME/sadrog-build}"
-mkdir -p "$EXT" 2>/dev/null; [ -w "$EXT" ] || { echo "Build folder not writable: set SADROG_BUILD_DIR"; exit 2; }
+EXT="${SADROG_BUILD_DIR:-/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG}"
+[ -w "$EXT" ] || { echo "EXTERNAL TEST STORAGE NOT AVAILABLE"; exit 2; }
 ID="${1:-Developer ID Application: DUMITRU CRISTINEL GORDAS (8AR6XP8MG7)}"
 VER=$(grep -m1 'version = ' "$ROOT/Sources/SadrogCore/AppInfo.swift" | sed 's/.*"\(.*\)".*/\1/')
 cd "$ROOT"

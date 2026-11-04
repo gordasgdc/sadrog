@@ -31,7 +31,7 @@ final class DetachedEffectsStateTests: XCTestCase {
         let moved = try XCTUnwrap(e.project.layers.first { $0.id == second.id })
         XCTAssertEqual(moved.row, 0); XCTAssertEqual(moved.start, 6, accuracy: 1e-9); XCTAssertTrue(moved.keepsSource)
         XCTAssertEqual(chain(e.project), original)
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/dfx-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/dfx-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f)
         let back = try ProjectStore.load(from: f)
         XCTAssertEqual(chain(back), original); XCTAssertEqual(back.layers, e.project.layers)

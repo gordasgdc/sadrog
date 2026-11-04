@@ -7,7 +7,7 @@ import AppKit
 /// „Prezentator în cerc”: framing maths (never distorted), model (format 12, undo, split, old projects) and exported pixels
 /// (circle edge, outline, framing, back to the rectangle). Synthetic clips only.
 final class CircleCropTests: XCTestCase {
-    static let root = "\(TestRoot.path)"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG"
     static let halves = root + "/synthetic/presenter/halves_1280x720.mov"      // left half green, right half yellow
     static let blue = root + "/synthetic/testcolors/blue.mov"
 

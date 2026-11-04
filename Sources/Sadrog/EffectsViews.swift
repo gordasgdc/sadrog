@@ -67,12 +67,47 @@ struct EffectsPopover: View {
             }
             statusBlock
             Rectangle().fill(Theme.C.line).frame(height: 1)
+            voiceBlock
+            Rectangle().fill(Theme.C.line).frame(height: 1)
             if adding { addList } else {
                 Button { adding = true; if catalog.isEmpty { catalog = AUCatalog.effects() } } label: { Label(T("Adaugă efect…"), systemImage: "plus") }
                     .buttonStyle(.gloss(.secondary, compact: true)).fixedSize()
             }
         }.padding(14).frame(width: 380)
     }
+
+    @State private var voiceError: String?
+    private func title(_ p: VoicePreset) -> String {
+        switch p { case .highPassOnly: return T("Doar filtru de joase"); case .cleanVoice: return T("Voce curată"); case .podcast: return T("Voce de podcast"); case .limiterOnly: return T("Doar limitator") }
+    }
+    private func detail(_ p: VoicePreset) -> String {
+        switch p {
+        case .highPassOnly: return T("Taie zgomotul și bubuitul sub 80 Hz. Nu elimină zgomotul din banda vocii.")
+        case .cleanVoice: return T("Filtru de joase la 80 Hz, compresor ușor și expander conservator între cuvinte, limitator de vârfuri.")
+        case .podcast: return T("Filtru la 90 Hz, compresie mai fermă pentru nivel constant, expander conservator, limitator de vârfuri.")
+        case .limiterOnly: return T("Doar limitator de vârfuri: nu lasă sunetul să depășească 0 dBFS.")
+        }
+    }
+    @ViewBuilder private var voiceBlock: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(T("Procesare de voce")).font(Theme.F.heading)
+            Text(T("Folosește efectele Apple din sistem, prin același gazdă ca orice plugin: fiecare treaptă apare mai sus și poate fi ocolită, mutată, deschisă sau ștearsă. Expanderul NU este eliminare inteligentă a zgomotului."))
+                .font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
+            ForEach(VoicePreset.allCases, id: \.self) { p in
+                Button(title(p)) {
+                    voiceError = nil
+                    Task.detached(priority: .userInitiated) {
+                        do { let fx = try p.effects(); await MainActor.run { m.apply { try? $0.setVoicePreset(p, source: k, media: m.shownMedia, effects: fx) } } }
+                        catch { await MainActor.run { voiceError = "\(error)" } }
+                    }
+                }.buttonStyle(.gloss(.secondary, compact: true)).fixedSize().help(detail(p)).accessibilityHint(detail(p))
+            }
+            Button(T("Resetează procesarea de voce")) { m.apply { try? $0.setVoicePreset(nil, source: k, media: m.shownMedia) } }
+                .buttonStyle(.gloss(.secondary, compact: true)).fixedSize().disabled(!chainHasVoice)
+            if let voiceError { Text(voiceError).font(Theme.F.caption).foregroundStyle(Theme.C.warn).fixedSize(horizontal: false, vertical: true) }
+        }
+    }
+    private var chainHasVoice: Bool { m.effects(k).contains { VoicePreset.isVoiceStage($0) } }
 
     @ViewBuilder private var statusBlock: some View {
         switch m.fxState(k) {

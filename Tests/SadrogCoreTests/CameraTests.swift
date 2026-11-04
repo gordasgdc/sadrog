@@ -6,7 +6,7 @@ import AVFoundation
 /// Camera as a separate, synchronised source: writer (synthetic frames, no camera), validation, manifest, and the project a recording
 /// opens with (camera on V2 at the measured offset, as a presenter circle). No camera is started here.
 final class CameraTests: XCTestCase {
-    static let root = "\(TestRoot.path)"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG"
     let work = URL(fileURLWithPath: "\(root)/temp/camera-\(UUID().uuidString)")
     override func setUp() async throws { try FileManager.default.createDirectory(at: work, withIntermediateDirectories: true) }
     override func tearDown() async throws { try? FileManager.default.removeItem(at: work) }

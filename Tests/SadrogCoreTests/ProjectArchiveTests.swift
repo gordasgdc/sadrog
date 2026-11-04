@@ -4,7 +4,7 @@ import XCTest
 
 /// Archive = project + copies of its media in one folder; originals untouched; moved archives still find their media.
 final class ProjectArchiveTests: XCTestCase {
-    let root = URL(fileURLWithPath: "\(TestRoot.path)/temp/archive-\(UUID().uuidString)")
+    let root = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/archive-\(UUID().uuidString)")
     override func setUpWithError() throws { try FileManager.default.createDirectory(at: root.appendingPathComponent("src/rec"), withIntermediateDirectories: true) }
     override func tearDown() { try? FileManager.default.removeItem(at: root) }
 

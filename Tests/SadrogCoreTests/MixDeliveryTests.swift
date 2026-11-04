@@ -5,7 +5,7 @@ import AVFoundation
 
 /// Master volume and audio delivery (full mix + stems). Synthetic tone + copy-free reads of C5; levels and timing MEASURED, not listened to.
 final class MixDeliveryTests: XCTestCase {
-    let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/delivery-\(UUID().uuidString)")
+    let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/delivery-\(UUID().uuidString)")
     override func setUp() async throws { try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true); try AudioEditTests.makeTone() }
     override func tearDown() async throws { try? FileManager.default.removeItem(at: out) }
 

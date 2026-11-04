@@ -6,8 +6,8 @@ import AVFoundation
 /// The plan the export sheet shows must equal the file the exporter writes: sizes (landscape/portrait/4:3/square/UHD/small), In–Out duration,
 /// first and last picture and sound position. Sources are synthetic ffmpeg files under the SADROG synthetic folder; skipped when absent.
 final class ExportPlanTests: XCTestCase {
-    let syn = "\(TestRoot.path)/synthetic/"
-    func tmp() -> URL { URL(fileURLWithPath: "\(TestRoot.path)/temp/plan-\(UUID().uuidString).mov") }
+    let syn = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic/"
+    func tmp() -> URL { URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/plan-\(UUID().uuidString).mov") }
 
     func testScaledRuleIsPure() {
         XCTAssertEqual(ExportPlan.scaled(width: 3840, height: 2160, longSideCap: 1920).w, 1920); XCTAssertEqual(ExportPlan.scaled(width: 3840, height: 2160, longSideCap: 1920).h, 1080)

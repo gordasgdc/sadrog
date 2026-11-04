@@ -153,9 +153,12 @@ public struct Transform: Codable, Equatable, Sendable {
 /// How a segment between two states is traversed.
 public enum Easing: String, Codable, CaseIterable, Sendable {
     case smooth, linear, easeIn, easeOut
+    /// Keeps the previous value until the next key is reached, then jumps (a step).
+    case hold
     public func apply(_ u: Double) -> Double {
         let t = max(0, min(1, u))
         switch self {
+        case .hold: return t >= 1 ? 1 : 0
         case .smooth: return t * t * (3 - 2 * t)
         case .linear: return t
         case .easeIn: return t * t
@@ -167,26 +170,41 @@ public enum Easing: String, Codable, CaseIterable, Sendable {
 public struct MotionKey: Codable, Equatable, Sendable {
     public var t: Double
     public var transform: Transform
-    public init(t: Double, transform: Transform) { self.t = t; self.transform = transform }
+    /// Interpolation of the segment that STARTS at this key (nil = the motion’s own easing).
+    public var easing: Easing?
+    public init(t: Double, transform: Transform, easing: Easing? = nil) { self.t = t; self.transform = transform; self.easing = easing }
 }
 /// Everything that moves or fades a visual item beyond its two-state animation: extra keyframes, the easing of every segment, and visual fades
 /// (opacity ramps at the item's edges). nil on an item = none of it (older projects look exactly as before).
 /// A cut or a trim never changes what is shown: the pieces keep the original curve through `headSlice`/`tailSlice` (the part of the first/last
 /// segment's easing curve that the piece covers) and `fadeInStart`/`fadeOutEnd` (where on its ramp a fade begins/ends) — see `Animation.partition`.
+extension Motion {
+    /// Indices of the keys that change `prop` (value differs from the previous key’s; the first key is compared with `start`); nil = every key. What the timeline key band shows.
+    public func keyIndices(changing prop: ProjectEditor.KeyProperty?, start: Transform) -> [Int] {
+        guard let prop else { return Array(keys.indices) }
+        func v(_ t: Transform) -> Double { switch prop { case .x: return t.x; case .y: return t.y; case .scale: return t.scale; case .rotation: return t.rotation; case .opacity: return t.opacity } }
+        var prev = v(start), out: [Int] = []
+        for i in keys.indices.sorted(by: { keys[$0].t < keys[$1].t }) { let c = v(keys[i].transform); if abs(c - prev) > 1e-6 { out.append(i) }; prev = c }
+        return out
+    }
+}
 public struct Motion: Codable, Equatable, Sendable {
     public var keys: [MotionKey] = []
     public var easing: Easing = .smooth
+    /// Interpolation of the first segment (from the item’s start state); nil = `easing`.
+    public var startEasing: Easing?
     public var fadeIn = 0.0, fadeOut = 0.0       // seconds
     public var headSlice = 0.0, tailSlice = 1.0
     public var fadeInStart = 0.0, fadeOutEnd = 0.0
     public init(keys: [MotionKey] = [], easing: Easing = .smooth, fadeIn: Double = 0, fadeOut: Double = 0) { self.keys = keys; self.easing = easing; self.fadeIn = max(0, fadeIn); self.fadeOut = max(0, fadeOut); normalize() }
-    enum CodingKeys: String, CodingKey { case keys, easing, fadeIn, fadeOut, headSlice, tailSlice, fadeInStart, fadeOutEnd }
+    enum CodingKeys: String, CodingKey { case keys, easing, fadeIn, fadeOut, headSlice, tailSlice, fadeInStart, fadeOutEnd, startEasing }
     public init(from d: Decoder) throws {
         let c = try d.container(keyedBy: CodingKeys.self)
         keys = try c.decodeIfPresent([MotionKey].self, forKey: .keys) ?? []; easing = try c.decodeIfPresent(Easing.self, forKey: .easing) ?? .smooth
         fadeIn = try c.decodeIfPresent(Double.self, forKey: .fadeIn) ?? 0; fadeOut = try c.decodeIfPresent(Double.self, forKey: .fadeOut) ?? 0
         headSlice = try c.decodeIfPresent(Double.self, forKey: .headSlice) ?? 0; tailSlice = try c.decodeIfPresent(Double.self, forKey: .tailSlice) ?? 1
         fadeInStart = try c.decodeIfPresent(Double.self, forKey: .fadeInStart) ?? 0; fadeOutEnd = try c.decodeIfPresent(Double.self, forKey: .fadeOutEnd) ?? 0
+        startEasing = try c.decodeIfPresent(Easing.self, forKey: .startEasing)
         normalize()
     }
     public func encode(to e: Encoder) throws {
@@ -194,8 +212,9 @@ public struct Motion: Codable, Equatable, Sendable {
         try c.encode(keys, forKey: .keys); try c.encode(easing, forKey: .easing); try c.encode(fadeIn, forKey: .fadeIn); try c.encode(fadeOut, forKey: .fadeOut)
         if headSlice != 0 { try c.encode(headSlice, forKey: .headSlice) }; if tailSlice != 1 { try c.encode(tailSlice, forKey: .tailSlice) }
         if fadeInStart != 0 { try c.encode(fadeInStart, forKey: .fadeInStart) }; if fadeOutEnd != 0 { try c.encode(fadeOutEnd, forKey: .fadeOutEnd) }
+        try c.encodeIfPresent(startEasing, forKey: .startEasing)
     }
-    public var isNeutral: Bool { keys.isEmpty && easing == .smooth && fadeIn == 0 && fadeOut == 0 && headSlice == 0 && tailSlice == 1 }
+    public var isNeutral: Bool { keys.isEmpty && easing == .smooth && startEasing == nil && fadeIn == 0 && fadeOut == 0 && headSlice == 0 && tailSlice == 1 }
     public mutating func normalize() {
         keys.sort { $0.t < $1.t }; fadeIn = max(0, fadeIn); fadeOut = max(0, fadeOut)
         headSlice = max(0, min(1, headSlice)); tailSlice = max(0, min(1, tailSlice)); fadeInStart = max(0, min(1, fadeInStart)); fadeOutEnd = max(0, min(1, fadeOutEnd))
@@ -206,19 +225,24 @@ public struct Motion: Codable, Equatable, Sendable {
         if let b { pts.append((duration, b)) }
         return pts
     }
+    /// Easing of each segment: the one that starts at point i (the item’s start state uses `startEasing`, a key its own `easing`, falling back to the motion’s).
+    func segmentEasings(duration: Double) -> [Easing] {
+        [startEasing ?? easing] + keys.filter { $0.t > 0.0001 && $0.t < duration - 0.0001 }.map { $0.easing ?? easing }
+    }
     /// Easing of segment `i` of `n`, restricted to the slice of the curve the item covers (identity for an untouched segment).
-    func eased(_ v: Double, segment i: Int, of n: Int) -> Double {
+    func eased(_ v: Double, segment i: Int, of n: Int, using ease: Easing? = nil) -> Double {
+        let e = ease ?? easing
         let u0 = i == 0 ? headSlice : 0, u1 = i == n - 1 ? tailSlice : 1
-        if u0 == 0 && u1 == 1 { return easing.apply(v) }
-        let den = easing.apply(u1) - easing.apply(u0)
-        return abs(den) < 1e-12 ? v : (easing.apply(u0 + (u1 - u0) * max(0, min(1, v))) - easing.apply(u0)) / den
+        if u0 == 0 && u1 == 1 { return e.apply(v) }
+        let den = e.apply(u1) - e.apply(u0)
+        return abs(den) < 1e-12 ? v : (e.apply(u0 + (u1 - u0) * max(0, min(1, v))) - e.apply(u0)) / den
     }
     /// The geometric state (no fades) `elapsed` seconds into an item of `duration`.
     public func placement(start a: Transform, end b: Transform?, elapsed: Double, duration: Double) -> Transform {
-        let pts = points(start: a, end: b, duration: duration)
+        let pts = points(start: a, end: b, duration: duration), es = segmentEasings(duration: duration)
         if elapsed <= 0 || pts.count == 1 { return elapsed <= 0 ? pts[0].v : pts.last!.v }
         if let i = pts.indices.dropLast().first(where: { elapsed < pts[$0 + 1].t }) {
-            let (p0, p1) = (pts[i], pts[i + 1]); return Transform.blend(p0.v, p1.v, eased((elapsed - p0.t) / max(1e-9, p1.t - p0.t), segment: i, of: pts.count - 1))
+            let (p0, p1) = (pts[i], pts[i + 1]); return Transform.blend(p0.v, p1.v, eased((elapsed - p0.t) / max(1e-9, p1.t - p0.t), segment: i, of: pts.count - 1, using: es[min(i, es.count - 1)]))
         }
         return pts.last!.v
     }
@@ -252,7 +276,7 @@ public struct Animation: Equatable, Sendable {
         // piece 1: start, keys before the cut, then the value at the cut as end state (when anything animates)
         var m1 = m, m2 = m
         m1.keys = m.keys.filter { $0.t < off - 0.0001 }
-        m2.keys = m.keys.filter { $0.t > off + 0.0001 && $0.t < D - 0.0001 }.map { MotionKey(t: $0.t - off, transform: $0.transform) }
+        m2.keys = m.keys.filter { $0.t > off + 0.0001 && $0.t < D - 0.0001 }.map { MotionKey(t: $0.t - off, transform: $0.transform, easing: $0.easing) }
         func seg(_ lo: Bool) -> (i: Int, r: Double)? {     // segment holding the cut (cut on a key: the one before it for piece 1, the one after for piece 2)
             guard n >= 1 else { return nil }
             let idx = lo ? pts.indices.dropLast().last(where: { pts[$0].t < off - 0.0001 }) : pts.indices.dropLast().last(where: { pts[$0].t <= off + 0.0001 })
@@ -265,7 +289,8 @@ public struct Animation: Equatable, Sendable {
         var b1: Transform? = nil
         if let s1 = seg(true) { b1 = atCut; m1.tailSlice = s1.r }
         else if n >= 1, off <= pts[n].t + 0.0001 { b1 = atCut }       // cut at/after the last point: hold or end state reached
-        if let s2 = seg(false) { m2.headSlice = s2.r } else { m2.headSlice = 0 }
+        let segEase = m.segmentEasings(duration: D)
+        if let s2 = seg(false) { m2.headSlice = s2.r; m2.startEasing = segEase[min(s2.i, segEase.count - 1)] } else { m2.headSlice = 0; m2.startEasing = nil }
         if seg(false) == nil, m2.keys.isEmpty { m2.tailSlice = 1 }
         // fades: the fade-in stays on the first piece (the rest of its ramp goes on to the second), the fade-out on the second
         if m.fadeIn > 0, off < m.fadeIn {
@@ -311,15 +336,29 @@ public struct RecordingSounds: Codable, Equatable, Sendable {
 public struct AudioEdit: Codable, Equatable, Sendable {
     public var gainDB: Double = 0
     public var muted = false
-    public var fadeIn: Double = 0      // seconds, linear volume ramp from silence at the item's start
-    public var fadeOut: Double = 0     // seconds, linear ramp to silence at the item's end
+    public var fadeIn: Double = 0      // seconds, ramp from silence at the item's start (shape: `fadeInCurve`, straight by default)
+    public var fadeOut: Double = 0     // seconds, ramp to silence at the item's end (shape: `fadeOutCurve`)
+    public var fadeInCurve = FadeCurve.linear, fadeOutCurve = FadeCurve.linear
+    /// Volume curve (format 18): points in LOCAL seconds of the item; empty = none. Applied after the item gain, together with the fades.
+    public var points: [VolumeKey] = []
+    /// A2 items only: crossfade with an outgoing item that really overlaps this one at its start; nil = none.
+    public var crossfade: CrossfadeLink?
     public init(gainDB: Double = 0, muted: Bool = false, fadeIn: Double = 0, fadeOut: Double = 0) { self.gainDB = gainDB; self.muted = muted; self.fadeIn = max(0, fadeIn); self.fadeOut = max(0, fadeOut) }
+    enum CodingKeys: String, CodingKey { case gainDB, muted, fadeIn, fadeOut, fadeInCurve, fadeOutCurve, points, crossfade }
     public init(from d: Decoder) throws {
         let c = try d.container(keyedBy: CodingKeys.self)
         self.init(gainDB: try c.decodeIfPresent(Double.self, forKey: .gainDB) ?? 0, muted: try c.decodeIfPresent(Bool.self, forKey: .muted) ?? false,
                   fadeIn: try c.decodeIfPresent(Double.self, forKey: .fadeIn) ?? 0, fadeOut: try c.decodeIfPresent(Double.self, forKey: .fadeOut) ?? 0)
+        fadeInCurve = try c.decodeIfPresent(FadeCurve.self, forKey: .fadeInCurve) ?? .linear; fadeOutCurve = try c.decodeIfPresent(FadeCurve.self, forKey: .fadeOutCurve) ?? .linear
+        points = try c.decodeIfPresent([VolumeKey].self, forKey: .points) ?? []; crossfade = try c.decodeIfPresent(CrossfadeLink.self, forKey: .crossfade)
     }
-    public var isNeutral: Bool { gainDB == 0 && !muted && fadeIn == 0 && fadeOut == 0 }
+    public func encode(to e: Encoder) throws {
+        var c = e.container(keyedBy: CodingKeys.self)
+        try c.encode(gainDB, forKey: .gainDB); try c.encode(muted, forKey: .muted); try c.encode(fadeIn, forKey: .fadeIn); try c.encode(fadeOut, forKey: .fadeOut)
+        if fadeInCurve != .linear { try c.encode(fadeInCurve, forKey: .fadeInCurve) }; if fadeOutCurve != .linear { try c.encode(fadeOutCurve, forKey: .fadeOutCurve) }
+        if !points.isEmpty { try c.encode(points, forKey: .points) }; try c.encodeIfPresent(crossfade, forKey: .crossfade)
+    }
+    public var isNeutral: Bool { gainDB == 0 && !muted && fadeIn == 0 && fadeOut == 0 && points.isEmpty && crossfade == nil }
     /// Fades actually applied to an item of `duration`. The stored values are kept as typed; if the item became shorter than both fades
     /// (trim), both are scaled down in proportion so they meet without overlapping — lengthening the item again restores them.
     public func effectiveFades(duration d: Double) -> (fadeIn: Double, fadeOut: Double) {
@@ -359,6 +398,11 @@ public struct Layer: Codable, Equatable, Identifiable, Sendable {
     /// Audio items only: the sound comes from a recording whose per-source identity (stem, volume, mute, effects) it keeps. Independent of the montage link
     /// `linkedClip`: a copy loses the link (it is its own item) but keeps its sound. nil = not set (older projects derive it from `linkedClip`).
     public var sourceIdentity: Bool?
+    /// Playback speed (format 18): 1 = as recorded. `duration` stays the TIMELINE length; the item consumes `duration × speed` seconds of source. nil = 1.
+    public var speedFactor: Double?
+    public var speed: Double { get { speedFactor ?? 1 } set { speedFactor = abs(newValue - 1) < 1e-9 ? nil : newValue } }
+    /// Seconds of source material the item plays.
+    public var sourceSpan: Double { duration * speed }
     public var keepsSource: Bool { sourceIdentity == true || linkedClip != nil }
     public var row: Int { track ?? 0 }
     public var end: Double { start + duration }
@@ -384,14 +428,24 @@ public struct Clip: Codable, Equatable, Identifiable, Sendable {
     public var held = false
     /// Cross-dissolve with the PREVIOUS clip: the first `dissolve` seconds of this clip overlap the last seconds of the previous one (picture and sound blend, the timeline gets that much shorter). 0 = a plain cut.
     public var dissolve = 0.0
+    /// Shape of the sound crossfade over the dissolve (mode and curve). Default = the original straight, equal-gain blend.
+    public var dissolveShape = CrossfadeShape()
     /// Cursor highlight / click rings drawn from the recording's pointer track (`mouse.json` next to the media); nil = none.
     public var mouseFX: MouseFX?
+    /// Key commands drawn from the recording's key track (`keys.json` next to the media); nil = none. Opt-in, off by default.
+    public var keyFX: KeyFX?
     /// The clip's own sound was detached into an independent audio item (format 15): the picture stays, its A1 sound is no longer played by the clip.
     public var audioDetached = false
+    /// Playback speed (format 18): 1 = as recorded. `duration` stays the TIMELINE length; the clip consumes `duration × speed` seconds of source. A freeze frame is always 1.
+    public var speed = 1.0
+    /// A retimed clip plays no sound of its own (instead of the sped-up / slowed-down sound).
+    public var speedMute = false
+    /// Seconds of source material the clip plays.
+    public var sourceSpan: Double { held ? duration : duration * speed }
     public init(id: UUID = UUID(), media: String, sourceStart: Double, duration: Double, transform: Transform = .identity, endTransform: Transform? = nil) {
         self.id = id; self.media = media; self.sourceStart = sourceStart; self.duration = duration; self.transform = transform; self.endTransform = endTransform
     }
-    enum CodingKeys: String, CodingKey { case id, media, sourceStart, duration, zoom, transform, endTransform, audio, crop, rectCrop, label, held, motion, dissolve, mouseFX, audioDetached }
+    enum CodingKeys: String, CodingKey { case id, media, sourceStart, duration, zoom, transform, endTransform, audio, crop, rectCrop, label, held, motion, dissolve, mouseFX, keyFX, audioDetached, speed, speedMute, dissolveShape }
     public func encode(to e: Encoder) throws {
         var c = e.container(keyedBy: CodingKeys.self)
         try c.encode(id, forKey: .id); try c.encode(media, forKey: .media); try c.encode(sourceStart, forKey: .sourceStart); try c.encode(duration, forKey: .duration)
@@ -400,8 +454,12 @@ public struct Clip: Codable, Equatable, Identifiable, Sendable {
         try c.encodeIfPresent(crop, forKey: .crop); try c.encodeIfPresent(rectCrop, forKey: .rectCrop); try c.encodeIfPresent(label, forKey: .label)
         if held { try c.encode(true, forKey: .held) }
         if audioDetached { try c.encode(true, forKey: .audioDetached) }
+        if speed != 1 { try c.encode(speed, forKey: .speed) }
+        if speedMute { try c.encode(true, forKey: .speedMute) }
         if dissolve > 0 { try c.encode(dissolve, forKey: .dissolve) }
+        if !dissolveShape.isLegacy { try c.encode(dissolveShape, forKey: .dissolveShape) }
         if let mouseFX, !mouseFX.isOff { try c.encode(mouseFX, forKey: .mouseFX) }
+        if let keyFX, keyFX.show { try c.encode(keyFX, forKey: .keyFX) }
         if let motion, !motion.isNeutral { try c.encode(motion, forKey: .motion) }
     }
     public init(from d: Decoder) throws {
@@ -409,8 +467,11 @@ public struct Clip: Codable, Equatable, Identifiable, Sendable {
         label = try c.decodeIfPresent(String.self, forKey: .label)
         held = try c.decodeIfPresent(Bool.self, forKey: .held) ?? false
         audioDetached = try c.decodeIfPresent(Bool.self, forKey: .audioDetached) ?? false
+        speed = Retime.clamp(try c.decodeIfPresent(Double.self, forKey: .speed) ?? 1); speedMute = try c.decodeIfPresent(Bool.self, forKey: .speedMute) ?? false
         dissolve = max(0, try c.decodeIfPresent(Double.self, forKey: .dissolve) ?? 0)
+        dissolveShape = try c.decodeIfPresent(CrossfadeShape.self, forKey: .dissolveShape) ?? CrossfadeShape()
         mouseFX = try c.decodeIfPresent(MouseFX.self, forKey: .mouseFX)
+        keyFX = try c.decodeIfPresent(KeyFX.self, forKey: .keyFX)
         motion = try c.decodeIfPresent(Motion.self, forKey: .motion)
         audio = try c.decodeIfPresent(AudioEdit.self, forKey: .audio)
         crop = try c.decodeIfPresent(CircleCrop.self, forKey: .crop); rectCrop = try c.decodeIfPresent(RectCrop.self, forKey: .rectCrop)
@@ -578,7 +639,7 @@ public struct TimelineMarker: Codable, Equatable, Sendable, Identifiable {
 }
 
 public struct SadrogProject: Codable, Equatable, Sendable {
-    public static let currentFormat = 17   // 17 adds the local lens on callouts (source box + display box); 16 keys source volume/mute/effects by recording (media path);  15 adds detached clip audio (an independent A2 item linked to its clip);  13 adds locked lanes and optional clip/overlay names; 12 adds the circle crop of video clips/overlays („Prezentator în cerc”); 11 adds audio effect chains (Audio Units) per recording source; 10 adds the master (mix) volume; 9 adds per-clip audio edits (A2 volume/mute, fades on A1 clips and A2 items); 8 adds per-source volume in dB; 7 adds the document format (canvas size + frame rate); 2 adds clip zoom + text overlays; 3 adds transforms, overlay/audio layers and a material library; 4 adds muted/hidden lanes; 5 adds callouts; 6 adds muted sources of the main sound (all optional on load)
+    public static let currentFormat = 18   // 18 adds clip speed (Clip/Layer.speed), keepPitch; 17 adds the local lens on callouts (source box + display box); 16 keys source volume/mute/effects by recording (media path);  15 adds detached clip audio (an independent A2 item linked to its clip);  13 adds locked lanes and optional clip/overlay names; 12 adds the circle crop of video clips/overlays („Prezentator în cerc”); 11 adds audio effect chains (Audio Units) per recording source; 10 adds the master (mix) volume; 9 adds per-clip audio edits (A2 volume/mute, fades on A1 clips and A2 items); 8 adds per-source volume in dB; 7 adds the document format (canvas size + frame rate); 2 adds clip zoom + text overlays; 3 adds transforms, overlay/audio layers and a material library; 4 adds muted/hidden lanes; 5 adds callouts; 6 adds muted sources of the main sound (all optional on load)
     public var formatVersion = SadrogProject.currentFormat
     public var name: String
     public var clips: [Clip]
@@ -625,6 +686,8 @@ public struct SadrogProject: Codable, Equatable, Sendable {
     }
     /// Volume of the whole mix in dB (0 = neutral), applied AFTER every source/item volume and fade. Not applied to separate-source files.
     public var masterGainDB: Double = 0
+    /// Retimed sound keeps its pitch (spectral time-stretch) instead of rising/falling with the speed. One setting for the whole mix (the system applies it per output, not per clip).
+    public var keepPitch = true
     public func activeEffects(ofSource k: Int, media: String? = nil) -> [AudioEffect] { (recording(media ?? primaryMedia).effects[k] ?? []).filter { !$0.bypassed } }
     public func gain(ofSource k: Int, media: String? = nil) -> Double { recording(media ?? primaryMedia).gains[k] ?? 0 }
     public static let gainRange: ClosedRange<Double> = -40...12
@@ -668,6 +731,7 @@ public struct SadrogProject: Codable, Equatable, Sendable {
         reservedRows = try c.decodeIfPresent([String: Int].self, forKey: .reservedRows) ?? [:]
         layout = try c.decodeIfPresent(TimelineLayout.self, forKey: .layout) ?? TimelineLayout()
         masterGainDB = try c.decodeIfPresent(Double.self, forKey: .masterGainDB) ?? 0
+        keepPitch = try c.decodeIfPresent(Bool.self, forKey: .keepPitch) ?? true
         // formats ≤ 15 kept ONE set of source settings for the whole project: it goes to every recording of the project (what it did)
         let old = try d.container(keyedBy: LegacyKeys.self)
         let lm = try old.decodeIfPresent(Set<Int>.self, forKey: .mutedSources) ?? [], lg = try old.decodeIfPresent([Int: Double].self, forKey: .sourceGains) ?? [:]
@@ -716,7 +780,7 @@ public struct SadrogProject: Codable, Equatable, Sendable {
             if o[id] != nil, n[id] == nil { continue }                                  // its clip was deleted
             if let os = o[id], let ns = n[id], os != ns { c.start = max(0, c.start + (ns - os)) }
             if let oc = old.clips.first(where: { $0.id == id }), let nc = clips.first(where: { $0.id == id }), !nc.held, nc.sourceStart != oc.sourceStart, let ns = n[id] {
-                c.start -= nc.sourceStart - oc.sourceStart                                 // front trim: the effect keeps its place in the picture
+                c.start -= (nc.sourceStart - oc.sourceStart) / nc.speed                                 // front trim: the effect keeps its place in the picture
                 if c.start < ns { c.duration -= ns - c.start; c.start = ns }
                 if c.duration < Self.minCalloutLength { continue }
             }
@@ -818,7 +882,7 @@ public struct SadrogProject: Codable, Equatable, Sendable {
     public var timelineEnd: Double { max(duration, layers.map(\.end).max() ?? 0, texts.map(\.end).max() ?? 0, callouts.map(\.end).max() ?? 0) }
     /// True when the picture must go through the compositor (overlays, titles, any transform/animation, hidden main video).
     public var needsCompositing: Bool {
-        !texts.isEmpty || !callouts.isEmpty || clips.contains { $0.dissolve > 0 || !($0.mouseFX?.isOff ?? true) } || layers.contains { $0.kind == .video } || hiddenLanes.contains(.v1) || clips.contains { !$0.transform.isIdentity || $0.endTransform != nil || !($0.motion?.isNeutral ?? true) || $0.crop != nil || !($0.rectCrop?.isNone ?? true) }
+        Retime.isRetimed(self) || !texts.isEmpty || !callouts.isEmpty || clips.contains { $0.dissolve > 0 || !($0.mouseFX?.isOff ?? true) || ($0.keyFX?.show ?? false) } || layers.contains { $0.kind == .video } || hiddenLanes.contains(.v1) || clips.contains { !$0.transform.isIdentity || $0.endTransform != nil || !($0.motion?.isNeutral ?? true) || $0.crop != nil || !($0.rectCrop?.isNone ?? true) }
     }
     public func start(ofClip id: Clip.ID) -> Double? { clipSpans.first { $0.id == id }?.start }
 
@@ -843,7 +907,7 @@ public final class ProjectEditor {
         var p = project
         guard change(&p) else { return }
         if project.lockedLanes.contains(where: { !project.sameItems(of: $0, as: p) }) { return }    // a locked lane is never edited (reanchoring below is the consequence of an allowed edit)
-        p.normalizeDissolves()
+        p.normalizeDissolves(); p.normalizeCrossfades()
         p.layout.pruneRows(.v2, keeping: p.rowCount(.v2)); p.layout.pruneRows(.a2, keeping: p.rowCount(.a2))
         p.reanchorCallouts(from: project); p.reanchorLayerCallouts(from: project)
         guard p != project else { return }
@@ -866,9 +930,9 @@ public final class ProjectEditor {
                   i + 1 >= p.clips.count || t < p.clipSpans[i + 1].start else { return false }       // not inside a dissolve: two clips are on screen there
             var a = p.clips[i], b = p.clips[i]
             a.duration = off
-            b.dissolve = 0; b.id = UUID(); if !b.held { b.sourceStart += off }; b.duration -= off
-            // fades stay on the item's outer edges: no fade is created at the cut
-            if a.audio != nil { a.audio?.fadeOut = 0; b.audio?.fadeIn = 0 }
+            b.dissolve = 0; b.id = UUID(); if !b.held { b.sourceStart += off * b.speed }; b.duration -= off
+            // fades stay on the item's outer edges: no fade is created at the cut; the volume curve continues across it
+            Self.cutAudio(&a, &b, at: off, duration: a.duration + b.duration)
             a.cut(into: &b, duration: a.duration + b.duration, at: off)
             p.clips.replaceSubrange(i...i, with: [a, b]); return true
     }
@@ -879,13 +943,13 @@ public final class ProjectEditor {
         commit { p in
             guard length >= Self.minClip, let (i, off) = p.locate(t), !p.clips[i].held, i + 1 >= p.clips.count || t < p.clipSpans[i + 1].start else { return false }
             let c = p.clips[i]
-            var h = Clip(media: c.media, sourceStart: c.sourceStart + min(off, max(0, c.duration - 0.04)), duration: length, transform: c.animation.state(elapsed: min(off, c.duration), duration: c.duration), endTransform: nil)
+            var h = Clip(media: c.media, sourceStart: c.sourceStart + min(off, max(0, c.duration - 0.04)) * c.speed, duration: length, transform: c.animation.state(elapsed: min(off, c.duration), duration: c.duration), endTransform: nil)
             h.held = true; h.crop = c.crop; h.rectCrop = c.rectCrop; h.label = c.label.map { $0 + " ❄" }
             if off < Self.minClip { h.dissolve = c.dissolve; p.clips[i].dissolve = 0; p.clips.insert(h, at: i) }
-            else if c.duration - off < Self.minClip { h.sourceStart = c.sourceStart + max(0, c.duration - 0.04); p.clips.insert(h, at: i + 1) }
+            else if c.duration - off < Self.minClip { h.sourceStart = c.sourceStart + max(0, c.duration - 0.04) * c.speed; p.clips.insert(h, at: i + 1) }
             else {
-                var a = c, b = c; a.duration = off; b.dissolve = 0; b.id = UUID(); b.sourceStart += off; b.duration -= off
-                if a.audio != nil { a.audio?.fadeOut = 0; b.audio?.fadeIn = 0 }
+                var a = c, b = c; a.duration = off; b.dissolve = 0; b.id = UUID(); b.sourceStart += off * b.speed; b.duration -= off
+                Self.cutAudio(&a, &b, at: off, duration: c.duration)
                 a.cut(into: &b, duration: c.duration, at: off)
                 p.clips.replaceSubrange(i...i, with: [a, h, b])
             }
@@ -939,9 +1003,13 @@ public final class ProjectEditor {
     public func setMouseFX(clip id: Clip.ID, _ fx: MouseFX?) {
         commit { p in guard let i = p.clips.firstIndex(where: { $0.id == id }) else { return false }; p.clips[i].mouseFX = (fx?.isOff ?? true) ? nil : fx; return true }
     }
+    /// Turns the key-command display of a clip on or off (off = nothing stored). One undo step.
+    public func setKeyFX(clip id: Clip.ID, _ fx: KeyFX?) {
+        commit { p in guard let i = p.clips.firstIndex(where: { $0.id == id }) else { return false }; p.clips[i].keyFX = (fx?.show ?? false) ? fx : nil; return true }
+    }
     /// Magnifies the clip and makes the frame follow the pointer (see `MouseFollow`): the clip's start state and keys are replaced; fades and easing stay. One undo step.
     @discardableResult public func followMouse(clip id: Clip.ID, track: MouseTrack, scale: Double) -> Bool {
-        guard let c = project.clips.first(where: { $0.id == id }), !c.held, let plan = MouseFollow.plan(track, sourceStart: c.sourceStart, duration: c.duration, scale: scale) else { return false }
+        guard let c = project.clips.first(where: { $0.id == id }), !c.held, c.speed == 1, let plan = MouseFollow.plan(track, sourceStart: c.sourceStart, duration: c.duration, scale: scale) else { return false }
         commit { p in
             guard let i = p.clips.firstIndex(where: { $0.id == id }) else { return false }
             var m = p.clips[i].motion ?? Motion(); m.keys = plan.keys; m.easing = .linear; m.headSlice = 0; m.tailSlice = 1; m.normalize()
@@ -959,10 +1027,11 @@ public final class ProjectEditor {
     public func trimStart(clip id: Clip.ID, by delta: Double) {
         commit { p in
             guard let i = p.clips.firstIndex(where: { $0.id == id }) else { return false }
-            let d = max(p.clips[i].held ? -Double.infinity : -p.clips[i].sourceStart, min(delta, p.clips[i].duration - Self.minClip))
+            let d = max(p.clips[i].held ? -Double.infinity : -p.clips[i].sourceStart / p.clips[i].speed, min(delta, p.clips[i].duration - Self.minClip))
             guard d != 0 else { return false }
             p.clips[i].trimmedFront(by: d, duration: p.clips[i].duration)
-            if !p.clips[i].held { p.clips[i].sourceStart += d }; p.clips[i].duration -= d; return true
+            p.clips[i].audio = p.clips[i].audio?.trimmedFront(by: d, duration: p.clips[i].duration)
+            if !p.clips[i].held { p.clips[i].sourceStart += d * p.clips[i].speed }; p.clips[i].duration -= d; return true
         }
     }
     /// Trim the clip end (positive = cut from the back) keeping the start fixed.
@@ -971,6 +1040,7 @@ public final class ProjectEditor {
             guard let i = p.clips.firstIndex(where: { $0.id == id }), delta != 0 else { return false }
             let d = min(delta, p.clips[i].duration - Self.minClip)
             p.clips[i].trimmedBack(by: d, duration: p.clips[i].duration)
+            p.clips[i].audio = p.clips[i].audio?.trimmedBack(toDuration: p.clips[i].duration - d, from: p.clips[i].duration)
             p.clips[i].duration -= d; return true
         }
     }
@@ -989,6 +1059,7 @@ public final class ProjectEditor {
             func clean(_ e: AudioEdit, _ d: Double) -> AudioEdit? {
                 var v = e; v.gainDB = (max(SadrogProject.gainRange.lowerBound, min(SadrogProject.gainRange.upperBound, e.gainDB)) * 10).rounded() / 10
                 v.fadeIn = min(max(0, (e.fadeIn * 100).rounded() / 100), d); v.fadeOut = min(max(0, (e.fadeOut * 100).rounded() / 100), d)
+                v.points = AudioEdit.cleaned(e.points, duration: d)
                 return v.isNeutral ? nil : v
             }
             if let i = p.clips.firstIndex(where: { $0.id == id }) { p.clips[i].audio = clean(e, p.clips[i].duration); return true }
@@ -1137,8 +1208,81 @@ public final class ProjectEditor {
     }
     /// A keyframe `rel` seconds into the item with state `t` (inside the item, not on its edges; an existing key within 50 ms is replaced). One undo step.
     public func setKey(_ id: UUID, at rel: Double, _ t: Transform) {
-        updateMotion(id) { m in m.keys.removeAll { abs($0.t - rel) < 0.05 }; m.keys.append(MotionKey(t: rel, transform: t)) }
+        updateMotion(id) { m in
+            let old = m.keys.first { abs($0.t - rel) < 0.05 }?.easing
+            m.keys.removeAll { abs($0.t - rel) < 0.05 }; m.keys.append(MotionKey(t: rel, transform: t, easing: old))
+        }
     }
+    /// The look the item has `rel` seconds in (what the key editor starts from).
+    public func stateOfItem(_ id: UUID, at rel: Double) -> Transform? {
+        let p = project
+        if let c = p.clips.first(where: { $0.id == id }) { return c.animation.state(elapsed: rel, duration: c.duration) }
+        if let l = p.layers.first(where: { $0.id == id && $0.kind == .video }) { return l.animation.state(elapsed: rel, duration: l.duration) }
+        if let t = p.texts.first(where: { $0.id == id }) { return t.animation.state(elapsed: rel, duration: t.duration) }
+        return nil
+    }
+    /// One animatable property of a keyframe.
+    public enum KeyProperty: String, CaseIterable, Sendable { case x, y, scale, rotation, opacity }
+    /// Sets ONE property of the key at index `index`, leaving the other four and the key’s time and easing alone. One undo step.
+    public func setKeyProperty(_ id: UUID, index: Int, _ prop: KeyProperty, _ value: Double) {
+        updateMotion(id) { m in
+            guard m.keys.indices.contains(index) else { return }
+            var t = m.keys[index].transform
+            switch prop {
+            case .x: t = Transform(x: value, y: t.y, scale: t.scale, opacity: t.opacity, rotation: t.rotation)
+            case .y: t = Transform(x: t.x, y: value, scale: t.scale, opacity: t.opacity, rotation: t.rotation)
+            case .scale: t = Transform(x: t.x, y: t.y, scale: value, opacity: t.opacity, rotation: t.rotation)
+            case .rotation: t = Transform(x: t.x, y: t.y, scale: t.scale, opacity: t.opacity, rotation: value)
+            case .opacity: t = Transform(x: t.x, y: t.y, scale: t.scale, opacity: value, rotation: t.rotation)
+            }
+            m.keys[index].transform = t
+        }
+    }
+    /// Sets ONE property at time `rel`: edits the key there (within 50 ms) or creates one from the evaluated state, so the other properties keep their current look. One undo step.
+    public func setProperty(_ id: UUID, at rel: Double, _ prop: KeyProperty, _ value: Double) {
+        guard let base = stateOfItem(id, at: rel) else { return }
+        // the key stores the placement (fades are separate): remove the fade factor the state carries
+        var t = base
+        if let m = motionOf(id) { let f = m.fadeFactor(elapsed: rel, duration: durationOf(id) ?? rel); if f > 0.0001 { t.opacity = min(1, t.opacity / f) } }
+        switch prop {
+        case .x: t.x = value
+        case .y: t.y = value
+        case .scale: t.scale = value
+        case .rotation: t.rotation = value
+        case .opacity: t.opacity = value
+        }
+        setKey(id, at: rel, Transform(x: t.x, y: t.y, scale: t.scale, opacity: t.opacity, rotation: t.rotation))
+    }
+    private func motionOf(_ id: UUID) -> Motion? {
+        let p = project
+        return p.clips.first(where: { $0.id == id })?.motion ?? p.layers.first(where: { $0.id == id })?.motion ?? p.texts.first(where: { $0.id == id })?.motion
+    }
+    private func durationOf(_ id: UUID) -> Double? {
+        let p = project
+        return p.clips.first(where: { $0.id == id })?.duration ?? p.layers.first(where: { $0.id == id })?.duration ?? p.texts.first(where: { $0.id == id })?.duration
+    }
+    /// Moves key `index` to `rel` seconds (kept inside the item, off its edges; a key within 50 ms of the target is replaced). One undo step.
+    public func moveKey(_ id: UUID, index: Int, to rel: Double) {
+        guard let d = durationOf(id) else { return }
+        let r = max(0.05, min(d - 0.05, rel))
+        updateMotion(id) { m in
+            guard m.keys.indices.contains(index) else { return }
+            let k = m.keys[index]
+            m.keys.remove(at: index)
+            m.keys.removeAll { abs($0.t - r) < 0.05 }
+            var n = k; n.t = r; m.keys.append(n)
+        }
+    }
+    /// Interpolation of the segment that starts at key `index` (nil = the motion’s default). `index == -1` is the segment from the item’s start. One undo step.
+    public func setKeyEasing(_ id: UUID, index: Int, _ e: Easing?) {
+        updateMotion(id) { m in
+            if index < 0 { m.startEasing = e }
+            else if m.keys.indices.contains(index) { m.keys[index].easing = e }
+        }
+    }
+    /// Index of the next/previous key strictly after/before `rel` (for “go to next key”).
+    public func nextKey(_ id: UUID, after rel: Double) -> Int? { motionOf(id)?.keys.enumerated().filter { $0.element.t > rel + 0.001 }.min { $0.element.t < $1.element.t }?.offset }
+    public func previousKey(_ id: UUID, before rel: Double) -> Int? { motionOf(id)?.keys.enumerated().filter { $0.element.t < rel - 0.001 }.max { $0.element.t < $1.element.t }?.offset }
     public func removeKey(_ id: UUID, at index: Int) { updateMotion(id) { if $0.keys.indices.contains(index) { $0.keys.remove(at: index) } } }
     /// Splits the title under `t` in two (same look, the second one starts at `t`).
     public func splitText(at t: Double) { commit { p in Self.splitTitle(&p, at: t, only: nil) } }
@@ -1297,8 +1441,8 @@ public final class ProjectEditor {
     public func trimLayerStart(_ id: Layer.ID, by delta: Double) {
         commit { p in
             guard let i = p.layers.firstIndex(where: { $0.id == id }) else { return false }
-            let d = max(-min(p.layers[i].sourceStart, p.layers[i].start), min(delta, p.layers[i].duration - Self.minClip)); guard d != 0 else { return false }
-            var l = p.layers[i]; l.trimmedFront(by: d, duration: l.duration); l.start += d; l.sourceStart += d; l.duration -= d
+            let d = max(-min(p.layers[i].sourceStart / p.layers[i].speed, p.layers[i].start), min(delta, p.layers[i].duration - Self.minClip)); guard d != 0 else { return false }
+            var l = p.layers[i]; l.trimmedFront(by: d, duration: l.duration); l.audio = l.audio?.trimmedFront(by: d, duration: l.duration); l.start += d; l.sourceStart += d * l.speed; l.duration -= d
             guard !Self.overlaps(l, in: p) else { return false }
             p.layers[i] = l; return true
         }
@@ -1308,8 +1452,8 @@ public final class ProjectEditor {
         commit { p in
             guard let i = p.layers.firstIndex(where: { $0.id == id }), delta != 0 else { return false }
             var d = min(delta, p.layers[i].duration - Self.minClip)
-            if let n = sourceLength { d = max(d, -(n - p.layers[i].sourceStart - p.layers[i].duration)) }
-            var l = p.layers[i]; l.trimmedBack(by: d, duration: l.duration); l.duration -= d
+            if let n = sourceLength { d = max(d, -(n - p.layers[i].sourceStart - p.layers[i].sourceSpan) / p.layers[i].speed) }
+            var l = p.layers[i]; l.trimmedBack(by: d, duration: l.duration); l.audio = l.audio?.trimmedBack(toDuration: l.duration - d, from: l.duration); l.duration -= d
             guard d != 0, !Self.overlaps(l, in: p) else { return false }
             p.layers[i] = l; return true
         }
@@ -1319,9 +1463,10 @@ public final class ProjectEditor {
     static func splitItem(_ p: inout SadrogProject, kind: LayerKind, at t: Double, only: Layer.ID?) -> Bool {
             guard let i = p.layers.firstIndex(where: { (only == nil ? $0.kind == kind : $0.id == only) && t - $0.start >= Self.minClip && $0.end - t >= Self.minClip }) else { return false }
             var a = p.layers[i], b = p.layers[i]; let off = t - a.start
-            a.duration = off; b.id = UUID(); b.start = t; b.sourceStart += off; b.duration -= off
-            if a.audio != nil { a.audio?.fadeOut = 0; b.audio?.fadeIn = 0 }
+            a.duration = off; b.id = UUID(); b.start = t; b.sourceStart += off * b.speed; b.duration -= off
+            if let e = a.audio { let (x, y) = e.cut(at: off, duration: a.duration + b.duration); a.audio = x.isNeutral ? nil : x; b.audio = y.isNeutral ? nil : y }
             a.cut(into: &b, duration: a.duration + b.duration, at: off)
+            for k in p.layers.indices where p.layers[k].audio?.crossfade?.outgoing == a.id && p.layers[k].start >= t - 1e-6 { p.layers[k].audio?.crossfade?.outgoing = b.id }     // the crossfade overlap now lies in the second piece
             p.layers.replaceSubrange(i...i, with: [a, b]); return true
     }
     // MARK: detach / reattach the sound of a clip
@@ -1339,8 +1484,8 @@ public final class ProjectEditor {
     static func makeDetached(_ p: inout SadrogProject, at i: Int) -> Layer.ID? {
         guard !p.clips[i].held, !p.clips[i].audioDetached else { return nil }
         let c = p.clips[i], start = p.clipSpans[i].start
-        var l = Layer(kind: .audio, media: c.media, start: start, sourceStart: c.sourceStart, duration: c.duration)
-        var e = AudioEdit()      // an A1 clip carries only fades (its volume/mute are the per-source ones, which stay in force for the detached sound too)
+        var l = Layer(kind: .audio, media: c.media, start: start, sourceStart: c.sourceStart, duration: c.duration); l.speed = c.speed
+        var e = AudioEdit(); e.points = c.audio?.points ?? []; e.fadeInCurve = c.audio?.fadeInCurve ?? .linear; e.fadeOutCurve = c.audio?.fadeOutCurve ?? .linear      // an A1 clip carries only fades (its volume/mute are the per-source ones, which stay in force for the detached sound too)
         let f = (c.audio ?? AudioEdit()).effectiveFades(duration: c.duration)
         e.fadeIn = max(f.fadeIn, p.overlap(into: i)); e.fadeOut = max(f.fadeOut, i + 1 < p.clips.count ? p.overlap(into: i + 1) : 0)
         l.audio = e.isNeutral ? nil : e; l.label = c.label ?? URL(fileURLWithPath: c.media).lastPathComponent; l.linkedClip = c.id; l.sourceIdentity = true
@@ -1356,6 +1501,7 @@ public final class ProjectEditor {
         if c.held { return "held" }
         if c.dissolve > 0 { return "dissolve" }
         if let fx = c.mouseFX, !fx.isOff { return "pointer" }
+        if c.keyFX?.show ?? false { return "keys" }
         return nil
     }
     /// Lifts a main-track (V1) clip onto an overlay row of V2 as an independent video item, in one undo step. The picture keeps its transform, animation, circle/rectangle crop
@@ -1369,7 +1515,7 @@ public final class ProjectEditor {
             guard let i = p.clips.firstIndex(where: { $0.id == clipID }) else { return false }
             let c = p.clips[i], span = p.clipSpans[i]
             var l = Layer(id: c.id, kind: .video, media: c.media, start: span.start, sourceStart: c.sourceStart, duration: c.duration, transform: c.transform, endTransform: c.endTransform)
-            l.motion = c.motion; l.crop = c.crop; l.rectCrop = c.rectCrop; l.label = c.label
+            l.speed = c.speed; l.motion = c.motion; l.crop = c.crop; l.rectCrop = c.rectCrop; l.label = c.label
             if let row { guard row >= 0 else { return false }; l.track = row == 0 ? nil : row; guard !Self.overlaps(l, in: p) else { return false } }
             else { var r = 0; while Self.overlaps(l, in: p) { r += 1; l.track = r } }
             if !c.audioDetached { _ = Self.makeDetached(&p, at: i) }
@@ -1391,7 +1537,7 @@ public final class ProjectEditor {
         let c = project.clips[i], s = project.clipSpans[i], pieces = linkedAudio(of: cid)
         var t = s.start
         for q in pieces {
-            guard q.media == c.media, abs(q.start - t) < 1e-6, abs(q.sourceStart - (c.sourceStart + (t - s.start))) < 1e-6 else { return false }
+            guard q.media == c.media, abs(q.speed - c.speed) < 1e-9, abs(q.start - t) < 1e-6, abs(q.sourceStart - (c.sourceStart + (t - s.start) * c.speed)) < 1e-6 else { return false }
             t += q.duration
         }
         return abs(t - s.end) < 1e-6
@@ -1401,7 +1547,7 @@ public final class ProjectEditor {
         let pieces = linkedAudio(of: clipID)
         guard let f = pieces.first else { return nil }
         if !detachedAudioInSync(f.id) { return "moved" }
-        if pieces.contains(where: { let a = $0.audio; return (a?.muted ?? false) || abs(a?.gainDB ?? 0) > 1e-9 }) { return "edited" }
+        if pieces.contains(where: { let a = $0.audio; return (a?.muted ?? false) || abs(a?.gainDB ?? 0) > 1e-9 || !(a?.points.isEmpty ?? true) || a?.crossfade != nil || a?.fadeInCurve != .linear && a != nil || a?.fadeOutCurve != .linear && a != nil }) { return "edited" }
         return nil
     }
     /// Gives the clip its own sound back. With its detached item still in sync, the item is removed (one sound, no doubling); with the item moved/trimmed/cut it is

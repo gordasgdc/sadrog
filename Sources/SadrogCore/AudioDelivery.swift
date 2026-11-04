@@ -72,7 +72,7 @@ public enum AudioDelivery {
             for (i, (item, url)) in zip(items, urls).enumerated() {
                 try Task.checkCancellation()
                 guard let s = AVAssetExportSession(asset: built.composition, presetName: AVAssetExportPresetAppleM4A) else { throw CocoaError(.fileWriteUnknown) }
-                s.timeRange = range
+                s.timeRange = range; s.audioTimePitchAlgorithm = built.pitch
                 // a mix is always given (even neutral) so every stem silences the other tracks
                 s.audioMix = built.audioMix(for: p, selection: item.selection) ?? AVMutableAudioMix()
                 let n = Double(items.count)

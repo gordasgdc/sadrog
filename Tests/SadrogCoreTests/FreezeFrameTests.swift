@@ -31,7 +31,7 @@ final class FreezeFrameTests: XCTestCase {
         try XCTSkipUnless(FileManager.default.fileExists(atPath: blue) && FileManager.default.fileExists(atPath: red), "synthetic colour clips not available")
         let e = ProjectEditor(project: SadrogProject(name: "t", clips: [Clip(media: blue, sourceStart: 0, duration: 2), Clip(media: red, sourceStart: 0, duration: 2)]))
         e.freezeFrame(at: 3, length: 2)         // red, held 2 s in the middle of the red clip: 2 blue + 1 red + 2 held + 1 red
-        let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/freeze-\(UUID().uuidString).mov"); defer { try? FileManager.default.removeItem(at: out) }
+        let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/freeze-\(UUID().uuidString).mov"); defer { try? FileManager.default.removeItem(at: out) }
         try await ProjectExporter.export(e.project, to: out)
         let a = AVURLAsset(url: out); let d = try await a.load(.duration).seconds
         XCTAssertEqual(d, 6, accuracy: 0.15)

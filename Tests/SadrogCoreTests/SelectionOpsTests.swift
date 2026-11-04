@@ -59,7 +59,7 @@ final class SelectionOpsTests: XCTestCase {
     }
     func testSplitSelectionSaveReopen() throws {
         let (e, clip, aud, _, txt, _) = setup(); XCTAssertEqual(e.splitSelection([clip, aud, txt], at: 5), .split(3))
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/sel-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/sel-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f); XCTAssertEqual(try ProjectStore.load(from: f), e.project)
     }
 }

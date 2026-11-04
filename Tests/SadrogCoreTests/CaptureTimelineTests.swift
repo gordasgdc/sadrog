@@ -5,7 +5,7 @@ import AVFoundation
 
 /// One session clock for every file: common start (first primary screen frame), synchronous pause/resume. Synthetic frames, no capture.
 final class CaptureTimelineTests: XCTestCase {
-    let work = URL(fileURLWithPath: "\(TestRoot.path)/temp/timeline-\(UUID().uuidString)")
+    let work = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/timeline-\(UUID().uuidString)")
     override func setUp() async throws { try FileManager.default.createDirectory(at: work, withIntermediateDirectories: true) }
     override func tearDown() async throws { try? FileManager.default.removeItem(at: work) }
     func s(_ x: Double) -> CMTime { CMTime(seconds: x, preferredTimescale: 600_000) }

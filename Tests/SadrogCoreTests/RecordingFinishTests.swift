@@ -23,8 +23,8 @@ final class RecordingFinishTests: XCTestCase {
     }
 
     private func scratch() throws -> URL {
-        guard FileManager.default.fileExists(atPath: TestRoot.path) else { throw XCTSkip("external storage") }
-        let u = URL(fileURLWithPath: "\(TestRoot.path)/temp/finish-\(UUID().uuidString)", isDirectory: true)
+        guard FileManager.default.fileExists(atPath: "/Volumes/CristiGordas/TESTE") else { throw XCTSkip("external storage") }
+        let u = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/finish-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: u, withIntermediateDirectories: true); return u
     }
     func testUnusedTemporaryDocumentIsDiscardedButNeverOneWithContent() throws {

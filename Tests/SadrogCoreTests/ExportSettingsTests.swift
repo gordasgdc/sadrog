@@ -5,9 +5,9 @@ import ImageIO
 
 /// Explicit export settings, checked on the WRITTEN FILE (size, rate, codec, duration), with titles and callouts on the picture. Needs the synthetic clips.
 final class ExportSettingsTests: XCTestCase {
-    static let root = "\(TestRoot.path)/synthetic"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic"
     let hd = root + "/preset/hd.mov", portrait = root + "/preset/portrait.mov", withAudio = root + "/capture.mov"
-    private func out(_ n: String) -> URL { URL(fileURLWithPath: "\(TestRoot.path)/temp/exp-\(n)-\(UUID().uuidString).mov") }
+    private func out(_ n: String) -> URL { URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/exp-\(n)-\(UUID().uuidString).mov") }
     private func project(_ media: String, dur: Double = 1.5, effects: Bool = true) -> SadrogProject {
         var p = SadrogProject(name: "t", clips: [Clip(media: media, sourceStart: 0, duration: dur)])
         if effects {
@@ -154,7 +154,7 @@ final class ExportSettingsTests: XCTestCase {
         s.mode = .master; s.videoMbps = 5; XCTAssertFalse(s.usesAdvancedWriter, "advanced controls exist only for the compressed mode")
         s = ExportSettings(); s.videoMbps = 9999; s.keyframeSeconds = 0; s.audioKbps = 1
         XCTAssertEqual(s.clampedMbps, 200); XCTAssertEqual(s.clampedKeyframe, 0.1); XCTAssertEqual(s.clampedAudioKbps, 64)
-        var st = ExportPresetStore(url: URL(fileURLWithPath: "\(TestRoot.path)/temp/presets-adv-\(UUID().uuidString).json"))
+        var st = ExportPresetStore(url: URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/presets-adv-\(UUID().uuidString).json"))
         defer { try? FileManager.default.removeItem(at: st.url) }
         s = ExportSettings(); s.videoMbps = 8; s.audioKbps = 192
         let p = st.save(name: "Avansat", settings: s)

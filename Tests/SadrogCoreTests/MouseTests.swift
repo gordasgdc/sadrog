@@ -5,7 +5,7 @@ import AVFoundation
 
 /// Pointer metadata: collection (injected pointer, no real recording), persistence, editor consumption (follow-zoom), rendering (synthetic fixtures only).
 final class MouseTests: XCTestCase {
-    let root = "\(TestRoot.path)/"
+    let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/"
     func tmp(_ name: String) throws -> URL { let d = URL(fileURLWithPath: root + "temp/mouse-\(name)-\(UUID().uuidString)"); try FileManager.default.createDirectory(at: d, withIntermediateDirectories: true); return d }
 
     func testCollectionStartsOnlyWhenAskedAndIgnoresPauses() {
@@ -73,7 +73,6 @@ final class MouseTests: XCTestCase {
         ctx.draw(img, in: CGRect(x: -x, y: -(img.height - 1 - y), width: img.width, height: img.height)); return (Int(px[0]), Int(px[1]), Int(px[2]))
     }
     func testHighlightAndClickRingAreRendered() async throws {
-        try XCTSkipUnless(FileManager.default.fileExists(atPath: root + "synthetic/testcolors/red.mov"), "needs synthetic colour clips (not distributed)")
         let d = try tmp("render"); defer { try? FileManager.default.removeItem(at: d) }
         let media = d.appendingPathComponent("red.mov"); try FileManager.default.copyItem(at: URL(fileURLWithPath: root + "synthetic/testcolors/red.mov"), to: media)
         // SYNTHETIC pointer: at (0.25, 0.5) for 3 s with a click at 1 s; the pure-red source has no green at all
@@ -93,7 +92,6 @@ final class MouseTests: XCTestCase {
         let back = try JSONDecoder().decode(SadrogProject.self, from: JSONEncoder().encode(ed.project)); XCTAssertEqual(back.clips[0].mouseFX, MouseFX())
     }
     func testArchiveCarriesThePointerTrack() throws {
-        try XCTSkipUnless(FileManager.default.fileExists(atPath: root + "synthetic/testcolors/red.mov"), "needs synthetic colour clips (not distributed)")
         let d = try tmp("arch"), out = try tmp("archout"); defer { try? FileManager.default.removeItem(at: d); try? FileManager.default.removeItem(at: out) }
         let media = d.appendingPathComponent("red.mov"); try FileManager.default.copyItem(at: URL(fileURLWithPath: root + "synthetic/testcolors/red.mov"), to: media)
         let tr = MouseTrack(samples: [MouseSample(t: 0, x: 0.5, y: 0.5)], syntheticFixture: true); try tr.save(to: d)

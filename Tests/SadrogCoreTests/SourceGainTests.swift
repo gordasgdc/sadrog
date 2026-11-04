@@ -47,7 +47,7 @@ final class SourceGainTests: XCTestCase {
             }
             return (10 * log10(s / Double(max(n, 1)) + 1e-24), 20 * log10(pk + 1e-12))
         }
-        let dir = "\(TestRoot.path)/temp"
+        let dir = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp"
         func export(_ gain: Double) async throws -> (rms: Double, peak: Double) {
             var p = SadrogProject(name: "t", clips: [Clip(media: RecordingAudioTests.c5, sourceStart: 10, duration: 4)])
             p.mutedSources = [1]; p.sourceGains = [0: gain]

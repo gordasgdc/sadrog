@@ -47,7 +47,7 @@ final class DetachAudioTests: XCTestCase {
         e.split(at: 4)
         XCTAssertEqual(e.project.layers.count, 1); XCTAssertEqual(e.project.layers[0].duration, 10, accuracy: 1e-9)
         XCTAssertTrue(e.project.clips.prefix(2).allSatisfy(\.audioDetached))
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/dt-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/dt-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f)
         let back = try ProjectStore.load(from: f)
         XCTAssertEqual(back, e.project); XCTAssertEqual(back.layers[0].linkedClip, cid)
@@ -56,7 +56,7 @@ final class DetachAudioTests: XCTestCase {
 
 /// Numeric: detaching in sync changes NOTHING in the audible result (full mix and every stem), moving the item shifts the sound, and the A2 stem stays free of linked sound.
 final class DetachAudioMixTests: XCTestCase {
-    let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/detach-\(UUID().uuidString)")
+    let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/detach-\(UUID().uuidString)")
     override func setUp() async throws { try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true) }
     override func tearDown() async throws { try? FileManager.default.removeItem(at: out) }
     private func deliver(_ p: SadrogProject, _ sub: String) async throws -> [[Float]] {
@@ -128,10 +128,10 @@ final class IntegratedMontageFlowTests: XCTestCase {
         XCTAssertEqual(e.project, states[0])
         for i in 1..<states.count { XCTAssertTrue(e.redo()); XCTAssertEqual(e.project, states[i], "redo step \(i)") }
         XCTAssertEqual(e.project.layers.count, 3); XCTAssertEqual(e.project.callouts.count, 2)
-        let f = URL(fileURLWithPath: "\(TestRoot.path)/temp/int-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
+        let f = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/int-\(UUID().uuidString).sadrogproj"); defer { try? FileManager.default.removeItem(at: f) }
         try ProjectStore.save(e.project, to: f); XCTAssertEqual(try ProjectStore.load(from: f), e.project)
         // audible: the clip's own sound is gone from its slot (no doubling) and the detached copy starts 1.5 s into the document
-        let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/intd-\(UUID().uuidString)"); try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true); defer { try? FileManager.default.removeItem(at: out) }
+        let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/intd-\(UUID().uuidString)"); try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true); defer { try? FileManager.default.removeItem(at: out) }
         let srcs = RecordingAudio.sources(media: m, trackCount: 2)
         let items = AudioDelivery.plan(e.project, sources: srcs, baseName: "i").filter { if case .source = $0.selection { return true } else { return false } }
         let urls = try await AudioDelivery.export(e.project, items: items, to: out)

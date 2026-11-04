@@ -6,7 +6,7 @@ import AVFoundation
 /// A2 volume/mute and fades on A1/A2, through the one shared audio mix. Synthetic constant tone (no capture); levels are MEASURED on exports
 /// (decoded to float), not listened to.
 final class AudioEditTests: XCTestCase {
-    static let dir = "\(TestRoot.path)/synthetic/audioedit"
+    static let dir = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic/audioedit"
     static var tone: String { dir + "/tone_440_4s.caf" }
     var blue: String { CompositionTests.dir + "/blue.mov" }
 
@@ -33,7 +33,7 @@ final class AudioEditTests: XCTestCase {
         return stride(from: 0, to: x.count - w, by: w).map { i in 10 * log10(x[i..<i + w].reduce(0.0) { $0 + Double($1 * $1) } / Double(w) + 1e-24) }
     }
     func export(_ p: SadrogProject) async throws -> [Double] {
-        let u = URL(fileURLWithPath: "\(TestRoot.path)/temp/ae-\(UUID().uuidString).mov"); defer { try? FileManager.default.removeItem(at: u) }
+        let u = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/ae-\(UUID().uuidString).mov"); defer { try? FileManager.default.removeItem(at: u) }
         try await ProjectExporter.export(p, to: u); return try await envelope(u)
     }
     func project(_ e: AudioEdit?) -> SadrogProject {

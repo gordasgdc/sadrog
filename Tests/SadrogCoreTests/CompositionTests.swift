@@ -6,12 +6,12 @@ import AVFoundation
 /// Pixel-level check that the exported composition matches the placement maths (solid-colour sources, known geometry).
 /// Needs the synthetic colour clips under the external SADROG folder; skipped when the volume is not mounted.
 final class CompositionTests: XCTestCase {
-    static let dir = "\(TestRoot.path)/synthetic/testcolors"
+    static let dir = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic/testcolors"
     var blue: String { Self.dir + "/blue.mov" }
     var red: String { Self.dir + "/red.mov" }
 
     func export(_ p: SadrogProject) async throws -> URL {
-        let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/comp-\(UUID().uuidString).mov")
+        let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/comp-\(UUID().uuidString).mov")
         try await ProjectExporter.export(p, to: out); return out
     }
     func pixel(_ url: URL, at t: Double, x fx: Double, y fy: Double) async throws -> (Double, Double, Double) {
@@ -73,13 +73,13 @@ final class CompositionTests: XCTestCase {
 
     /// Demo project (main + overlay with transform/opacity + independent audio): saved file reopens identically and the exported frame matches the preview frame.
     func testDemoProjectReopenAndExportMatchesPreview() async throws {
-        let dir = URL(fileURLWithPath: "\(TestRoot.path)/ui_screens/dest_editor/SADROG-5A1D0C11-2B7E-4C55-9A31-0E5D7F2A6B90/project.sadrogproj")
+        let dir = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/ui_screens/dest_editor/SADROG-5A1D0C11-2B7E-4C55-9A31-0E5D7F2A6B90/project.sadrogproj")
         try XCTSkipUnless(FileManager.default.fileExists(atPath: dir.path), "demo project not available")
         let p = try ProjectStore.load(from: dir)
         XCTAssertEqual(p.layers.count, 2); let ov = p.layers.first { $0.kind == .video }!
         XCTAssertTrue(ov.transform.scale > 0 && ov.transform.opacity > 0)       // the demo project is edited by hand during UI checks, so no fixed values here
         var short = p; short.hiddenLanes = []; short.mutedLanes = []; short.clips = Array(p.clips.prefix(2)); short.layers = p.layers.map { var l = $0; l.duration = min(l.duration, 9); return l }
-        let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/demo-\(UUID().uuidString).mov")
+        let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/demo-\(UUID().uuidString).mov")
         try await ProjectExporter.export(short, to: out); defer { try? FileManager.default.removeItem(at: out) }
         let built = try await CompositionBuilder.buildFull(short)
         let pg = AVAssetImageGenerator(asset: built.composition); pg.videoComposition = built.videoComposition(for: short)

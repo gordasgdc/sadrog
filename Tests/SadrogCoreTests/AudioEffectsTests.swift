@@ -7,7 +7,7 @@ import AudioToolbox
 /// Audio Unit chains on recording sources: model, catalog, offline render (out of process), delay policy, cache key, cancel, missing plugin,
 /// export. Synthetic voice + Apple's own effects (always installed); 4LO checks run only when those plugins are installed. Measured, not listened to.
 final class AudioEffectsTests: XCTestCase {
-    static let root = "\(TestRoot.path)"
+    static let root = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG"
     static let voice = root + "/synthetic/effects/voice_mono_6s.caf"
     let work = URL(fileURLWithPath: "\(root)/temp/fx-\(UUID().uuidString)")
     override func setUp() async throws { try FileManager.default.createDirectory(at: work, withIntermediateDirectories: true); try Self.makeVoice() }

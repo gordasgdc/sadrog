@@ -1,6 +1,7 @@
 // SADROG — Copyright (C) 2026 Dumitru Cristinel Gordas and contributors. GPL-3.0-or-later.
 import SwiftUI
 import AppKit
+import Carbon.HIToolbox
 import AVFoundation
 import SadrogCore
 
@@ -88,9 +89,11 @@ final class RecorderModel: ObservableObject {
     private let capturer = ScreenCapturer()
     /// The pointer path is read ONLY while a recording runs and ONLY when the user turned `sadrog.collectMouse` on (off by default): position and button, never keys.
     private var mouseRecorder: MouseRecorder?
+    private var keyRecorder: KeyRecorder?, keyMonitor: Any?
     private var windowRecorder: WindowRecorder?
     static let collectWindowKey = "sadrog.collectWindow"
     static let collectMouseKey = "sadrog.collectMouse"
+    static let collectKeysKey = "sadrog.collectKeys"
     private let levelBox = LevelBox()
     private var timer: Timer?, meterTimer: Timer?
     private var startedAt = Date()
@@ -327,13 +330,39 @@ final class RecorderModel: ObservableObject {
         guard let d = destination else { freeGB = nil; unfinished = []; return }
         freeGB = (try? Destination(url: d).availableBytes()).map { Double($0) / 1e9 }
         let active = recording ? capturer.writer?.journal.id : nil
-        editable = SessionJournal.editable(under: d)
+        let hidden = recentExcluded
+        editable = SessionJournal.editable(under: d).filter { !hidden.contains($0.folder.path) }
         let fm = FileManager.default
         documents = ((try? fm.contentsOfDirectory(at: d, includingPropertiesForKeys: [.contentModificationDateKey])) ?? [])
+            .filter { !hidden.contains($0.path) }
             .filter { fm.fileExists(atPath: $0.appendingPathComponent("project.sadrogproj").path) && !fm.fileExists(atPath: $0.appendingPathComponent("session.json").path) }
             .compactMap { u in (try? ProjectStore.load(from: u.appendingPathComponent("project.sadrogproj"))).map { (u, $0.name, (try? u.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast) } }
             .sorted { $0.date > $1.date }
         unfinished = SessionJournal.unfinished(under: d).map(\.journal).filter { $0.id != active }
+    }
+    // MARK: Recent list management (never touches the files)
+    private static let excludedKey = "recent.excluded"
+    /// Folders the user removed from Recent; the scan skips them so they do not come back at the next refresh.
+    var recentExcluded: Set<String> { Set(UserDefaults.standard.stringArray(forKey: Self.excludedKey) ?? []) }
+    func removeFromRecent(_ folder: URL) {
+        var set = recentExcluded; set.insert(folder.path)
+        UserDefaults.standard.set(Array(set).sorted(), forKey: Self.excludedKey)
+        updateDestination()
+    }
+    /// The user points at where a missing document went; a folder that really holds a project is opened (the Recent entry is rebuilt by the next scan).
+    func relocateDocument(missing: URL) async {
+        let p = NSOpenPanel(); p.canChooseDirectories = true; p.canChooseFiles = false; p.prompt = T("Alege")
+        p.message = L10n.f("Alege folderul în care se află acum «%@» (cel care conține project.sadrogproj)", missing.lastPathComponent)
+        guard p.runModal() == .OK, let u = p.url else { return }
+        guard FileManager.default.fileExists(atPath: u.appendingPathComponent("project.sadrogproj").path) else { message = T("Folderul ales nu conține un proiect SADROG (project.sadrogproj)."); return }
+        await openDocument(u)
+    }
+    /// Shows the exact item in Finder; a missing one reveals the nearest existing parent and says so.
+    @discardableResult func revealInFinder(_ item: URL) -> Bool {
+        if FileManager.default.fileExists(atPath: item.path) { NSWorkspace.shared.activateFileViewerSelecting([item]); return true }
+        var p = item.deletingLastPathComponent()
+        while !FileManager.default.fileExists(atPath: p.path), p.path != "/" { p = p.deletingLastPathComponent() }
+        NSWorkspace.shared.open(p); message = L10n.f("«%@» lipsește de pe disc, deci NU l-am putut arăta. Am deschis doar folderul existent %@. Folosește «Localizează…» ca să-l găsești.", item.lastPathComponent, p.path); return false
     }
     func chooseDestination() {
         let p = NSOpenPanel(); p.canChooseDirectories = true; p.canChooseFiles = false; p.canCreateDirectories = true
@@ -378,10 +407,10 @@ final class RecorderModel: ObservableObject {
             if let m = f?.message, !m.isEmpty { self.message = m }
         }
         f.onStartAbandoned = { [weak self] in self?.capturer.releasePreparedCameras(); self?.preparingCameras = false }
-        f.pauseCapture = { [weak self] in self?.mouseRecorder?.pause(); self?.windowRecorder?.pause(); self?.capturer.pause(); self?.pausedAt = Date() }
+        f.pauseCapture = { [weak self] in self?.mouseRecorder?.pause(); self?.keyRecorder?.pause(); self?.windowRecorder?.pause(); self?.capturer.pause(); self?.pausedAt = Date() }
         f.resumeCapture = { [weak self] in
             guard let self else { return }
-            self.mouseRecorder?.resume(); self.windowRecorder?.resume(); self.capturer.resume(); if let p = self.pausedAt { self.pausedTotal += Date().timeIntervalSince(p) }; self.pausedAt = nil
+            self.mouseRecorder?.resume(); self.keyRecorder?.resume(); self.windowRecorder?.resume(); self.capturer.resume(); if let p = self.pausedAt { self.pausedTotal += Date().timeIntervalSince(p) }; self.pausedAt = nil
         }
         return f
     }()
@@ -445,6 +474,17 @@ final class RecorderModel: ObservableObject {
             let r = MouseRecorder(frame: f) { (CGEvent(source: nil)?.location ?? .zero, CGEventSource.buttonState(.combinedSessionState, button: .left)) }
             mouseRecorder = r; r.start()
         }
+        // key COMMANDS (⌘/⌃/⌥ chords and function keys) only, for a recording that opted in (own setting, default off) and only with the system's Input Monitoring permission;
+        // every key press reaches the monitor (the system gives it to any app with the permission) and is classified at once by KeyCapture: only a command label is kept, nothing typed is stored
+        if UserDefaults.standard.bool(forKey: Self.collectKeysKey) {
+            if CGPreflightListenEventAccess() {
+                let r = KeyRecorder(); keyRecorder = r; r.start()
+                keyMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { e in
+                    let f = e.modifierFlags      // the system delivers every key press here; KeyCapture decides at once and only a command label can survive
+                    if let l = KeyCapture.label(keyCode: e.keyCode, characters: e.charactersIgnoringModifiers, command: f.contains(.command), control: f.contains(.control), option: f.contains(.option), shift: f.contains(.shift), secureInput: IsSecureEventInputEnabled()) { r.record(label: l) }
+                }
+            } else { DiagnosticLog("keys").error("comenzile de tastă nu se salvează: lipsește permisiunea Monitorizare intrare") }
+        }
         // the front window is read only for a recording that opted in (own setting, default off); geometry and owner only, never the title
         if UserDefaults.standard.bool(forKey: Self.collectWindowKey), let f = selectedSource?.frame, f.width > 0 {
             let r = WindowRecorder(frame: f) { ForegroundWindow.systemFront(pidToBundle: { NSRunningApplication(processIdentifier: $0)?.bundleIdentifier }) }
@@ -473,10 +513,12 @@ final class RecorderModel: ObservableObject {
     private func stopCapture(cause: StopCause, request: String?) async {
         timer?.invalidate(); timer = nil
         if simulatedCapture { timer?.invalidate(); timer = nil; writeSimulatedSession(); updateDestination(); return }
-        let folder = capturer.writer?.folder, mouse = mouseRecorder, windows = windowRecorder; mouseRecorder = nil; windowRecorder = nil
+        let folder = capturer.writer?.folder, mouse = mouseRecorder, windows = windowRecorder, keys = keyRecorder; mouseRecorder = nil; windowRecorder = nil; keyRecorder = nil
+        if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
         do { try await capturer.stop(cause: cause, request: request) }
         catch { message = L10n.f("Oprit cu eroare: %@", "\(error.localizedDescription)") }
         if let mouse, let folder { let t = mouse.stop(); if !t.samples.isEmpty { do { try t.save(to: folder) } catch { DiagnosticLog("mouse").error("mouse.json nu a putut fi scris: \(error.localizedDescription)") } } } else { _ = mouse?.stop() }
+        if let keys, let folder { let t = keys.stop(); if !t.strokes.isEmpty { do { try t.save(to: folder) } catch { DiagnosticLog("keys").error("keys.json nu a putut fi scris: \(error.localizedDescription)") } } }
         if let windows, let folder { var t = windows.stop(); t.mediaFile = "capture.mov"; if !t.samples.isEmpty { do { try t.save(to: folder) } catch { DiagnosticLog("windows").error("windows.json nu a putut fi scris: \(error.localizedDescription)") } } } else { _ = windows?.stop() }
         updateDestination()
     }

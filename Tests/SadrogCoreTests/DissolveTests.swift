@@ -5,11 +5,10 @@ import AVFoundation
 
 /// Cross-dissolve: the model rules (overlap, ripple, limits, undo, file), and the pictures/sound the exporter really writes (synthetic red/blue sources).
 final class DissolveTests: XCTestCase {
-    let dir = "\(TestRoot.path)/synthetic/"
+    let dir = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/synthetic/"
     var red: String { dir + "testcolors/red.mov" }
     var blue: String { dir + "testcolors/blue.mov" }
     var beep: String { dir + "inout/colors_beep.mov" }
-    override func setUpWithError() throws { try XCTSkipUnless(FileManager.default.fileExists(atPath: red), "needs synthetic colour clips (not distributed)") }
     func editor(_ lens: [Double] = [2, 2]) -> ProjectEditor {
         ProjectEditor(project: SadrogProject(name: "d", clips: lens.enumerated().map { Clip(media: $0.offset % 2 == 0 ? red : blue, sourceStart: 0, duration: $0.element) }))
     }
@@ -62,7 +61,7 @@ final class DissolveTests: XCTestCase {
     }
     func testExportedPictureBlendsRedIntoBlue() async throws {
         let ed = editor(); ed.setDissolve(clip: ed.project.clips[1].id, seconds: 1)
-        let out = URL(fileURLWithPath: "\(TestRoot.path)/temp/dissolve-\(UUID().uuidString).mov")
+        let out = URL(fileURLWithPath: "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp/dissolve-\(UUID().uuidString).mov")
         try await ProjectExporter.export(ed.project, to: out, mode: .reencode(preset: AVAssetExportPresetHighestQuality)); defer { try? FileManager.default.removeItem(at: out) }
         let d = try await AVURLAsset(url: out).load(.duration).seconds; XCTAssertEqual(d, 3, accuracy: 0.1)
         var p = try await pixel(out, at: 0.5); XCTAssertGreaterThan(p.r, 200, "before: red \(p)"); XCTAssertLessThan(p.b, 60)

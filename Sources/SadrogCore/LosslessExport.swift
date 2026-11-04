@@ -71,7 +71,7 @@ enum LosslessWriter {
         var m = LosslessManifest(fps: (vcomp.frameDuration.seconds > 0 ? 1 / vcomp.frameDuration.seconds : 30), width: w0, height: h0, frameCount: n, rangeStartSeconds: start, rangeEndSeconds: start + total,
                                  firstFrameTimeSeconds: firstT, lastFrameTimeSeconds: lastT)
         if !aTracks.isEmpty {
-            let a = try await writeAudio(comp, aTracks, mix, tr, folder.appendingPathComponent("audio.wav"))
+            let a = try await writeAudio(comp, aTracks, mix, tr, folder.appendingPathComponent("audio.wav"), pitch: built.pitch)
             m.audioFile = "audio.wav"; m.audioSampleRate = 48000; m.audioChannels = 2; m.audioFormat = "PCM signed 32-bit integer little-endian (WAV)"; m.audioStartOffsetSeconds = 0; m.audioFrames = a
         }
         let enc = JSONEncoder(); enc.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -81,9 +81,9 @@ enum LosslessWriter {
     /// Writes the mixed sound. Sample times are REBASED to start at zero (the reader hands them out on the composition clock, i.e. starting at In), so the WAV
     /// has no leading gap and its first sample lines up with the first frame. Every append is checked, the reader and the writer state are read, and cancelling
     /// stops the wait for the writer too. Returns the number of audio frames written.
-    private static func writeAudio(_ comp: AVAsset, _ tracks: [AVAssetTrack], _ mix: AVAudioMix?, _ tr: CMTimeRange?, _ url: URL) async throws -> Int {
+    private static func writeAudio(_ comp: AVAsset, _ tracks: [AVAssetTrack], _ mix: AVAudioMix?, _ tr: CMTimeRange?, _ url: URL, pitch: AVAudioTimePitchAlgorithm) async throws -> Int {
         let reader = try AVAssetReader(asset: comp)
-        let out = AVAssetReaderAudioMixOutput(audioTracks: tracks, audioSettings: readPCM); out.audioMix = mix; reader.add(out); if let tr { reader.timeRange = tr }
+        let out = AVAssetReaderAudioMixOutput(audioTracks: tracks, audioSettings: readPCM); out.audioMix = mix; out.audioTimePitchAlgorithm = pitch; reader.add(out); if let tr { reader.timeRange = tr }
         let writer = try AVAssetWriter(outputURL: url, fileType: .wav)
         let input = AVAssetWriterInput(mediaType: .audio, outputSettings: pcm); input.expectsMediaDataInRealTime = false; writer.add(input)
         guard writer.startWriting() else { throw writer.error ?? CocoaError(.fileWriteUnknown) }
@@ -152,6 +152,7 @@ public extension ProjectExporter {
         case .lossless: preset = ""
         }
         guard let ex = AVAssetExportSession(asset: built.composition, presetName: preset) else { throw CocoaError(.fileWriteUnknown) }
+        ex.audioTimePitchAlgorithm = built.pitch
         if let vc { ex.videoComposition = vc }
         if let mix { ex.audioMix = mix }
         if let range { ex.timeRange = CMTimeRange(start: CMTime(seconds: range.lowerBound, preferredTimescale: 6000), end: CMTime(seconds: range.upperBound, preferredTimescale: 6000)) }

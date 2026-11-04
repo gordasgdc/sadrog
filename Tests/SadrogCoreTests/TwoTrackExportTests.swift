@@ -17,7 +17,7 @@ final class TwoTrackExportTests: XCTestCase {
     }
     func testUnmutedExportKeepsMicrophone() async throws {
         try XCTSkipUnless(FileManager.default.fileExists(atPath: RecordingAudioTests.c5), "C5 not available")
-        let dir = "\(TestRoot.path)/temp"
+        let dir = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp"
         func run(_ muted: Set<Int>) async throws -> (rms: Double, tracks: Int) {
             var p = SadrogProject(name: "t", clips: [Clip(media: RecordingAudioTests.c5, sourceStart: 10, duration: 4)])
             p.mutedSources = muted
@@ -53,7 +53,7 @@ final class TwoTrackExportTests: XCTestCase {
 /// Fully synthetic: a source with TWO audio tracks (440 Hz at 0.25 and 1000 Hz at 0.10, stereo 48 kHz). The export must carry both at their known
 /// amplitudes (Goertzel on the first channel, steady window), follow mute and per-source gain, and stay as long as the video. No private material.
 final class SyntheticTwoTrackTests: XCTestCase {
-    static let dir = "\(TestRoot.path)/temp"
+    static let dir = "/Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/temp"
     static var source: String { dir + "/two_tracks_440_1000.mov" }
 
     static func tone(_ path: String, hz: Double, amp: Double) throws {

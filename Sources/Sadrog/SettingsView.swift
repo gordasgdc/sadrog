@@ -10,6 +10,7 @@ struct SettingsView: View {
     @AppStorage(AppTheme.key) private var theme = AppTheme.dark.rawValue
     @AppStorage(RecorderModel.collectMouseKey) private var collectMouse = false
     @AppStorage(RecorderModel.collectWindowKey) private var collectWindow = false
+    @AppStorage(RecorderModel.collectKeysKey) private var collectKeys = false
     @State private var presets = SettingsView.store()
     static func store() -> ExportPresetStore { ExportPresetStore(url: AppInfo.supportFolder.appendingPathComponent("ExportPresets.json")) }
     var body: some View {
@@ -33,6 +34,12 @@ struct SettingsView: View {
             }
             Text(T("Doar poziția și clicurile cursorului, doar cât ține înregistrarea; nu se citește tastatura și nimic nu pornește la deschiderea aplicației. Le folosești apoi în editor: evidențiere, cercuri la clic, zoom care urmărește cursorul."))
                 .font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
+            row(T("Salvează comenzile de tastatură")) {
+                Toggle("", isOn: Binding(get: { collectKeys }, set: { on in collectKeys = on; if on, !CGPreflightListenEventAccess() { _ = CGRequestListenEventAccess() } })).labelsHidden().toggleStyle(.switch).controlSize(.small)
+                    .accessibilityHint(T("Doar combinațiile cu ⌘, ⌃ sau ⌥ și tastele funcționale, doar cât înregistrezi; celelalte taste sunt ignorate pe loc și nu se păstrează"))
+            }
+            Text(T("Doar comenzile (de exemplu ⌘K) și tastele funcționale, doar cât ține înregistrarea, ca să le poți arăta în editor. Sistemul trimite aplicației toate apăsările de taste cât ține înregistrarea; fiecare e clasificată pe loc și se păstrează doar eticheta unei comenzi — textul scris și tastele simple se aruncă și nu ajung în niciun fișier. Cât timp un câmp securizat (parolă) cere Secure Input, sistemul nu trimite taste și nu se salvează nimic. Cere permisiunea Monitorizare intrare; nimic nu pornește la deschiderea aplicației."))
+                .font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
             row(T("Salvează fereastra din prim-plan")) {
                 Toggle("", isOn: $collectWindow).labelsHidden().toggleStyle(.switch).controlSize(.small)
                     .accessibilityHint(T("Poziția ferestrei din față și numele aplicației, doar cât înregistrezi; fără titluri sau conținut"))
@@ -54,10 +61,12 @@ struct SettingsView: View {
             }
             Text(T("Cu ce preset pornește fereastra de export. Presetele personale se salvează din fereastra de export, în modul Avansat."))
                 .font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
+            section(T("Comenzi rapide"))
+            ShortcutsSettings()
             section(T("Despre"))
             row(T("Versiune")) { Text(AppInfo.fullVersion).font(Theme.F.caption).foregroundStyle(Theme.C.textDim).multilineTextAlignment(.trailing).fixedSize(horizontal: false, vertical: true).textSelection(.enabled) }
         }
-        .padding(20).frame(width: 480).background(Theme.C.bg1).appTheme()
+        .padding(20).frame(width: 560).background(Theme.C.bg1).appTheme()
     }
     private func section(_ t: String) -> some View {
         VStack(alignment: .leading, spacing: 4) { Text(t.uppercased()).font(Theme.F.caption.weight(.semibold)).foregroundStyle(Theme.C.textDim).padding(.top, 4); HairlineDivider() }

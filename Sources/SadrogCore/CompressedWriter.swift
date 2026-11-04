@@ -39,7 +39,7 @@ enum CompressedWriter {
         let vOut = AVAssetReaderVideoCompositionOutput(videoTracks: vTracks, videoSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA])
         vOut.videoComposition = vcomp; reader.add(vOut)
         var aOut: AVAssetReaderAudioMixOutput?
-        if !aTracks.isEmpty { let o = AVAssetReaderAudioMixOutput(audioTracks: aTracks, audioSettings: LosslessWriter.readPCM); o.audioMix = built.audioMix(for: q); reader.add(o); aOut = o }
+        if !aTracks.isEmpty { let o = AVAssetReaderAudioMixOutput(audioTracks: aTracks, audioSettings: LosslessWriter.readPCM); o.audioMix = built.audioMix(for: q); o.audioTimePitchAlgorithm = built.pitch; reader.add(o); aOut = o }
         if let tr { reader.timeRange = tr }
 
         let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
