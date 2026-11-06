@@ -60,7 +60,14 @@ public struct ExportPlan: Equatable, Sendable {
             pl.notes.append(T("Fără pierderi față de cadrele procesate RGB pe 8 biți și mixul proiectului (după scalare și efecte), nu față de sursa originală."))
         }
         let doc = (Int(documentSize.width), Int(documentSize.height))
-        if s.usesAdvancedWriter, let m = s.clampedMbps { pl.notes.append(L10n.f("Rată video medie țintă: %@ Mb/s; encoderul o poate depăși sau subdepăși pe scene foarte simple sau foarte complexe.", m.formatted(.number.precision(.fractionLength(0...1))))) }
+        if s.mode == .compressed {
+            switch s.videoRate(duration: dur) {
+            case .bitrate(let m):
+                pl.notes.append(L10n.f("Rată video medie țintă: %@ Mb/s; encoderul o poate depăși sau subdepăși pe scene foarte simple sau foarte complexe.", m.formatted(.number.precision(.fractionLength(0...1)))))
+                if s.targetMB != nil && s.videoMbps == nil { pl.notes.append(T("Mărime țintă: encoderul lucrează într-o singură trecere, deci mărimea finală este apropiată de țintă, nu garantată.")) }
+            case .quality: pl.notes.append(T("Calitate constantă: mărimea depinde de conținut (imagine statică = fișier mic, mișcare multă = fișier mai mare)."))
+            }
+        }
         if o.w * o.h > doc.0 * doc.1 { pl.notes.append(T("Mărire: imaginea este interpolată; nu apare detaliu nou.")) }
         let da = documentSize.width / max(documentSize.height, 1), oa = Double(o.w) / Double(max(o.h, 1))
         if abs(da - oa) > 0.01 { pl.notes.append(T("Altă proporție decât documentul: imaginea se încadrează întreagă, cu margini; pozițiile relative ale elementelor se păstrează.")) }

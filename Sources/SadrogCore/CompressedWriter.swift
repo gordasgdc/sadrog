@@ -7,14 +7,24 @@ import CoreMedia
 /// Same source of frames and sound as every other processed export (video composition + audio mix of the built composition); sample times are rebased to start at zero.
 /// Anything left nil keeps a sensible default (video: the encoder's own rate control; audio: 128 kb/s AAC). The file is removed when anything fails or is cancelled.
 enum CompressedWriter {
-    static func videoSettings(_ s: ExportSettings, width: Int, height: Int) -> [String: Any] {
+    /// `duration` = seconds that will be written (needed to turn a size target into an average bit rate); `fps` = the output rate (lets the encoder plan its frame types).
+    static func videoSettings(_ s: ExportSettings, width: Int, height: Int, duration: Double = 0, fps: Double = 0) -> [String: Any] {
         var v: [String: Any] = [AVVideoCodecKey: s.codec == .hevc ? AVVideoCodecType.hevc : AVVideoCodecType.h264, AVVideoWidthKey: width, AVVideoHeightKey: height]
         var c: [String: Any] = [:]
-        if let m = s.clampedMbps { c[AVVideoAverageBitRateKey] = Int(m * 1_000_000) }
-        if let k = s.clampedKeyframe { c[AVVideoMaxKeyFrameIntervalDurationKey] = k }
+        switch s.videoRate(duration: duration) {
+        case .bitrate(let m): c[AVVideoAverageBitRateKey] = Int(m * 1_000_000)
+        case .quality(let q): c[AVVideoQualityKey] = q
+        }
+        c[AVVideoMaxKeyFrameIntervalDurationKey] = s.clampedKeyframe ?? ExportSettings.defaultKeyframeSeconds
+        if fps > 0 { c[AVVideoExpectedSourceFrameRateKey] = fps }
         if s.codec == .h264 { c[AVVideoProfileLevelKey] = AVVideoProfileLevelH264HighAutoLevel }
-        if !c.isEmpty { v[AVVideoCompressionPropertiesKey] = c }
+        v[AVVideoCompressionPropertiesKey] = c
+        // The composition is rendered in Rec.709 SDR (see CompositionBuilder); say so in the file instead of leaving it to the encoder's guess. No conversion happens: the same primaries, transfer and matrix.
+        v[AVVideoColorPropertiesKey] = [AVVideoColorPrimariesKey: AVVideoColorPrimaries_ITU_R_709_2, AVVideoTransferFunctionKey: AVVideoTransferFunction_ITU_R_709_2, AVVideoYCbCrMatrixKey: AVVideoYCbCrMatrix_ITU_R_709_2]
         return v
+    }
+    private static func describe(_ r: ExportSettings.VideoRate) -> String {
+        switch r { case .quality(let q): return "constant quality \(q)"; case .bitrate(let m): return "average \(String(format: "%.2f", m)) Mb/s" }
     }
     static func audioSettings(_ s: ExportSettings) -> [String: Any] {
         [AVFormatIDKey: kAudioFormatMPEG4AAC, AVSampleRateKey: 48000, AVNumberOfChannelsKey: 2, AVEncoderBitRateKey: (s.clampedAudioKbps ?? 128) * 1000]
@@ -23,7 +33,12 @@ enum CompressedWriter {
     static func write(_ built: BuiltComposition, project q: SadrogProject, to url: URL, settings s: ExportSettings, range: ClosedRange<Double>?, progress: (@Sendable (Double) -> Void)?) async throws {
         let fm = FileManager.default
         guard !fm.fileExists(atPath: url.path) else { throw CocoaError(.fileWriteFileExists) }      // never deletes a file it did not create
-        do { try await run(built, q, url, s, range, progress) } catch { try? fm.removeItem(at: url); throw error }
+        let log = DiagnosticLog("export"), t0 = Date()
+        let seconds = range.map { $0.upperBound - $0.lowerBound } ?? built.composition.duration.seconds
+        log.info("export start: \(s.codec.rawValue) \(describe(s.videoRate(duration: seconds))), keyframes \(s.clampedKeyframe ?? ExportSettings.defaultKeyframeSeconds) s, sound \(s.clampedAudioKbps ?? 128) kb/s, \(String(format: "%.1f", seconds)) s")
+        do { try await run(built, q, url, s, range, progress) } catch { try? fm.removeItem(at: url); log.error("export failed: \(error.localizedDescription)"); throw error }
+        let bytes = (try? fm.attributesOfItem(atPath: url.path)[.size] as? Int) ?? 0, el = Date().timeIntervalSince(t0)
+        log.info("export done: \(bytes) bytes, \(String(format: "%.2f", Double(bytes) * 8 / max(seconds, 0.001) / 1e6)) Mb/s average, \(String(format: "%.1f", el)) s (\(String(format: "%.1f", seconds / max(el, 0.001)))× real time)")
     }
 
     private static func run(_ built: BuiltComposition, _ q: SadrogProject, _ url: URL, _ s: ExportSettings, _ range: ClosedRange<Double>?, _ progress: (@Sendable (Double) -> Void)?) async throws {
@@ -44,7 +59,7 @@ enum CompressedWriter {
 
         let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
         let w = Int(vcomp.renderSize.width), h = Int(vcomp.renderSize.height)
-        let vIn = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings(s, width: w, height: h)); vIn.expectsMediaDataInRealTime = false
+        let vIn = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings(s, width: w, height: h, duration: total, fps: vcomp.frameDuration.seconds > 0 ? 1 / vcomp.frameDuration.seconds : 0)); vIn.expectsMediaDataInRealTime = false
         guard writer.canAdd(vIn) else { throw CocoaError(.fileWriteUnknown) }
         writer.add(vIn)
         var aIn: AVAssetWriterInput?
@@ -71,39 +86,40 @@ enum CompressedWriter {
         // but its input is not marked finished, that wait never ends — so each input is finished the moment its stream runs out, and a wait that makes no
         // progress for `stallLimit` is an error instead of an endless loop.
         let stallLimit: TimeInterval = 120
-        func wait(_ input: AVAssetWriterInput, _ name: String) async throws {
-            let since = Date()
-            while !input.isReadyForMoreMediaData {
-                try Task.checkCancellation()
-                if writer.status == .failed { throw writer.error ?? CocoaError(.fileWriteUnknown) }
-                if Date().timeIntervalSince(since) > stallLimit {
-                    DiagnosticLog("export").error("writer stalled on the \(name) input: status \(writer.status.rawValue), video ready \(vIn.isReadyForMoreMediaData) finished \(vFinished), sound ready \(aIn?.isReadyForMoreMediaData ?? false) finished \(aFinished)")
-                    throw CompressedWriterError.stalled
-                }
-                try await Task.sleep(nanoseconds: 1_000_000)
-            }
-            try Task.checkCancellation()
-        }
         var vDone = false, aDone = aOut == nil, vFinished = false, aFinished = false
         func finishExhausted() { if vDone && !vFinished { vIn.markAsFinished(); vFinished = true }; if aDone && !aFinished { aIn?.markAsFinished(); aFinished = true } }
         // Video and sound are fed alternately by time, so the writer never has to buffer one stream far ahead of the other.
         var vNext: CMSampleBuffer? = vOut.copyNextSampleBuffer(), aNext: CMSampleBuffer? = aOut?.copyNextSampleBuffer()
         vDone = vNext == nil; aDone = aNext == nil
         finishExhausted()
+        // The stream whose next sample is EARLIER goes first, but never at the price of waiting: if its input is not ready and the other input is, the other one is fed instead.
+        // (Waiting on the preferred input alone could deadlock — the writer keeps video "not ready" until the sound has delivered past the frame, while the sound was held back
+        // for the video: logged as "writer stalled" on 2026-11-01 and on busy machines.) Only when NEITHER input accepts data does the loop sleep, and `stallLimit` still ends it.
+        var idleSince: Date?
         while !vDone || !aDone {
+            try Task.checkCancellation()
+            if writer.status == .failed { throw writer.error ?? CocoaError(.fileWriteUnknown) }
             let vt = vNext.map { CMSampleBufferGetPresentationTimeStamp($0).seconds } ?? .infinity, at = aNext.map { CMSampleBufferGetPresentationTimeStamp($0).seconds } ?? .infinity
-            if !vDone && (aDone || vt <= at), let b = vNext {
-                try await wait(vIn, "video")
+            let videoFirst = !vDone && (aDone || vt <= at)
+            func feedVideo() throws -> Bool {
+                guard !vDone, let b = vNext, vIn.isReadyForMoreMediaData else { return false }
                 guard vIn.append(try rebased(b)) else { throw writer.error ?? CocoaError(.fileWriteUnknown) }
-                progress?(min(0.97, max(0, (vt - origin.seconds) / max(total, 0.001))))
-                vNext = vOut.copyNextSampleBuffer(); vDone = vNext == nil
-                finishExhausted()
-            } else if let b = aNext, let ai = aIn {
-                try await wait(ai, "sound")
+                progress?(min(0.97, max(0, (CMSampleBufferGetPresentationTimeStamp(b).seconds - origin.seconds) / max(total, 0.001))))
+                vNext = vOut.copyNextSampleBuffer(); vDone = vNext == nil; finishExhausted(); return true
+            }
+            func feedSound() throws -> Bool {
+                guard !aDone, let b = aNext, let ai = aIn, ai.isReadyForMoreMediaData else { return false }
                 guard ai.append(try rebased(b)) else { throw writer.error ?? CocoaError(.fileWriteUnknown) }
-                aNext = aOut?.copyNextSampleBuffer(); aDone = aNext == nil
-                finishExhausted()
-            } else { break }
+                aNext = aOut?.copyNextSampleBuffer(); aDone = aNext == nil; finishExhausted(); return true
+            }
+            let moved = videoFirst ? (try feedVideo() || feedSound()) : (try feedSound() || feedVideo())
+            if moved { idleSince = nil; continue }
+            let since = idleSince ?? Date(); idleSince = since
+            if Date().timeIntervalSince(since) > stallLimit {
+                DiagnosticLog("export").error("writer stalled: status \(writer.status.rawValue), video ready \(vIn.isReadyForMoreMediaData) finished \(vFinished), sound ready \(aIn?.isReadyForMoreMediaData ?? false) finished \(aFinished)")
+                throw CompressedWriterError.stalled
+            }
+            try await Task.sleep(nanoseconds: 1_000_000)
         }
         if reader.status == .failed { throw reader.error ?? CocoaError(.fileReadUnknown) }
         try Task.checkCancellation()

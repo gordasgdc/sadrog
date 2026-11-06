@@ -1,5 +1,15 @@
 # SADROG — changelog
 
+## 1.6.0
+- Export, smaller files: compressed video is now written with constant quality by default (new **Control** in Advanced: Quality / Average rate / Target size), key frames every 5 s instead of every 1 s (they were 50–60 % of the bytes of a tutorial export), explicit Rec.709 colour tags. Measured on 60 s of 4K tutorial material (H.264): about 0.9–2 Mb/s at quality Balanced–High versus 15–19 Mb/s before, with the text still readable at 1:1; HEVC is a further 10–38 % smaller. Camera-type motion costs more (7–24 Mb/s at 4K).
+- New preset **Tutorial / screen capture (recommended)** (H.264, quality High, 5 s key frames) and a size estimate shown as a range; **Target size** is an honest one-pass estimate (usually a few percent under), not a guarantee; the encoder has no multi-pass.
+- Fixed: the *Compact 720p* preset and the *medium* tier exported 568×320 (system medium preset) while announcing 1280×720; they now write the announced size. Presets saved before keep their id and meaning (mapped to a quality).
+- Fixed: a rare "writer stalled on the video input" that could freeze an export for two minutes; the feed loop no longer blocks on one stream.
+- Export start, end and failures are now written to the diagnostic log.
+- Project format unchanged. Default export now differs from 1.5.0 (smaller, constant quality); choose *Document* or an explicit rate for the old behaviour.
+- Tests: rate-control rules, size-target arithmetic, quality honoured by both codecs, key-frame distance and colour tags, repaired medium tier, old presets decoding; export suites repeated 4× with no stall. Measurements: docs/EXPORT_MEASUREMENTS.md.
+- Docs: manuals RO/EN/ES and the product page updated in the Advanced export section (rate control, Tutorial preset, size range); the Advanced export screenshot was NOT retaken (screen control was not granted for this lot) and its caption says it predates 1.6.0; README unchanged; install and price text unchanged.
+
 ## 1.5.0
 - Inspector: exclusive tabs (Video, Sound, Time, Cursor), only those that apply to the selection; double-click on a slider (or its reset button) returns it to the neutral value as one Undo step.
 - Timeline: a Volume tool (double-click adds a point, drag for time and level, Delete removes, ⇧ fine, ⌥ without the 0 dB magnet, Esc cancels); fade handles for length and curvature and a crossfade drawn as an X with the real curves and an editable shape; a keyframe band under the selected video clip (click, drag in time, double-click to add, Delete to remove, ⇧ fine, Esc cancels).

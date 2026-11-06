@@ -37,7 +37,7 @@ final class ExportSettingsTests: XCTestCase {
         var s = ExportSettings(); s.size = .longSide(3840)
         let p = SadrogProject(name: "t", clips: [Clip(media: "/a.mov", sourceStart: 0, duration: 4)])
         let pl = ExportPlan.video(p, documentSize: CGSize(width: 1920, height: 1080), documentFPS: 30, settings: s, copyPossible: false)
-        XCTAssertEqual(pl.width, 3840); XCTAssertEqual(pl.height, 2160); XCTAssertEqual(pl.loss, .lossy); XCTAssertEqual(pl.notes.count, 1, "enlargement noted")
+        XCTAssertEqual(pl.width, 3840); XCTAssertEqual(pl.height, 2160); XCTAssertEqual(pl.loss, .lossy); XCTAssertEqual(pl.notes.count, 2, "enlargement noted + the constant-quality note")
         s.mode = .lossless; XCTAssertEqual(ExportPlan.video(p, documentSize: CGSize(width: 1920, height: 1080), documentFPS: 30, settings: s, copyPossible: false).loss, .lossless)
         s.mode = .master; let m = ExportPlan.video(p, documentSize: CGSize(width: 1920, height: 1080), documentFPS: 30, settings: s, copyPossible: false)
         XCTAssertEqual(m.loss, .highQuality, "ProRes is a master, never called lossless"); XCTAssertTrue(m.codec.contains("ProRes"))
@@ -45,7 +45,7 @@ final class ExportSettingsTests: XCTestCase {
         XCTAssertEqual(ExportPlan.video(p, documentSize: CGSize(width: 1920, height: 1080), documentFPS: 30, settings: s, copyPossible: false).notes.count, 1, "copy not possible is said")
         s = ExportSettings(); s.size = .custom(1080, 1920); s.fps = 24
         let v = ExportPlan.video(p, documentSize: CGSize(width: 1920, height: 1080), documentFPS: 30, settings: s, copyPossible: false)
-        XCTAssertEqual(v.width, 1080); XCTAssertEqual(v.height, 1920); XCTAssertEqual(v.fps, 24); XCTAssertEqual(v.notes.count, 2, "other aspect + other rate")
+        XCTAssertEqual(v.width, 1080); XCTAssertEqual(v.height, 1920); XCTAssertEqual(v.fps, 24); XCTAssertEqual(v.notes.count, 3, "other aspect + other rate + the constant-quality note")
         s = ExportSettings(); s.size = .longSide(1920)
         let pt = ExportPlan.video(p, documentSize: CGSize(width: 1080, height: 1920), documentFPS: 30, settings: s, copyPossible: false); XCTAssertEqual(pt.width, 1080); XCTAssertEqual(pt.height, 1920, "portrait keeps its proportions")
     }
@@ -150,7 +150,7 @@ final class ExportSettingsTests: XCTestCase {
         XCTAssertEqual(m.codec, "hevc"); XCTAssertNotNil(m.audioKbps); XCTAssertLessThan(m.audioKbps ?? 999, 110, "64 kb/s AAC requested")
     }
     func testAdvancedLeavesPresetPathAloneAndClampsRanges() {
-        var s = ExportSettings(); XCTAssertFalse(s.usesAdvancedWriter)
+        var s = ExportSettings(); XCTAssertTrue(s.usesAdvancedWriter, "compressed video always goes through the explicit writer (the system presets announced one size and wrote another)")
         s.mode = .master; s.videoMbps = 5; XCTAssertFalse(s.usesAdvancedWriter, "advanced controls exist only for the compressed mode")
         s = ExportSettings(); s.videoMbps = 9999; s.keyframeSeconds = 0; s.audioKbps = 1
         XCTAssertEqual(s.clampedMbps, 200); XCTAssertEqual(s.clampedKeyframe, 0.1); XCTAssertEqual(s.clampedAudioKbps, 64)

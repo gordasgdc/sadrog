@@ -147,7 +147,7 @@ public extension ProjectExporter {
         case .copy:
             guard vc == nil, mix == nil else { throw ExportError.copyNeedsProcessing }
             preset = AVAssetExportPresetPassthrough
-        case .compressed: preset = s.codec == .hevc ? AVAssetExportPresetHEVCHighestQuality : (s.tier == .high ? AVAssetExportPresetHighestQuality : AVAssetExportPresetMediumQuality)
+        case .compressed: throw CocoaError(.fileWriteUnknown)       // unreachable: compressed video is always written by CompressedWriter
         case .master: preset = s.proRes == .p422 ? AVAssetExportPresetAppleProRes422LPCM : AVAssetExportPresetAppleProRes4444LPCM
         case .lossless: preset = ""
         }

@@ -29,11 +29,43 @@ public struct ExportSettings: Equatable, Sendable {
     public var videoMbps: Double?            // average video bit rate, megabits/s (0.5…200)
     public var keyframeSeconds: Double?      // maximum distance between key frames, seconds (0.1…10)
     public var audioKbps: Int?               // AAC bit rate, kilobits/s (64…320)
+    /// Constant-quality rate control (AVVideoQualityKey, 0.2…1): measured to be honoured by both H.264 and HEVC on Apple silicon (monotonic size and SSIM), so the file size follows the CONTENT.
+    public var quality: Double? = QualityStep.high.value
+    /// Target file size in megabytes (video + sound). Turned into an AVERAGE bit rate (one pass — the encoder cannot do several), so the result is an estimate near the target, never a guarantee.
+    public var targetMB: Double?
     public init() {}
 
     public static let videoMbpsRange: ClosedRange<Double> = 0.5...200, keyframeRange: ClosedRange<Double> = 0.1...10, audioKbpsRange: ClosedRange<Int> = 64...320
-    /// True when the chosen controls need the explicit writer (the presets cannot express them). Only the compressed mode has such controls.
-    public var usesAdvancedWriter: Bool { mode == .compressed && (videoMbps != nil || keyframeSeconds != nil || audioKbps != nil) }
+    public static let qualityRange: ClosedRange<Double> = 0.2...1, targetMBRange: ClosedRange<Double> = 1...200_000
+    /// Named quality steps measured on screen-recording tutorials (see docs/EXPORT_MEASUREMENTS.md); the numbers are the encoder's own quality scale, not a percentage of anything.
+    public enum QualityStep: String, CaseIterable, Identifiable, Sendable {
+        case compact, balanced, high, maximum
+        public var id: String { rawValue }
+        public var value: Double { switch self { case .compact: return Self.compactQ; case .balanced: return Self.balancedQ; case .high: return Self.highQ; case .maximum: return Self.maximumQ } }
+        public var title: String { switch self { case .compact: return T("Compactă"); case .balanced: return T("Echilibrată"); case .high: return T("Înaltă"); case .maximum: return T("Maximă") } }
+        static let compactQ = 0.6, balancedQ = 0.7, highQ = 0.8, maximumQ = 0.9
+    }
+    /// Key frames: a screen recording is mostly static, so a key frame every second spends most of the file on pictures that did not change (measured: 51–71 % of the bytes of
+    /// a system-preset export). The default distance keeps seeking fast enough for an editor and for players.
+    public static let defaultKeyframeSeconds = 5.0
+    /// Old stored presets carry only `tier` (system presets). The system presets are no longer used for compressed video (the 'medium' one wrote 568×320 whatever was announced), so the tier maps to a quality.
+    public var legacyQuality: Double { tier == .high ? QualityStep.maximum.value : QualityStep.balanced.value }
+    /// What the video encoder is asked for. An explicit bit rate or a size target (average bit rate) wins over a quality; nothing set = the default quality for the tier.
+    public enum VideoRate: Equatable, Sendable { case quality(Double), bitrate(Double) }
+    public func videoRate(duration: Double) -> VideoRate {
+        if let m = clampedMbps { return .bitrate(m) }
+        if let b = targetBitrateMbps(duration: duration) { return .bitrate(b) }
+        return .quality(clampedQuality ?? legacyQuality)
+    }
+    /// Size target → average video bit rate: the budget (bytes × 8 / seconds) minus the sound and ~1.5 % container overhead, clamped to what the encoder accepts. nil = no target.
+    public func targetBitrateMbps(duration: Double) -> Double? {
+        guard let t = targetMB.map({ min(Self.targetMBRange.upperBound, max(Self.targetMBRange.lowerBound, $0)) }), duration > 0 else { return nil }
+        let audio = Double(clampedAudioKbps ?? 128) * 1000
+        return min(Self.videoMbpsRange.upperBound, max(Self.videoMbpsRange.lowerBound, (t * 1_000_000 * 8 / duration * 0.985 - audio) / 1_000_000))
+    }
+    var clampedQuality: Double? { quality.map { min(Self.qualityRange.upperBound, max(Self.qualityRange.lowerBound, $0)) } }
+    /// Compressed video always goes through the explicit writer: what the sheet announces (size, rate control, key frames) is exactly what is written.
+    public var usesAdvancedWriter: Bool { mode == .compressed }
     var clampedMbps: Double? { videoMbps.map { min(Self.videoMbpsRange.upperBound, max(Self.videoMbpsRange.lowerBound, $0)) } }
     var clampedKeyframe: Double? { keyframeSeconds.map { min(Self.keyframeRange.upperBound, max(Self.keyframeRange.lowerBound, $0)) } }
     var clampedAudioKbps: Int? { audioKbps.map { min(Self.audioKbpsRange.upperBound, max(Self.audioKbpsRange.lowerBound, $0)) } }

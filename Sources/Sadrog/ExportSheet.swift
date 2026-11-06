@@ -74,7 +74,11 @@ struct ExportSheet: View {
         }
     }
     private var estimateLine: String? {
-        ExportEstimate.bytes(plan, settings: m.exportSettings).map { L10n.f("Mărime estimată: ≈ %@ (estimare, nu valoare garantată)", ByteCountFormatter.string(fromByteCount: $0, countStyle: .file)) }
+        if let r = ExportEstimate.qualityRange(plan, settings: m.exportSettings) {
+            func f(_ b: Int64) -> String { ByteCountFormatter.string(fromByteCount: b, countStyle: .file) }
+            return L10n.f("Mărime estimată: %@ – %@ pentru captură de ecran (după conținut); cu video cu mișcare continuă, până la ≈ %@. Estimare, nu valoare garantată.", f(r.low), f(r.high), f(r.motion))
+        }
+        return ExportEstimate.bytes(plan, settings: m.exportSettings).map { L10n.f("Mărime estimată: ≈ %@ (estimare, nu valoare garantată)", ByteCountFormatter.string(fromByteCount: $0, countStyle: .file)) }
     }
     /// The result in one line, before anything is decided: what file, what picture, how long (of the range when only the range is exported).
     private var summary: String {
@@ -151,6 +155,17 @@ struct ExportSheet: View {
         .padding(20).frame(width: 520).background(Theme.C.bg1).appTheme()
     }
     static func clock(_ t: Double) -> String { let s = Int(t.rounded(.down)); return String(format: "%02d:%02d", s / 60, s % 60) }
+    enum RateControl: Hashable { case quality, bitrate, size }
+    private var rateControl: RateControl { m.exportSettings.videoMbps != nil ? .bitrate : (m.exportSettings.targetMB != nil ? .size : .quality) }
+    private func setRateControl(_ r: RateControl) {
+        switch r {
+        case .quality: m.exportSettings.videoMbps = nil; m.exportSettings.targetMB = nil; m.exportSettings.quality = m.exportSettings.quality ?? ExportSettings.QualityStep.balanced.value
+        case .bitrate: m.exportSettings.targetMB = nil; m.exportSettings.videoMbps = m.exportSettings.videoMbps ?? 8
+        case .size: m.exportSettings.videoMbps = nil; m.exportSettings.targetMB = m.exportSettings.targetMB ?? 200
+        }
+    }
+    /// The named step closest to the stored quality (a preset or an old file may hold an in-between value).
+    private var qualityStep: ExportSettings.QualityStep { let q = m.exportSettings.quality ?? m.exportSettings.legacyQuality; return ExportSettings.QualityStep.allCases.min { abs($0.value - q) < abs($1.value - q) }! }
     @State private var sizePick = SizePick.document
     @State private var customW = 1920
     @State private var customH = 1080
@@ -196,23 +211,37 @@ struct ExportSheet: View {
                 field(T("Codec")) {
                     HStack(spacing: 8) {
                         Picker(T("Codec"), selection: s.codec) { Text("H.264").tag(ExportSettings.Codec.h264); Text("HEVC (H.265)").tag(ExportSettings.Codec.hevc) }.labelsHidden().fixedSize().disabled(running)
-                        if m.exportSettings.codec == .h264 {
-                            Picker(T("Calitate"), selection: s.tier) { Text(T("Înaltă")).tag(ExportSettings.Tier.high); Text(T("Medie, fișier mai mic")).tag(ExportSettings.Tier.medium) }.labelsHidden().fixedSize().disabled(running)
-                        }
                     }
                 }
             }
             if m.exportSettings.mode == .compressed {
-                field(T("Rată video")) {
-                    Picker(T("Rată video"), selection: Binding(get: { m.exportSettings.videoMbps ?? 0 }, set: { m.exportSettings.videoMbps = $0 == 0 ? nil : $0 })) {
-                        Text(T("Automată (setarea sistemului)")).tag(0.0)
-                        ForEach([1.0, 2, 4, 6, 8, 12, 20, 35, 50, 100], id: \.self) { Text("\(Int($0)) Mb/s").tag($0) }
-                    }.labelsHidden().fixedSize().disabled(running)
+                field(T("Control")) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Picker(T("Control"), selection: Binding(get: { rateControl }, set: { setRateControl($0) })) {
+                            Text(T("Calitate")).tag(RateControl.quality); Text(T("Rată medie")).tag(RateControl.bitrate); Text(T("Mărime țintă")).tag(RateControl.size)
+                        }.pickerStyle(.segmented).labelsHidden().fixedSize().disabled(running)
+                            .help(T("Calitate: encoderul păstrează aceeași calitate, iar mărimea urmează conținutul. Rată medie: rata video e fixată. Mărime țintă: rata se calculează din durată; o singură trecere, deci mărime apropiată, nu exactă."))
+                        switch rateControl {
+                        case .quality:
+                            Picker(T("Calitate"), selection: Binding(get: { qualityStep }, set: { m.exportSettings.quality = $0.value })) {
+                                ForEach(ExportSettings.QualityStep.allCases) { Text($0.title).tag($0) }
+                            }.labelsHidden().fixedSize().disabled(running)
+                        case .bitrate:
+                            Picker(T("Rată video"), selection: Binding(get: { m.exportSettings.videoMbps ?? 8 }, set: { m.exportSettings.videoMbps = $0; m.exportSettings.targetMB = nil })) {
+                                ForEach([1.0, 2, 4, 6, 8, 12, 20, 35, 50, 100], id: \.self) { Text("\(Int($0)) Mb/s").tag($0) }
+                            }.labelsHidden().fixedSize().disabled(running)
+                        case .size:
+                            HStack(spacing: 6) {
+                                AppTextField(placeholder: "MB", text: Binding(get: { String(Int(m.exportSettings.targetMB ?? 200)) }, set: { if let v = Double($0), v > 0 { m.exportSettings.targetMB = v; m.exportSettings.videoMbps = nil } })).frame(width: 70).disabled(running)
+                                Text("MB").foregroundStyle(Theme.C.textFaint)
+                            }
+                        }
+                    }
                 }
                 field(T("Cadre cheie")) {
                     Picker(T("Cadre cheie"), selection: Binding(get: { m.exportSettings.keyframeSeconds ?? 0 }, set: { m.exportSettings.keyframeSeconds = $0 == 0 ? nil : $0 })) {
-                        Text(T("Automat")).tag(0.0)
-                        ForEach([0.5, 1.0, 2, 5], id: \.self) { Text(L10n.f("la fiecare %@ s", $0.formatted(.number.precision(.fractionLength(0...1))))).tag($0) }
+                        Text(L10n.f("Implicit (%@ s)", "\(Int(ExportSettings.defaultKeyframeSeconds))")).tag(0.0)
+                        ForEach([0.5, 1.0, 2, 5, 10], id: \.self) { Text(L10n.f("la fiecare %@ s", $0.formatted(.number.precision(.fractionLength(0...1))))).tag($0) }
                     }.labelsHidden().fixedSize().disabled(running)
                 }
                 field(T("Rată audio")) {
