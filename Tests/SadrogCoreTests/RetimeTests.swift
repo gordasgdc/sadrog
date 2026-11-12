@@ -153,7 +153,7 @@ final class RetimeTests: XCTestCase {
         try ProjectStore.save(p, to: dir)
         let q = try ProjectStore.load(from: dir)
         XCTAssertEqual(q.clips[0].speed, 3); XCTAssertTrue(q.clips[0].speedMute); XCTAssertEqual(q.layers[0].speed, 0.5); XCTAssertFalse(q.keepPitch)
-        XCTAssertEqual(q.formatVersion, SadrogProject.currentFormat); XCTAssertEqual(SadrogProject.currentFormat, 18)
+        XCTAssertEqual(q.formatVersion, SadrogProject.currentFormat); XCTAssertEqual(SadrogProject.currentFormat, 19)
         let old = #"{"formatVersion":17,"name":"old","clips":[{"id":"1836A1A2-E44E-455B-BBFF-ACA2019A18CD","media":"/x.mov","sourceStart":0,"duration":5}],"layers":[{"id":"1836A1A2-E44E-455B-BBFF-ACA2019A18CE","kind":"audio","media":"/y.m4a","start":0,"sourceStart":0,"duration":2,"transform":{}}]}"#
         let o = try JSONDecoder().decode(SadrogProject.self, from: Data(old.utf8))
         XCTAssertEqual(o.clips[0].speed, 1); XCTAssertEqual(o.layers[0].speed, 1); XCTAssertTrue(o.keepPitch); XCTAssertFalse(Retime.isRetimed(o))

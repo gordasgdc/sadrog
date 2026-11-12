@@ -18,6 +18,8 @@ public struct ExportPlan: Equatable, Sendable {
     public var loss: Loss = .lossy
     public var fps: Double = 0
     public var audio: String = ""
+    /// Compressed video only: true = this Mac's hardware encoder is required for the export; false = software encoding (slower). nil = not applicable.
+    public var hardware: Bool?
     /// Honest notes about the result (enlargement, different proportions, hidden cost), already in the interface language.
     public var notes: [String] = []
 
@@ -51,6 +53,9 @@ public struct ExportPlan: Equatable, Sendable {
         case .copy: break
         case .compressed:
             pl.codec = s.codec == .h264 ? "H.264" : "HEVC (H.265)"; pl.loss = .lossy; pl.audio = "AAC"
+            if s.container == .mp4 { pl.container = "MPEG-4 (.mp4)"; pl.fileExtension = "mp4" }
+            pl.hardware = HardwareEncoder.available(s.codec, width: o.w, height: o.h)
+            if s.audioMono { pl.audio = "AAC mono" }
         case .master:
             pl.codec = s.proRes == .p422 ? "Apple ProRes 422" : "Apple ProRes 4444"; pl.loss = .highQuality; pl.audio = T("PCM necomprimat")
             pl.notes.append(T("ProRes este un master de calitate foarte înaltă, dar tot comprimat: nu este lossless."))

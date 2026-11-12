@@ -17,6 +17,8 @@ public struct ExportSettings: Equatable, Sendable {
     public enum Codec: String, CaseIterable, Identifiable, Sendable { case h264, hevc; public var id: String { rawValue } }
     public enum Tier: String, CaseIterable, Identifiable, Sendable { case high, medium; public var id: String { rawValue } }
     public enum ProRes: String, CaseIterable, Identifiable, Sendable { case p422, p4444; public var id: String { rawValue } }
+    /// File format of a COMPRESSED export. MP4 is what web players and upload forms expect; QuickTime is what editors expect. Same streams either way.
+    public enum Container: String, CaseIterable, Identifiable, Sendable { case mov, mp4; public var id: String { rawValue } }
 
     public var mode: Mode = .compressed
     public var size: Size = .document
@@ -33,6 +35,8 @@ public struct ExportSettings: Equatable, Sendable {
     public var quality: Double? = QualityStep.high.value
     /// Target file size in megabytes (video + sound). Turned into an AVERAGE bit rate (one pass — the encoder cannot do several), so the result is an estimate near the target, never a guarantee.
     public var targetMB: Double?
+    public var container: Container = .mov   // compressed mode only (ProRes and copy stay QuickTime)
+    public var audioMono = false             // compressed mode only: the mix is written as one channel instead of stereo
     public init() {}
 
     public static let videoMbpsRange: ClosedRange<Double> = 0.5...200, keyframeRange: ClosedRange<Double> = 0.1...10, audioKbpsRange: ClosedRange<Int> = 64...320

@@ -389,6 +389,7 @@ public struct Layer: Codable, Equatable, Identifiable, Sendable {
     public var audio: AudioEdit?              // sound edits (audio items); nil = neutral
     public var crop: CircleCrop?              // „Prezentator în cerc” (video items); nil = the full rectangle
     public var rectCrop: RectCrop?            // rectangular crop of the picture (video items); nil = uncropped. Ignored while the circle crop is on.
+    public var picture: PictureAdjust?        // colour controls and person background (video items, format 19); nil = neutral
     /// Row of the item inside its lane (0 = the first V2 / A2 row). Items overlap only on DIFFERENT rows; a higher video row is drawn on top.
     /// nil (older projects) = row 0.
     public var track: Int?
@@ -423,6 +424,7 @@ public struct Clip: Codable, Equatable, Identifiable, Sendable {
     public var audio: AudioEdit?              // fades of the linked sound (A1); nil = neutral
     public var crop: CircleCrop?              // „Prezentator în cerc”; nil = the full rectangle
     public var rectCrop: RectCrop?            // rectangular crop of the picture; nil = uncropped. Ignored while the circle crop is on.
+    public var picture: PictureAdjust?        // colour controls and person background (format 19); nil = neutral
     public var label: String?                 // user name of the clip; nil = the file name
     /// Freeze frame: the picture at `sourceStart` is held for the whole duration; it has no sound. Trims change only the length.
     public var held = false
@@ -445,7 +447,7 @@ public struct Clip: Codable, Equatable, Identifiable, Sendable {
     public init(id: UUID = UUID(), media: String, sourceStart: Double, duration: Double, transform: Transform = .identity, endTransform: Transform? = nil) {
         self.id = id; self.media = media; self.sourceStart = sourceStart; self.duration = duration; self.transform = transform; self.endTransform = endTransform
     }
-    enum CodingKeys: String, CodingKey { case id, media, sourceStart, duration, zoom, transform, endTransform, audio, crop, rectCrop, label, held, motion, dissolve, mouseFX, keyFX, audioDetached, speed, speedMute, dissolveShape }
+    enum CodingKeys: String, CodingKey { case id, media, sourceStart, duration, zoom, transform, endTransform, audio, crop, rectCrop, label, held, motion, dissolve, mouseFX, keyFX, audioDetached, speed, speedMute, dissolveShape, picture }
     public func encode(to e: Encoder) throws {
         var c = e.container(keyedBy: CodingKeys.self)
         try c.encode(id, forKey: .id); try c.encode(media, forKey: .media); try c.encode(sourceStart, forKey: .sourceStart); try c.encode(duration, forKey: .duration)
@@ -461,10 +463,12 @@ public struct Clip: Codable, Equatable, Identifiable, Sendable {
         if let mouseFX, !mouseFX.isOff { try c.encode(mouseFX, forKey: .mouseFX) }
         if let keyFX, keyFX.show { try c.encode(keyFX, forKey: .keyFX) }
         if let motion, !motion.isNeutral { try c.encode(motion, forKey: .motion) }
+        if let picture, !picture.isNeutral { try c.encode(picture, forKey: .picture) }
     }
     public init(from d: Decoder) throws {
         let c = try d.container(keyedBy: CodingKeys.self)
         label = try c.decodeIfPresent(String.self, forKey: .label)
+        picture = try c.decodeIfPresent(PictureAdjust.self, forKey: .picture)
         held = try c.decodeIfPresent(Bool.self, forKey: .held) ?? false
         audioDetached = try c.decodeIfPresent(Bool.self, forKey: .audioDetached) ?? false
         speed = Retime.clamp(try c.decodeIfPresent(Double.self, forKey: .speed) ?? 1); speedMute = try c.decodeIfPresent(Bool.self, forKey: .speedMute) ?? false
@@ -639,7 +643,7 @@ public struct TimelineMarker: Codable, Equatable, Sendable, Identifiable {
 }
 
 public struct SadrogProject: Codable, Equatable, Sendable {
-    public static let currentFormat = 18   // 18 adds clip speed (Clip/Layer.speed), keepPitch; 17 adds the local lens on callouts (source box + display box); 16 keys source volume/mute/effects by recording (media path);  15 adds detached clip audio (an independent A2 item linked to its clip);  13 adds locked lanes and optional clip/overlay names; 12 adds the circle crop of video clips/overlays („Prezentator în cerc”); 11 adds audio effect chains (Audio Units) per recording source; 10 adds the master (mix) volume; 9 adds per-clip audio edits (A2 volume/mute, fades on A1 clips and A2 items); 8 adds per-source volume in dB; 7 adds the document format (canvas size + frame rate); 2 adds clip zoom + text overlays; 3 adds transforms, overlay/audio layers and a material library; 4 adds muted/hidden lanes; 5 adds callouts; 6 adds muted sources of the main sound (all optional on load)
+    public static let currentFormat = 19   // 19 adds picture adjustments (Clip/Layer.picture: colour controls, person background); 18 adds clip speed (Clip/Layer.speed), keepPitch; 17 adds the local lens on callouts (source box + display box); 16 keys source volume/mute/effects by recording (media path);  15 adds detached clip audio (an independent A2 item linked to its clip);  13 adds locked lanes and optional clip/overlay names; 12 adds the circle crop of video clips/overlays („Prezentator în cerc”); 11 adds audio effect chains (Audio Units) per recording source; 10 adds the master (mix) volume; 9 adds per-clip audio edits (A2 volume/mute, fades on A1 clips and A2 items); 8 adds per-source volume in dB; 7 adds the document format (canvas size + frame rate); 2 adds clip zoom + text overlays; 3 adds transforms, overlay/audio layers and a material library; 4 adds muted/hidden lanes; 5 adds callouts; 6 adds muted sources of the main sound (all optional on load)
     public var formatVersion = SadrogProject.currentFormat
     public var name: String
     public var clips: [Clip]
@@ -882,7 +886,7 @@ public struct SadrogProject: Codable, Equatable, Sendable {
     public var timelineEnd: Double { max(duration, layers.map(\.end).max() ?? 0, texts.map(\.end).max() ?? 0, callouts.map(\.end).max() ?? 0) }
     /// True when the picture must go through the compositor (overlays, titles, any transform/animation, hidden main video).
     public var needsCompositing: Bool {
-        Retime.isRetimed(self) || !texts.isEmpty || !callouts.isEmpty || clips.contains { $0.dissolve > 0 || !($0.mouseFX?.isOff ?? true) || ($0.keyFX?.show ?? false) } || layers.contains { $0.kind == .video } || hiddenLanes.contains(.v1) || clips.contains { !$0.transform.isIdentity || $0.endTransform != nil || !($0.motion?.isNeutral ?? true) || $0.crop != nil || !($0.rectCrop?.isNone ?? true) }
+        Retime.isRetimed(self) || !texts.isEmpty || !callouts.isEmpty || clips.contains { $0.dissolve > 0 || !($0.mouseFX?.isOff ?? true) || ($0.keyFX?.show ?? false) } || layers.contains { $0.kind == .video } || hiddenLanes.contains(.v1) || clips.contains { !$0.transform.isIdentity || $0.endTransform != nil || !($0.motion?.isNeutral ?? true) || $0.crop != nil || !($0.rectCrop?.isNone ?? true) || !($0.picture?.isNeutral ?? true) }
     }
     public func start(ofClip id: Clip.ID) -> Double? { clipSpans.first { $0.id == id }?.start }
 
@@ -1126,6 +1130,15 @@ public final class ProjectEditor {
     }
     /// Crops a video clip (V1) or video overlay (V2) to a rectangle, or (nil / no sides) removes the crop. The source is never changed. One call = one undo step.
     /// `transform` (optional) re-places the item in the same step so the kept pixels stay where they were on the canvas — still one undo step.
+    /// Colour controls / person background of a video item (main clip or video overlay). One undo step; neutral values remove the entry.
+    public func setPicture(_ id: UUID, _ picture: PictureAdjust?) {
+        commit { p in
+            var v = picture; v?.normalize(); if v?.isNeutral == true { v = nil }
+            if let i = p.clips.firstIndex(where: { $0.id == id }) { guard p.clips[i].picture != v else { return false }; p.clips[i].picture = v; return true }
+            if let i = p.layers.firstIndex(where: { $0.id == id && $0.kind == .video }) { guard p.layers[i].picture != v else { return false }; p.layers[i].picture = v; return true }
+            return false
+        }
+    }
     public func setRectCrop(_ id: UUID, _ crop: RectCrop?, transform: Transform? = nil) {
         commit { p in
             var c = crop; c?.normalize(); if c?.isNone == true { c = nil }

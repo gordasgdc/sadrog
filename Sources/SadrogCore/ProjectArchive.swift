@@ -25,7 +25,7 @@ public enum ProjectArchive {
         let lost = mediaFiles(p).filter { !fm.fileExists(atPath: $0) }
         if !lost.isEmpty { throw ArchiveError.missing(lost) }       // an archive is complete or it does not exist
         let need = requiredBytes(p)
-        if let free = try? parent.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey]).volumeAvailableCapacityForImportantUsage, free < need + 50_000_000 {
+        if let free = try? Destination(url: parent).availableBytes(), free < need + 50_000_000 {   // same rule as export: external disks report 0 "important" capacity
             throw ArchiveError.noSpace(needed: need, free: free)
         }
         let tmp = parent.appendingPathComponent(".\(UUID().uuidString).partial")

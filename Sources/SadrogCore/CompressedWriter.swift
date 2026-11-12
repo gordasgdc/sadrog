@@ -2,6 +2,7 @@
 import Foundation
 import AVFoundation
 import CoreMedia
+import VideoToolbox
 
 /// Compressed export with EXPLICIT encoder controls (average video bit rate, key-frame distance, AAC bit rate), which the AVAssetExportSession presets cannot express.
 /// Same source of frames and sound as every other processed export (video composition + audio mix of the built composition); sample times are rebased to start at zero.
@@ -10,6 +11,8 @@ enum CompressedWriter {
     /// `duration` = seconds that will be written (needed to turn a size target into an average bit rate); `fps` = the output rate (lets the encoder plan its frame types).
     static func videoSettings(_ s: ExportSettings, width: Int, height: Int, duration: Double = 0, fps: Double = 0) -> [String: Any] {
         var v: [String: Any] = [AVVideoCodecKey: s.codec == .hevc ? AVVideoCodecType.hevc : AVVideoCodecType.h264, AVVideoWidthKey: width, AVVideoHeightKey: height]
+        // When VideoToolbox has a hardware encoder for this codec and size it is REQUIRED (so "hardware" in the sheet is a fact); otherwise the system's software encoder is used and the sheet says so.
+        if HardwareEncoder.available(s.codec, width: width, height: height) { v[AVVideoEncoderSpecificationKey] = [kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder as String: true] }
         var c: [String: Any] = [:]
         switch s.videoRate(duration: duration) {
         case .bitrate(let m): c[AVVideoAverageBitRateKey] = Int(m * 1_000_000)
@@ -27,7 +30,7 @@ enum CompressedWriter {
         switch r { case .quality(let q): return "constant quality \(q)"; case .bitrate(let m): return "average \(String(format: "%.2f", m)) Mb/s" }
     }
     static func audioSettings(_ s: ExportSettings) -> [String: Any] {
-        [AVFormatIDKey: kAudioFormatMPEG4AAC, AVSampleRateKey: 48000, AVNumberOfChannelsKey: 2, AVEncoderBitRateKey: (s.clampedAudioKbps ?? 128) * 1000]
+        [AVFormatIDKey: kAudioFormatMPEG4AAC, AVSampleRateKey: 48000, AVNumberOfChannelsKey: s.audioMono ? 1 : 2, AVEncoderBitRateKey: (s.clampedAudioKbps ?? 128) * 1000 / (s.audioMono ? 2 : 1)]
     }
 
     static func write(_ built: BuiltComposition, project q: SadrogProject, to url: URL, settings s: ExportSettings, range: ClosedRange<Double>?, progress: (@Sendable (Double) -> Void)?) async throws {
@@ -57,7 +60,8 @@ enum CompressedWriter {
         if !aTracks.isEmpty { let o = AVAssetReaderAudioMixOutput(audioTracks: aTracks, audioSettings: LosslessWriter.readPCM); o.audioMix = built.audioMix(for: q); o.audioTimePitchAlgorithm = built.pitch; reader.add(o); aOut = o }
         if let tr { reader.timeRange = tr }
 
-        let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
+        let writer = try AVAssetWriter(outputURL: url, fileType: s.container == .mp4 ? .mp4 : .mov)
+        if s.container == .mp4 { writer.shouldOptimizeForNetworkUse = true }       // index at the front: a browser starts playing before the whole file arrives
         let w = Int(vcomp.renderSize.width), h = Int(vcomp.renderSize.height)
         let vIn = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings(s, width: w, height: h, duration: total, fps: vcomp.frameDuration.seconds > 0 ? 1 / vcomp.frameDuration.seconds : 0)); vIn.expectsMediaDataInRealTime = false
         guard writer.canAdd(vIn) else { throw CocoaError(.fileWriteUnknown) }

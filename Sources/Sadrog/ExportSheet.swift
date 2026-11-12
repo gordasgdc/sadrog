@@ -36,9 +36,8 @@ struct ExportSheet: View {
                         if activePreset == nil { Text(T("Personalizat")).tag("") }
                         ForEach(ExportPreset.builtIns) { Text($0.name).tag($0.id) }
                         if !m.exportPresets.personal.isEmpty { Divider(); ForEach(m.exportPresets.personal) { Text($0.name).tag($0.id) } }
-                    }.labelsHidden().fixedSize().disabled(running)
-                    Spacer(minLength: 4)
-                    Picker(T("Mod export"), selection: $advanced) { Text(T("Simplu")).tag(false); Text(T("Avansat")).tag(true) }.pickerStyle(.segmented).labelsHidden().fixedSize().disabled(running)
+                    }.labelsHidden().frame(maxWidth: .infinity, alignment: .leading).disabled(running)      // takes the room that is left: a long preset name (EN/ES) truncates instead of pushing the sheet wider than its window
+                    Picker(T("Mod export"), selection: $advanced) { Text(T("Simplu")).tag(false); Text(T("Avansat")).tag(true) }.pickerStyle(.segmented).labelsHidden().fixedSize().layoutPriority(1).disabled(running)
                 }
                 if advanced {
                     HStack(spacing: 6) {
@@ -64,7 +63,34 @@ struct ExportSheet: View {
         if m.exportSettings.mode == .copy, let why = m.reencodeReason {
             field("") { Text(L10n.f("Copierea nu se poate pentru acest proiect: %@. Alege alt preset.", "\(why)")).font(Theme.F.caption).foregroundStyle(Theme.C.warn).fixedSize(horizontal: false, vertical: true) }
         }
+        if m.exportSettings.mode != .copy { sizeField; qualityField }
         rangeAndResult
+    }
+    /// Resolution: the document's own size, the usual targets, or typed pixels. Shared by the simple and advanced views.
+    @ViewBuilder private var sizeField: some View {
+        field(T("Rezoluție")) {
+            HStack(spacing: 6) {
+                Picker(T("Rezoluție"), selection: $sizePick) { ForEach(SizePick.allCases) { Text($0 == .document ? L10n.f("Originală (%@×%@)", "\(Int(m.renderSize.width))", "\(Int(m.renderSize.height))") : $0.title).tag($0) } }.labelsHidden().fixedSize().disabled(running)
+                    .onChange(of: sizePick) { _, _ in applySize() }
+                if sizePick == .custom {
+                    AppTextField(placeholder: "W", text: Binding(get: { String(customW) }, set: { customW = Int($0) ?? customW; applySize() })).frame(width: 56).disabled(running).accessibilityLabel(T("Lățime în pixeli"))
+                    Text("×").foregroundStyle(Theme.C.textFaint)
+                    AppTextField(placeholder: "H", text: Binding(get: { String(customH) }, set: { customH = Int($0) ?? customH; applySize() })).frame(width: 56).disabled(running).accessibilityLabel(T("Înălțime în pixeli"))
+                    Text("px").font(Theme.F.caption).foregroundStyle(Theme.C.textFaint)
+                }
+            }
+        }
+    }
+    /// Quality in plain words (compressed video with constant quality only).
+    @ViewBuilder private var qualityField: some View {
+        if m.exportSettings.mode == .compressed, rateControl == .quality {
+            field(T("Calitate")) {
+                Picker(T("Calitate"), selection: Binding(get: { qualityStep }, set: { m.exportSettings.quality = $0.value })) {
+                    ForEach(ExportSettings.QualityStep.allCases) { Text($0.title).tag($0) }
+                }.pickerStyle(.segmented).labelsHidden().fixedSize().disabled(running)
+                    .help(T("Compactă = fișierul cel mai mic; Înaltă = recomandată pentru text și interfețe; Maximă = fișier mult mai mare, pentru arhivă."))
+            }
+        }
     }
     private func syncSizePick() {
         switch m.exportSettings.size {
@@ -72,6 +98,12 @@ struct ExportSheet: View {
         case .longSide(let l): sizePick = [1280: SizePick.p720, 1920: .p1080, 2560: .p1440, 3840: .uhd][l] ?? .custom
         case .custom(let w, let h): sizePick = .custom; customW = w; customH = h
         }
+    }
+    /// The estimate in a few words, for the simple view.
+    private var shortEstimate: String? {
+        func f(_ b: Int64) -> String { ByteCountFormatter.string(fromByteCount: b, countStyle: .file) }
+        if let r = ExportEstimate.qualityRange(plan, settings: m.exportSettings) { return L10n.f("Mărime estimată: %@ – %@", f(r.low), f(r.motion)) }      // static screen … continuous motion: the whole honest span
+        return ExportEstimate.bytes(plan, settings: m.exportSettings).map { L10n.f("Mărime estimată: ≈ %@", f($0)) }
     }
     private var estimateLine: String? {
         if let r = ExportEstimate.qualityRange(plan, settings: m.exportSettings) {
@@ -152,7 +184,8 @@ struct ExportSheet: View {
                 }
             }
         }
-        .padding(20).frame(width: 520).background(Theme.C.bg1).appTheme()
+        .padding(20).frame(width: 624).background(Theme.C.bg1).appTheme()
+        .onAppear { syncSizePick() }
     }
     static func clock(_ t: Double) -> String { let s = Int(t.rounded(.down)); return String(format: "%02d:%02d", s / 60, s % 60) }
     enum RateControl: Hashable { case quality, bitrate, size }
@@ -190,17 +223,7 @@ struct ExportSheet: View {
             field("") { Text(L10n.f("Copierea nu se poate pentru acest proiect: %@. Alege un mod procesat.", "\(why)")).font(Theme.F.caption).foregroundStyle(Theme.C.warn).fixedSize(horizontal: false, vertical: true) }
         }
         if m.exportSettings.mode != .copy {
-            field(T("Mărime")) {
-                HStack(spacing: 6) {
-                    Picker(T("Mărime"), selection: $sizePick) { ForEach(SizePick.allCases) { Text($0.title).tag($0) } }.labelsHidden().fixedSize().disabled(running)
-                        .onChange(of: sizePick) { _, _ in applySize() }
-                    if sizePick == .custom {
-                        AppTextField(placeholder: "W", text: Binding(get: { String(customW) }, set: { customW = Int($0) ?? customW; applySize() })).frame(width: 56).disabled(running)
-                        Text("×").foregroundStyle(Theme.C.textFaint)
-                        AppTextField(placeholder: "H", text: Binding(get: { String(customH) }, set: { customH = Int($0) ?? customH; applySize() })).frame(width: 56).disabled(running)
-                    }
-                }
-            }
+            sizeField
             field(T("Cadență")) {
                 Picker(T("Cadență"), selection: Binding(get: { m.exportSettings.fps ?? 0 }, set: { m.exportSettings.fps = $0 == 0 ? nil : $0 })) {
                     Text(L10n.f("Ca documentul (%@)", "\(m.fps.formatted(.number.precision(.fractionLength(0...2))))")).tag(0.0)
@@ -208,9 +231,12 @@ struct ExportSheet: View {
                 }.labelsHidden().fixedSize().disabled(running)
             }
             if m.exportSettings.mode == .compressed {
-                field(T("Codec")) {
+                field(T("Format")) {
                     HStack(spacing: 8) {
+                        Picker(T("Format"), selection: s.container) { Text("MP4 (.mp4)").tag(ExportSettings.Container.mp4); Text("QuickTime (.mov)").tag(ExportSettings.Container.mov) }.labelsHidden().fixedSize().disabled(running)
+                            .help(T("MP4 pentru web, încărcări și redare pe orice dispozitiv; QuickTime pentru alte programe de montaj. Aceeași imagine și același sunet."))
                         Picker(T("Codec"), selection: s.codec) { Text("H.264").tag(ExportSettings.Codec.h264); Text("HEVC (H.265)").tag(ExportSettings.Codec.hevc) }.labelsHidden().fixedSize().disabled(running)
+                            .help(T("H.264 se redă peste tot. HEVC face fișiere mai mici la aceeași calitate, dar unele browsere și televizoare mai vechi nu îl redau."))
                     }
                 }
             }
@@ -250,6 +276,15 @@ struct ExportSheet: View {
                         ForEach([64, 96, 128, 192, 256, 320], id: \.self) { Text("AAC \($0) kb/s").tag($0) }
                     }.labelsHidden().fixedSize().disabled(running)
                 }
+                field(T("Canale")) {
+                    Picker(T("Canale"), selection: s.audioMono) { Text(T("Stereo")).tag(false); Text(T("Mono")).tag(true) }.pickerStyle(.segmented).labelsHidden().fixedSize().disabled(running)
+                        .help(T("Mono = un singur canal (voce), la jumătate din rata audio. Stereo păstrează stânga și dreapta."))
+                }
+                field(T("Codare")) {
+                    Text(plan.hardware == true ? T("Accelerată hardware pe acest Mac (VideoToolbox), o singură trecere") : T("Software, o singură trecere (pentru această mărime nu există encoder hardware)"))
+                        .font(Theme.F.caption).foregroundStyle(Theme.C.textDim).fixedSize(horizontal: false, vertical: true)
+                        .help(T("SADROG verifică encoderul înainte de export. Codarea în mai multe treceri nu este oferită de encoderul sistemului, deci nu apare ca opțiune."))
+                }
             }
             if m.exportSettings.mode == .master {
                 field(T("ProRes")) { Picker(T("ProRes"), selection: s.proRes) { Text("Apple ProRes 422").tag(ExportSettings.ProRes.p422); Text("Apple ProRes 4444").tag(ExportSettings.ProRes.p4444) }.labelsHidden().fixedSize().disabled(running) }
@@ -267,12 +302,16 @@ struct ExportSheet: View {
         field(T("Rezultat")) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(fast ? T("codecul și mărimea sursei, fără re-codificare") : "\(plan.width)×\(plan.height) px · \(plan.fps.formatted(.number.precision(.fractionLength(0...2)))) " + T("cadre/s") + " · " + plan.codec).font(Theme.F.body).foregroundStyle(Theme.C.text).fixedSize(horizontal: false, vertical: true)
-                if let e = estimateLine { Text(e).font(Theme.F.caption).foregroundStyle(Theme.C.textDim) }
-                Text(lossLabel).font(Theme.F.caption).foregroundStyle(plan.loss == .lossless ? Theme.C.ok : Theme.C.textDim)
-                ForEach(plan.notes, id: \.self) { Text($0).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true) }
+                if advanced {
+                    if let e = estimateLine { Text(e).font(Theme.F.caption).foregroundStyle(Theme.C.textDim) }
+                    Text(lossLabel).font(Theme.F.caption).foregroundStyle(plan.loss == .lossless ? Theme.C.ok : Theme.C.textDim)
+                    ForEach(plan.notes, id: \.self) { Text($0).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true) }
+                } else if let e = shortEstimate {      // simple view: one plain line; the full reasoning stays in Advanced
+                    Text(e).font(Theme.F.caption).foregroundStyle(Theme.C.textDim).help(estimateLine ?? e)
+                }
             }
         }
-        field(T("Sunet")) { Text(fast ? audioLine : plan.audio + (plan.audio == "AAC" ? " · " + audioLine : "")).font(Theme.F.body).foregroundStyle(Theme.C.text).fixedSize(horizontal: false, vertical: true) }
+        field(T("Sunet")) { Text(fast ? audioLine : (plan.audio.hasPrefix("AAC") ? audioLine : plan.audio)).font(Theme.F.body).foregroundStyle(Theme.C.text).fixedSize(horizontal: false, vertical: true) }
     }
     private var modeDetail: String {
         switch m.exportSettings.mode {
@@ -321,6 +360,7 @@ struct ExportSheet: View {
         let n = m.mainSources.count + m.project.layers.filter { $0.kind == .audio }.count
         if m.project.clips.allSatisfy({ m.media[$0.media]?.hasAudio == false }) && n == 0 { return T("fără sunet") }
         if fast { return T("pista audio a sursei, copiată") }
+        if m.exportSettings.audioMono && m.exportSettings.mode == .compressed { return T("AAC mono: mixul din previzualizare, într-un singur canal") }
         return n > 1 ? L10n.f("AAC stereo · %@ surse mixate într-o pistă, ca în previzualizare (sursele mute nu se aud)", "\(n)") : T("AAC stereo, ca în previzualizare")
     }
 
@@ -372,6 +412,6 @@ struct ExportSheet: View {
     }
 
     private func field<C: View>(_ t: String, @ViewBuilder _ c: () -> C) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 12) { Text(t).font(Theme.F.body).foregroundStyle(Theme.C.textDim).frame(width: 64, alignment: .trailing); VStack(alignment: .leading, spacing: 4) { c() }.frame(maxWidth: .infinity, alignment: .leading) }
+        HStack(alignment: .firstTextBaseline, spacing: 12) { Text(t).font(Theme.F.body).foregroundStyle(Theme.C.textDim).multilineTextAlignment(.trailing).frame(width: 92, alignment: .trailing); VStack(alignment: .leading, spacing: 4) { c() }.frame(maxWidth: .infinity, alignment: .leading) }
     }
 }

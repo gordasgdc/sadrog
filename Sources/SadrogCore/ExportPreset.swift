@@ -11,11 +11,13 @@ public struct ExportPreset: Codable, Equatable, Identifiable, Sendable {
     public var fps: Double?
     public var videoMbps: Double?, keyframeSeconds: Double?, audioKbps: Int?   // advanced; absent in presets saved before they existed
     public var quality: Double?, targetMB: Double?                            // rate control added in 1.6.0; absent in older presets (their tier then decides the quality)
+    public var container: String?, audioMono: Bool?                           // added in 1.7.0; absent = QuickTime, stereo (what older presets wrote)
     public var builtIn = false
     public init(id: String, name: String, settings s: ExportSettings, builtIn: Bool = false) {
         self.id = id; self.name = name; mode = s.mode.rawValue; codec = s.codec.rawValue; tier = s.tier.rawValue; proRes = s.proRes.rawValue
         if case .longSide(let l) = s.size { longSide = l } else if case .custom(let w, let h) = s.size { longSide = max(w, h) } else { longSide = nil }
         fps = s.fps; videoMbps = s.videoMbps; keyframeSeconds = s.keyframeSeconds; audioKbps = s.audioKbps; quality = s.quality; targetMB = s.targetMB; self.builtIn = builtIn
+        container = s.container == .mov ? nil : s.container.rawValue; audioMono = s.audioMono ? true : nil
     }
     /// The settings this preset stands for; `onlyRange` is a per-export choice and is kept from `base`.
     public func settings(keeping base: ExportSettings = ExportSettings()) -> ExportSettings {
@@ -24,15 +26,16 @@ public struct ExportPreset: Codable, Equatable, Identifiable, Sendable {
         s.tier = ExportSettings.Tier(rawValue: tier) ?? .high; s.proRes = ExportSettings.ProRes(rawValue: proRes) ?? .p422
         s.size = longSide.map { .longSide($0) } ?? .document; s.fps = fps
         s.videoMbps = videoMbps; s.keyframeSeconds = keyframeSeconds; s.audioKbps = audioKbps; s.quality = quality; s.targetMB = targetMB
+        s.container = container.flatMap(ExportSettings.Container.init(rawValue:)) ?? .mov; s.audioMono = audioMono ?? false
         return s
     }
     public static var builtIns: [ExportPreset] {
         func mk(_ id: String, _ n: String, _ f: (inout ExportSettings) -> Void) -> ExportPreset { var s = ExportSettings(); f(&s); return ExportPreset(id: id, name: n, settings: s, builtIn: true) }
         return [
-            mk("tutorial", T("Tutorial / captură de ecran (recomandat)")) { $0.mode = .compressed; $0.quality = ExportSettings.QualityStep.high.value },
-            mk("web1080", T("Web 1080p")) { $0.mode = .compressed; $0.size = .longSide(1920); $0.quality = ExportSettings.QualityStep.high.value },
-            mk("compact720", T("Compact 720p")) { $0.mode = .compressed; $0.size = .longSide(1280); $0.quality = ExportSettings.QualityStep.balanced.value },
-            mk("hevc-compact", T("HEVC compact (fișier mic)")) { $0.mode = .compressed; $0.codec = .hevc; $0.quality = ExportSettings.QualityStep.balanced.value },
+            mk("tutorial", T("Tutorial / captură de ecran (recomandat)")) { $0.mode = .compressed; $0.container = .mp4; $0.quality = ExportSettings.QualityStep.high.value },
+            mk("web1080", T("Web 1080p")) { $0.mode = .compressed; $0.container = .mp4; $0.size = .longSide(1920); $0.quality = ExportSettings.QualityStep.high.value },
+            mk("compact720", T("Compact 720p")) { $0.mode = .compressed; $0.container = .mp4; $0.size = .longSide(1280); $0.quality = ExportSettings.QualityStep.balanced.value },
+            mk("hevc-compact", T("HEVC compact (fișier mic)")) { $0.mode = .compressed; $0.container = .mp4; $0.codec = .hevc; $0.quality = ExportSettings.QualityStep.balanced.value },
             mk("document", T("Calitate maximă (ca documentul)")) { $0.mode = .compressed; $0.quality = ExportSettings.QualityStep.maximum.value },
             mk("master", T("Master ProRes")) { $0.mode = .master },
             mk("fast", T("Rapid, fără re-codificare")) { $0.mode = .copy },
@@ -59,7 +62,8 @@ public struct ExportPresetStore {
     }
     public mutating func delete(id: String) { var d = disk; d.presets.removeAll { $0.id == id }; if d.defaultID == id { d.defaultID = nil }; write(d) }
     public mutating func setDefault(_ id: String?) { var d = disk; d.defaultID = id; write(d) }
-    public var defaultSettings: ExportSettings { (all.first { $0.id == defaultID }?.settings()) ?? ExportSettings() }
+    /// No personal default = the recommended built-in (Tutorial: H.264, constant quality, MP4).
+    public var defaultSettings: ExportSettings { (all.first { $0.id == defaultID }?.settings()) ?? ExportPreset.builtIns[0].settings() }
     /// The preset whose values equal `s` (range choice ignored), to show which one is active.
     public func matching(_ s: ExportSettings) -> ExportPreset? { (personal + ExportPreset.builtIns).first { $0.settings(keeping: s) == s } }
 }

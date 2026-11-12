@@ -2,3 +2,4 @@
 *.xcodeproj/xcuserdata/
 .DS_Store
 PROJECT_STATE.md
+__pycache__/

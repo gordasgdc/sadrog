@@ -1464,3 +1464,41 @@ Mărime țintă	Target size	Tamaño objetivo
 Mărime țintă: encoderul lucrează într-o singură trecere, deci mărimea finală este apropiată de țintă, nu garantată.	Target size: the encoder works in a single pass, so the final size is close to the target, not guaranteed.	Tamaño objetivo: el codificador trabaja en una sola pasada, por lo que el tamaño final es cercano al objetivo, no garantizado.
 Rată medie	Average rate	Tasa media
 Tutorial / captură de ecran (recomandat)	Tutorial / screen recording (recommended)	Tutorial / grabación de pantalla (recomendado)
+AAC mono: mixul din previzualizare, într-un singur canal	AAC mono: the preview mix in a single channel	AAC mono: la mezcla de la vista previa en un solo canal
+Accelerată hardware pe acest Mac (VideoToolbox), o singură trecere	Hardware accelerated on this Mac (VideoToolbox), single pass	Acelerada por hardware en este Mac (VideoToolbox), una sola pasada
+Arată în Inspector	Show in Inspector	Mostrar en el Inspector
+Ascultare oprită — clic pentru a porni (nu schimbă clipurile și nici exportul)	Listening off — click to turn it on (does not change the clips or the export)	Escucha desactivada: haz clic para activarla (no cambia los clips ni la exportación)
+Codare	Encoding	Codificación
+Compactă = fișierul cel mai mic; Înaltă = recomandată pentru text și interfețe; Maximă = fișier mult mai mare, pentru arhivă.	Compact = the smallest file; High = recommended for text and interfaces; Maximum = a much larger file, for archiving.	Compacta = el archivo más pequeño; Alta = recomendada para texto e interfaces; Máxima = un archivo mucho mayor, para archivo.
+Contrast	Contrast	Contraste
+Doar pe acest clip. Se vede la fel în previzualizare și în fișierul exportat; sursa rămâne neschimbată.	This clip only. It looks the same in the preview and in the exported file; the source is not changed.	Solo en este clip. Se ve igual en la vista previa y en el archivo exportado; el original no cambia.
+Durată și viteză…	Duration and speed…	Duración y velocidad…
+Eliminat	Removed	Eliminado
+Estompat	Blurred	Desenfocado
+Estompat = fundalul din spatele persoanei devine neclar. Eliminat = rămâne doar persoana, peste ce este dedesubt.	Blurred = the background behind the person goes out of focus. Removed = only the person stays, over whatever is underneath.	Desenfocado = el fondo detrás de la persona queda borroso. Eliminado = solo queda la persona, sobre lo que haya debajo.
+Fundal (persoană)	Background (person)	Fondo (persona)
+Fundalul din spatele persoanei	The background behind the person	El fondo detrás de la persona
+H.264 se redă peste tot. HEVC face fișiere mai mici la aceeași calitate, dar unele browsere și televizoare mai vechi nu îl redau.	H.264 plays everywhere. HEVC makes smaller files at the same quality, but some older browsers and TVs cannot play it.	H.264 se reproduce en todas partes. HEVC crea archivos más pequeños con la misma calidad, pero algunos navegadores y televisores antiguos no lo reproducen.
+Luminozitate	Brightness	Brillo
+Lățime în pixeli	Width in pixels	Anchura en píxeles
+MP4 pentru web, încărcări și redare pe orice dispozitiv; QuickTime pentru alte programe de montaj. Aceeași imagine și același sunet.	MP4 for the web, uploads and playback on any device; QuickTime for other editing software. Same picture and same sound.	MP4 para la web, subidas y reproducción en cualquier dispositivo; QuickTime para otros programas de edición. La misma imagen y el mismo sonido.
+Mono	Mono	Mono
+Mono = un singur canal (voce), la jumătate din rata audio. Stereo păstrează stânga și dreapta.	Mono = a single channel (voice), at half the audio rate. Stereo keeps left and right.	Mono = un solo canal (voz), a la mitad de la tasa de audio. Estéreo conserva izquierda y derecha.
+Originală (%@×%@)	Original (%@×%@)	Original (%@×%@)
+Persoana nu a putut fi separată în acest cadru: %@	The person could not be separated in this frame: %@	No se pudo separar a la persona en este fotograma: %@
+Resetează culoarea	Reset colour	Restablecer el color
+SADROG verifică encoderul înainte de export. Codarea în mai multe treceri nu este oferită de encoderul sistemului, deci nu apare ca opțiune.	SADROG checks the encoder before the export. Multi-pass encoding is not offered by the system encoder, so it is not shown as an option.	SADROG comprueba el codificador antes de exportar. El codificador del sistema no ofrece codificación en varias pasadas, así que no aparece como opción.
+Saturație	Saturation	Saturación
+Se aplică la editare, pe acest Mac: apare în previzualizare și în export, nu în fișierul înregistrat, deci poate fi oprit oricând. Gândit pentru o persoană filmată cu camera; exportul durează mai mult.	Applied while editing, on this Mac: it shows in the preview and in the export, not in the recorded file, so it can be switched off at any time. Meant for a person filmed with the camera; the export takes longer.	Se aplica al editar, en este Mac: aparece en la vista previa y en la exportación, no en el archivo grabado, así que se puede desactivar cuando quieras. Pensado para una persona grabada con la cámara; la exportación tarda más.
+Software, o singură trecere (pentru această mărime nu există encoder hardware)	Software, single pass (there is no hardware encoder for this size)	Software, una sola pasada (no hay codificador por hardware para este tamaño)
+Stereo	Stereo	Estéreo
+Volum de ascultare	Listening volume	Volumen de escucha
+Volum de ascultare — clic pentru a opri sunetul în editor (nu schimbă clipurile și nici exportul)	Listening volume — click to silence the editor (does not change the clips or the export)	Volumen de escucha: haz clic para silenciar el editor (no cambia los clips ni la exportación)
+Volumul de ascultare din editor. Nu schimbă nivelul clipurilor, mixul sau fișierul exportat. Dublu-clic = 100%.	Listening volume of the editor. It does not change the clips' level, the mix or the exported file. Double-click = 100%.	Volumen de escucha del editor. No cambia el nivel de los clips, la mezcla ni el archivo exportado. Doble clic = 100%.
+Înălțime în pixeli	Height in pixels	Altura en píxeles
+Folderul de destinație nu mai există sau discul nu este conectat: %@	The destination folder no longer exists or the disk is not connected: %@	La carpeta de destino ya no existe o el disco no está conectado: %@
+Nu se poate scrie în folderul de destinație: %@. Alege alt folder.	The destination folder cannot be written to: %@. Choose another folder.	No se puede escribir en la carpeta de destino: %@. Elige otra carpeta.
+Spațiu insuficient la destinație: sunt liberi %@, sunt necesari cel puțin %@. Eliberează spațiu sau alege alt folder.	Not enough space at the destination: %@ free, at least %@ needed. Free some space or choose another folder.	Espacio insuficiente en el destino: %@ libres, se necesitan al menos %@. Libera espacio o elige otra carpeta.
+Mărime estimată: %@ – %@	Estimated size: %@ – %@	Tamaño estimado: %@ – %@
+Mărime estimată: ≈ %@	Estimated size: ≈ %@	Tamaño estimado: ≈ %@
+Strălucire	Brightness	Brillo

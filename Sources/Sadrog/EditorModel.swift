@@ -161,6 +161,12 @@ final class EditorModel: ObservableObject {
     @Published var fxPeaks: [String: Float] = [:]                             // true peak of each processed file (by path)
     @Published var pluginWindows: [UUID: PluginWindow] = [:]
     let player = AVPlayer()
+    /// Listening volume of the editor (the headphones control): the level of the PLAYER only. It never changes a clip's level, the mix or an export.
+    @Published var monitorVolume: Double = (UserDefaults.standard.object(forKey: "sadrog.monitorVolume") as? Double) ?? 1 { didSet { UserDefaults.standard.set(monitorVolume, forKey: "sadrog.monitorVolume"); applyMonitor() } }
+    @Published var monitorMuted = false { didSet { applyMonitor() } }
+    /// Quick access from a clip's menu: opens the inspector (if hidden) on the requested tab; nil = keep the current tab.
+    func revealInspector(_ tab: InspCat?) { UserDefaults.standard.set(true, forKey: "editor.showInspector"); DispatchQueue.main.async { self.inspectorRequest = tab } }      // after the selection change picked its default tab
+    func applyMonitor() { player.volume = Float(max(0, min(1, monitorVolume))); player.isMuted = monitorMuted }
     private var observer: Any?
     private var exportTask: Task<Void, Never>?
     private var projectURL: URL { folder.appendingPathComponent("project.sadrogproj") }
@@ -177,6 +183,7 @@ final class EditorModel: ObservableObject {
             loaded = SadrogProject.forRecording(name: L10n.f("Înregistrare %@", "\(journal.startedAt.formatted())"), media: media.path, duration: d, journal: journal)
         }
         editor = ProjectEditor(project: loaded); project = loaded
+        applyMonitor()
         missing = ProjectStore.missingMedia(loaded)
         let stamp = DateFormatter(); stamp.dateFormat = "yyyy-MM-dd HH.mm"
         let base = loaded.name.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: "/", with: "-").replacingOccurrences(of: ":", with: "-")
@@ -999,7 +1006,7 @@ final class EditorModel: ObservableObject {
         exportTask = Task {
             do {
                 if FileManager.default.fileExists(atPath: url.path) { throw CocoaError(.fileWriteFileExists) }
-                try Destination(url: folder).validate(requiredBytes: 500_000_000)
+                try Destination(url: self.exportFolder).validate(requiredBytes: 500_000_000)      // the folder the file is written to, not the project folder
                 try await ProjectExporter.export(p, to: url, settings: st, documentSize: docSize, documentFPS: docFPS, effects: fx, range: rng) { f in Task { @MainActor in if case .running = self.exportState { self.exportState = .running(f) } } }
                 try Task.checkCancellation()
                 var size = (try? FileManager.default.attributesOfItem(atPath: url.path)[.size] as? Int64) ?? 0
@@ -1009,7 +1016,7 @@ final class EditorModel: ObservableObject {
                 exportState = .done(url, size)
             } catch is CancellationError { exportState = .cancelled }      // the core removes only its own temporary item
             catch let e as CocoaError where e.code == .fileWriteFileExists { exportState = .failed(T("Există deja un fișier cu acest nume. Alege alt nume.")) }
-            catch { exportState = .failed(error.localizedDescription) }
+            catch { DiagnosticLog("export").error("export refused or failed: \(error.localizedDescription)"); exportState = .failed(error.localizedDescription) }
             exportTask = nil
         }
     }

@@ -44,7 +44,7 @@ public struct BuiltComposition {
                 let n = mainSize[c.id] ?? renderSize, acc = spans[i].start
                 let tid = lanes[i] == 1 ? (mainTrackB ?? mt).trackID : mt.trackID
                 var mi = Item(source: .track(tid, n), start: acc, duration: c.duration, a: c.transform, b: c.endTransform, fit: true, crop: c.crop.map { CircleCropRender($0, source: n) }, rect: c.crop == nil ? c.rectCrop : nil)
-                mi.motion = c.motion; mi.dissolveIn = p.overlap(into: i); mi.guide = framingGuide == c.id && c.crop != nil
+                mi.motion = c.motion; mi.picture = c.picture; mi.dissolveIn = p.overlap(into: i); mi.guide = framingGuide == c.id && c.crop != nil
                 if let fx = c.mouseFX, !fx.isOff, !c.held, let tr = mouseTracks[c.media] ?? MouseTrack.load(besideMedia: c.media) { mi.mouse = (tr, c.sourceStart, c.speed, fx) }
                 if c.keyFX?.show ?? false, !c.held, let kt = KeyTrack.load(besideMedia: c.media) { mi.keys = (kt, c.sourceStart, c.speed) }
                 items.append(mi)
@@ -61,7 +61,7 @@ public struct BuiltComposition {
             for l in p.layers.filter({ $0.kind == .video }).sorted(by: { $0.row < $1.row }) {
                 guard let lt = layerTracks[l.id] else { continue }
                 var it = Item(source: .track(lt.track.trackID, lt.size), start: l.start, duration: l.duration, a: l.transform, b: l.endTransform, fit: true, crop: l.crop.map { CircleCropRender($0, source: lt.size) }, rect: l.crop == nil ? l.rectCrop : nil)
-                it.layer = l.id; it.motion = l.motion; it.guide = framingGuide == l.id && l.crop != nil; items.append(it)
+                it.layer = l.id; it.motion = l.motion; it.picture = l.picture; it.guide = framingGuide == l.id && l.crop != nil; items.append(it)
                 if !p.hiddenLanes.contains(.c) {       // callouts bound to this overlay sit right above it and act inside its picture only
                     for c in p.callouts where c.layerID == l.id { var ci = Item(source: .callout(c, CalloutMask.make(c.displayed, render: renderSize)), start: c.start, duration: c.duration, a: .identity, b: nil, fit: false); ci.limitTo = l.id; items.append(ci) }
                 }
@@ -205,6 +205,7 @@ final class SadrogInstruction: NSObject, AVVideoCompositionInstructionProtocol {
         let fit: Bool
         var crop: CircleCropRender? = nil       // „Prezentator în cerc”: the picture is cut to a circle (+ outline) before it is placed
         var rect: RectCrop? = nil               // rectangular crop (not combined with the circle)
+        var picture: PictureAdjust? = nil       // colour controls and person background of the item's own picture
         var layer: UUID? = nil                  // set on an overlay's item: its picture's footprint is remembered for callouts bound to it
         var guide = false                       // editor-only framing guide: the part of the source outside the circle, faded
         var limitTo: UUID? = nil                // set on a callout bound to an overlay: the effect stays inside that overlay's footprint
@@ -347,16 +348,19 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
                 continue
             case .track(let id, let size):
                 guard let pb = request.sourceFrame(byTrackID: id) else { continue }
+                var full = CIImage(cvPixelBuffer: pb)
+                if let pa = it.picture, pa.background != .off { full = pa.applyBackground(to: full, buffer: pb) }      // on the whole frame, before any crop
                 if let cr = it.crop {
-                    let full = CIImage(cvPixelBuffer: pb); src = cr.apply(to: full, source: size); n = CGSize(width: cr.side, height: cr.side)
+                    src = cr.apply(to: full, source: size); n = CGSize(width: cr.side, height: cr.side)
                     if it.guide { guideSrc = full.transformed(by: CGAffineTransform(translationX: -cr.window.minX, y: -(size.height - cr.window.maxY))) }
                 }
                 else if let rc = it.rect, !rc.isNone {
                     let w = rc.window(of: size), ciY = size.height - w.maxY                  // top-left window → CoreImage (y-up)
-                    src = CIImage(cvPixelBuffer: pb).cropped(to: CGRect(x: w.minX, y: ciY, width: w.width, height: w.height)).transformed(by: CGAffineTransform(translationX: -w.minX, y: -ciY))
+                    src = full.cropped(to: CGRect(x: w.minX, y: ciY, width: w.width, height: w.height)).transformed(by: CGAffineTransform(translationX: -w.minX, y: -ciY))
                     n = w.size
                 }
-                else { src = CIImage(cvPixelBuffer: pb); n = size }
+                else { src = full; n = size }
+                if let pa = it.picture { src = pa.applyColor(to: src) }
             case .image(let image, let size): src = image; n = size
             }
             if let mo = it.mouse { src = Self.drawPointer(mo.track, fx: mo.fx, at: mo.sourceStart + (now - it.start) * mo.speed, on: src, size: n) }

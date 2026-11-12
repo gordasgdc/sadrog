@@ -199,7 +199,7 @@ struct EditorView: View {
             ZStack {
                 transportControls
                 HStack { timecodeField; Spacer(minLength: 0); transportDuration; transportViewTools }.padding(.horizontal, Theme.S.md)
-            }.frame(minWidth: 700, maxHeight: .infinity).frame(height: 44)
+            }.frame(minWidth: 1060, maxHeight: .infinity).frame(height: 44)      // below this the centred controls would meet the duration and the listening volume: two rows instead
             VStack(spacing: 4) {
                 transportControls
                 HStack(spacing: 6) { timecodeField; transportDuration; Spacer(minLength: 0); transportViewTools }.padding(.horizontal, Theme.S.md)
@@ -222,8 +222,17 @@ struct EditorView: View {
     private var transportDuration: some View {
         Text(tc(m.project.timelineEnd, fps: m.fps)).font(Theme.F.mono).foregroundStyle(Theme.C.textFaint).frame(width: 104, alignment: .trailing).accessibilityLabel(T("Durata proiectului")).padding(.trailing, 6)
     }
+    /// Listening volume: the headphones button mutes/unmutes what you hear, the slider sets its level. Player only — clips, mix and export are untouched.
+    private var monitorControl: some View {
+        HStack(spacing: 2) {
+            IconButton(symbol: m.monitorMuted || m.monitorVolume <= 0.001 ? "headphones.slash" : "headphones", label: m.monitorMuted ? T("Ascultare oprită — clic pentru a porni (nu schimbă clipurile și nici exportul)") : T("Volum de ascultare — clic pentru a opri sunetul în editor (nu schimbă clipurile și nici exportul)"), active: m.monitorMuted) { m.monitorMuted.toggle() }
+            FineSlider(value: $m.monitorVolume, range: 0...1, label: T("Volum de ascultare"), editing: { _ in }, onDoubleClick: { m.monitorVolume = 1 }).frame(width: 64).disabled(m.monitorMuted)
+                .help(T("Volumul de ascultare din editor. Nu schimbă nivelul clipurilor, mixul sau fișierul exportat. Dublu-clic = 100%."))
+        }.padding(.trailing, 6)
+    }
     private var transportViewTools: some View {
         HStack(spacing: 4) {
+            monitorControl
             IconButton(symbol: "squareshape.split.2x2.dotted", label: m.alignOn ? T("Aliniere pe canvas activă: ghidaje galbene la margini, centru și alte elemente (⌘ în timpul tragerii o ocolește)") : T("Aliniere pe canvas oprită"), active: m.alignOn) { m.alignOn.toggle() }
             IconButton(symbol: "minus.magnifyingglass", label: T("Micșorează previzualizarea"), shortcutHint: Shortcuts.shared.combo("view.previewZoomOut")?.display) { m.stepView(false) }
             viewMenu
@@ -1322,7 +1331,7 @@ struct InspectorPanel: View {
                 MotionControls(m: m)
                             }
                         }
-                        if show(.image), m.selectedVideoID != nil, let md = m.selectedMedia, m.media[md]?.hasVideo == true { RectCropGroup(m: m); PresenterGroup(m: m) }
+                        if show(.image), m.selectedVideoID != nil, let md = m.selectedMedia, m.media[md]?.hasVideo == true { ColorGroup(m: m); RectCropGroup(m: m); PresenterGroup(m: m); PersonBackgroundGroup(m: m) }
                         if show(.image), let c = m.selectedClip, m.project.clips.first?.id != c.id {
                             InspectorGroup(T("Tranziție")) {
                                 let room = m.maxDissolve(of: c.id)
@@ -2341,6 +2350,10 @@ struct TimelinePanel: View {
     }
 
     @ViewBuilder private func menu(_ id: UUID) -> some View {
+        Button(T("Arată în Inspector")) { m.select(id); m.revealInspector(nil) }
+        if item(id)?.lane == .main || item(id)?.lane == .overlay || item(id)?.lane == .audio { Button(T("Durată și viteză…")) { m.select(id); m.revealInspector(.time) } }
+        if item(id)?.lane == .main { Button(T("Îngheață cadrul de la cursor")) { m.freezeHere() } }
+        Divider()
         Button(T("Copiază")) { if !m.isSelected(id) { m.select(id) }; m.copySelection() }
         Button(T("Taie")) { if !m.isSelected(id) { m.select(id) }; m.cutSelection() }
         Button(T("Lipește")) { m.pasteClipboard() }.disabled(!m.canPaste)
