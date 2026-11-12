@@ -13,7 +13,7 @@ extension StorageError: LocalizedError {
         case .destinationMissing(let p): return L10n.f("Folderul de destinație nu mai există sau discul nu este conectat: %@", p)
         case .notWritable(let p): return L10n.f("Nu se poate scrie în folderul de destinație: %@. Alege alt folder.", p)
         case .notEnoughSpace(let need, let free):
-            return L10n.f("Spațiu insuficient la destinație: sunt liberi %@, sunt necesari cel puțin %@. Eliberează spațiu sau alege alt folder.", ByteCountFormatter.string(fromByteCount: free, countStyle: .file), ByteCountFormatter.string(fromByteCount: need, countStyle: .file))
+            return L10n.f("Spațiu insuficient la destinație: sunt liberi %@, sunt necesari cel puțin %@. Eliberează spațiu sau alege alt folder.", L10n.bytes(free), L10n.bytes(need))
         }
     }
 }

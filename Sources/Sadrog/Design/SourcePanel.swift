@@ -21,7 +21,7 @@ struct SourceRow<Title: View, Primary: View, Detail: View>: View {
     var extra: AnyView? = nil
     var side: AnyView? = nil
     var notes: AnyView? = nil
-    @State private var open = false
+    @State private var open = ProcessInfo.processInfo.environment["SADROG_SHOW_DETAILS"] == "1"      // verification only, like SADROG_CONTENT_SIZE: the details start open for a documentation capture
     @ViewBuilder var title: Title
     @ViewBuilder var primary: Primary
     @ViewBuilder var detail: Detail

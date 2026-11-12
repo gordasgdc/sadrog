@@ -1,5 +1,6 @@
 // SADROG — Copyright (C) 2026 Dumitru Cristinel Gordas and contributors. GPL-3.0-or-later.
 import SwiftUI
+import SadrogCore
 
 // MARK: surfaces
 /// Flat graphite surface: a small tonal step from the canvas and a hairline. No gradient, no shadow per card (raised = one tone lighter).
@@ -141,4 +142,4 @@ func timecode(_ t: Double, frames: Bool = false) -> String {
     let t = max(0, t); let m = Int(t) / 60, s = Int(t) % 60
     return frames ? String(format: "%02d:%02d.%02d", m, s, Int((t - floor(t)) * 100)) : String(format: "%02d:%02d", m, s)
 }
-func bytesString(_ b: Int64) -> String { ByteCountFormatter.string(fromByteCount: b, countStyle: .file) }
+func bytesString(_ b: Int64) -> String { L10n.bytes(b) }

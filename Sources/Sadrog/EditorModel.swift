@@ -425,6 +425,16 @@ final class EditorModel: ObservableObject {
         return (out.map { $0.map { min(1, $0 / mx) } }, raw)
     }
 
+    /// Verification only, for a project opened with SADROG_OPEN_PROJECT: SADROG_SELECT=clip:<n> | layer:<n> selects that item, SADROG_INSPECTOR_TAB=video|sound|time|cursor
+    /// shows that tab, SADROG_SEEK=<seconds> moves the playhead. Nothing is edited; without the variables nothing happens.
+    func applyLaunchProbe() {
+        let env = ProcessInfo.processInfo.environment
+        if let s = env["SADROG_SELECT"]?.split(separator: ":"), s.count == 2, let n = Int(s[1]) {
+            if s[0] == "clip", let c = project.clips[safe: n] { select(c.id) } else if s[0] == "layer", let l = project.layers[safe: n] { select(l.id) }
+        }
+        if let t = env["SADROG_SEEK"].flatMap(Double.init) { DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.seek(t) } }
+        if let tab = env["SADROG_INSPECTOR_TAB"], let cat: InspCat = ["video": .image, "sound": .sound, "time": .time, "cursor": .cursor][tab] { DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { self.inspectorRequest = cat } }
+    }
     func seek(_ t: Double) { time = t; player.seek(to: CMTime(seconds: t, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero) }
     func select(at t: Double) { if let (i, _) = project.locate(min(t, project.duration - 0.001)) { selection = project.clips[i].id } }
     func select(_ id: UUID?) { extra = []; if id != selection { cropEditing = false; endFraming() }; selection = id }

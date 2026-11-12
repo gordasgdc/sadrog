@@ -10,7 +10,6 @@ Time: H.264 4K ≈ 32 s per 60 s (old preset 34 s); HEVC 18–34 s; ~65 MB RSS.
 
 ## Lot 1.7.0 — one slice, every preset (2026-11-12)
 
-Same 60 s slice (t = 280 s) of a 1920×1080, 30 fps screen-and-camera tutorial that was itself exported by another editor (H.264 Main, ≈ 4.0 Mb/s video, AAC 44.1 kHz); all SADROG runs at the document size and rate, product path, hardware encoder required and confirmed. Raw evidence: /Volumes/CristiGordas/TESTE/GDC_PROJECTS/SADROG/benchmarks/export_compare_2026-11-12 (probe.log, measure.txt).
 
 | run | MB | Mb/s | SSIM vs source | time |
 |---|---|---|---|---|

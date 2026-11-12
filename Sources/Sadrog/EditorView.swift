@@ -1345,13 +1345,7 @@ struct InspectorPanel: View {
                             Text(T("Această înregistrare nu are metadate de mouse (sau clipul e importat): poziția cursorului nu se poate reconstitui. Efectele de cursor cer o înregistrare făcută cu SADROG.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true).padding(.top, Theme.S.md).id(c.id)
                         }
                         if show(.cursor), let c = m.selectedClip, m.selectedMouseTrack != nil {
-                            InspectorGroup(T("Cursor")) {
-                                let fx = c.mouseFX ?? MouseFX(highlight: false, clickRing: false)
-                                Toggle(T("Evidențiază cursorul"), isOn: Binding(get: { fx.highlight }, set: { v in var n = fx; n.highlight = v; m.setMouseFX(c.id, n) })).toggleStyle(.switch).controlSize(.small).font(Theme.F.body)
-                                Toggle(T("Cerc la clic"), isOn: Binding(get: { fx.clickRing }, set: { v in var n = fx; n.clickRing = v; m.setMouseFX(c.id, n) })).toggleStyle(.switch).controlSize(.small).font(Theme.F.body)
-                                Button { m.followMouse(c.id, scale: 1.8) } label: { Label(T("Zoom care urmărește cursorul"), systemImage: "scope") }.buttonStyle(.gloss(.secondary, compact: true)).fixedSize()
-                                    .help(T("Mărește cadrul (×1,8) și îl mută după cursor; rezultatul sunt chei obișnuite, pe care le poți edita la Animație"))
-                            }
+                            CursorGroups(m: m, c: c).id(c.id)
                         }
                         if show(.cursor), let c = m.selectedClip, m.selectedKeyTrack != nil {
                             InspectorGroup(T("Comenzi de tastă")) {

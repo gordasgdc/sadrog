@@ -1005,7 +1005,7 @@ public final class ProjectEditor {
     }
     /// Sets what is drawn from the pointer track on a clip (nil/off = nothing). One undo step.
     public func setMouseFX(clip id: Clip.ID, _ fx: MouseFX?) {
-        commit { p in guard let i = p.clips.firstIndex(where: { $0.id == id }) else { return false }; p.clips[i].mouseFX = (fx?.isOff ?? true) ? nil : fx; return true }
+        commit { p in guard let i = p.clips.firstIndex(where: { $0.id == id }) else { return false }; var v = fx; v?.normalize(); guard p.clips[i].mouseFX != ((v?.isOff ?? true) ? nil : v) else { return false }; p.clips[i].mouseFX = (v?.isOff ?? true) ? nil : v; return true }
     }
     /// Turns the key-command display of a clip on or off (off = nothing stored). One undo step.
     public func setKeyFX(clip id: Clip.ID, _ fx: KeyFX?) {

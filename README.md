@@ -31,6 +31,10 @@
 <td width="33%" valign="top"><b>From recording to file, in one window</b><br><sub>Cut, trim, titles, highlights, camera in a circle, colour, sound, then export. No second application.</sub></td>
 <td width="33%" valign="top"><b>Nothing degrades silently</b><br><sub>The preview is what gets exported. When something cannot be done as asked, SADROG refuses and says why.</sub></td>
 </tr>
+<tr>
+<td width="50%" valign="top"><img src="docs/images/en-16-cursor-900.webp" alt="SADROG — Pointer" width="100%"><br><b>Pointer</b><br><sub>Outline, halo or disc around the pointer, with colour, size and opacity; rings that tell a left click, a right click and a double click apart.</sub></td>
+<td width="50%" valign="top"><img src="docs/images/en-05-title-inspector-900.webp" alt="SADROG — Titles" width="100%"><br><b>Titles</b><br><sub>Styled, animated titles on their own track, edited directly in the viewer.</sub></td>
+</tr>
 </table>
 
 ## A tour of the app

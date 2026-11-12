@@ -31,6 +31,10 @@
 <td width="33%" valign="top"><b>De la înregistrare la fișier, într-o fereastră</b><br><sub>Tăiere, scurtare, titluri, evidențieri, cameră în cerc, culoare, sunet, apoi export. Fără a doua aplicație.</sub></td>
 <td width="33%" valign="top"><b>Nimic nu se degradează pe tăcute</b><br><sub>Ce vezi în previzualizare este ce se exportă. Când ceva nu se poate face așa cum ai cerut, SADROG refuză și spune de ce.</sub></td>
 </tr>
+<tr>
+<td width="50%" valign="top"><img src="docs/images/ro-16-cursor-900.webp" alt="SADROG — Cursor" width="100%"><br><b>Cursor</b><br><sub>Contur, halo sau disc în jurul cursorului, cu culoare, mărime și opacitate; inele care deosebesc clicul stânga, clicul dreapta și dublul clic.</sub></td>
+<td width="50%" valign="top"><img src="docs/images/ro-05-title-inspector-900.webp" alt="SADROG — Titluri" width="100%"><br><b>Titluri</b><br><sub>Titluri cu stil și animație pe pista lor, editate direct în viewer.</sub></td>
+</tr>
 </table>
 
 ## Un tur al aplicației

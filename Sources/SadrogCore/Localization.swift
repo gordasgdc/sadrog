@@ -24,6 +24,10 @@ public enum L10n {
         return v.isEmpty ? ro : v
     }
     /// Text with `%@` / `%d` placeholders filled in (same order in every language).
+    /// A file size in the APP language (not the system's): "2.7 MB" in English, "2,7 MB" in Romanian and Spanish — the decimal mark follows the interface language.
+    public static func bytes(_ b: Int64, _ lang: AppLanguage = .current) -> String {
+        b.formatted(.byteCount(style: .file).locale(Locale(identifier: lang == .en ? "en_US" : lang == .es ? "es_ES" : "ro_RO")))
+    }
     /// A date and time in the APP language (not the system's): "30 oct. 2026, 14:05" / "Oct 30, 2026 at 2:05 PM" / "30 oct 2026, 14:05".
     public static func date(_ d: Date, time: Bool = true, _ lang: AppLanguage = .current) -> String {
         let f = DateFormatter(); f.locale = Locale(identifier: lang.rawValue); f.dateStyle = .medium; f.timeStyle = time ? .short : .none

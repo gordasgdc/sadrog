@@ -31,6 +31,10 @@
 <td width="33%" valign="top"><b>De la grabación al archivo, en una ventana</b><br><sub>Cortar, recortar, títulos, resaltados, cámara en círculo, color, sonido y exportación. Sin una segunda aplicación.</sub></td>
 <td width="33%" valign="top"><b>Nada se degrada en silencio</b><br><sub>Lo que ves en la vista previa es lo que se exporta. Cuando algo no se puede hacer como lo pediste, SADROG se niega y dice por qué.</sub></td>
 </tr>
+<tr>
+<td width="50%" valign="top"><img src="docs/images/es-16-cursor-900.webp" alt="SADROG — Cursor" width="100%"><br><b>Cursor</b><br><sub>Contorno, halo o disco alrededor del cursor, con color, tamaño y opacidad; anillos que distinguen el clic izquierdo, el derecho y el doble clic.</sub></td>
+<td width="50%" valign="top"><img src="docs/images/es-05-title-inspector-900.webp" alt="SADROG — Títulos" width="100%"><br><b>Títulos</b><br><sub>Títulos con estilo y animación en su propia pista, editados directamente en el visor.</sub></td>
+</tr>
 </table>
 
 ## Un recorrido por la aplicación

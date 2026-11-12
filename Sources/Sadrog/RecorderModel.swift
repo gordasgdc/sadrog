@@ -81,7 +81,8 @@ final class RecorderModel: ObservableObject {
     @Published var finished: FinishedRecording?
     @Published var finishName = ""
     /// Start page the next StartView should show (File ▸ New document).
-    @Published var requestedPage: String?
+    /// Verification only (SADROG_START_PAGE=record|document|recent|permissions, set at launch like SADROG_CONTENT_SIZE): the start window opens on that page.
+    @Published var requestedPage: String? = ProcessInfo.processInfo.environment["SADROG_START_PAGE"]
     func requestNewDocument() { guard phase == .idle else { return }; leaveContext(); addTarget = nil; requestedPage = "document"; editor = nil }
     @Published var started: ScreenCapturer.Started?
     var recording: Bool { phase == .recording }
@@ -471,7 +472,7 @@ final class RecorderModel: ObservableObject {
         started = try await capturer.start(config: config, sources: sources, destination: Destination(url: d))
         message = ""; startedAt = Date(); elapsed = 0
         if UserDefaults.standard.bool(forKey: Self.collectMouseKey), let f = selectedSource?.frame, f.width > 0 {
-            let r = MouseRecorder(frame: f) { (CGEvent(source: nil)?.location ?? .zero, CGEventSource.buttonState(.combinedSessionState, button: .left)) }
+            let r = MouseRecorder(frame: f, readRight: { CGEventSource.buttonState(.combinedSessionState, button: .right) }) { (CGEvent(source: nil)?.location ?? .zero, CGEventSource.buttonState(.combinedSessionState, button: .left)) }
             mouseRecorder = r; r.start()
         }
         // key COMMANDS (⌘/⌃/⌥ chords and function keys) only, for a recording that opted in (own setting, default off) and only with the system's Input Monitoring permission;
@@ -656,6 +657,7 @@ final class RecorderModel: ObservableObject {
         let u = URL(fileURLWithPath: path), folder = u.pathExtension == "sadrogproj" ? u.deletingLastPathComponent() : u
         guard FileManager.default.fileExists(atPath: folder.appendingPathComponent("project.sadrogproj").path) else { message = T("Folderul ales nu conține un proiect SADROG (project.sadrogproj)."); return }
         await openDocument(folder)
+        editor?.applyLaunchProbe()
     }
     func openDocument(_ folder: URL) async {
         leaveContext(); addTarget = nil

@@ -27,3 +27,12 @@ final class StorageTests: XCTestCase {
         XCTAssertFalse(e.localizedDescription.contains("StorageError")); XCTAssertTrue(e.localizedDescription.contains("500"))
     }
 }
+
+final class ByteTextTests: XCTestCase {
+    /// The size text follows the interface language, not the Mac's region (an English interface showed "2,7 MB" on a Romanian system).
+    func testSizeUsesTheDecimalMarkOfTheInterfaceLanguage() {
+        XCTAssertEqual(L10n.bytes(2_700_000, .en), "2.7 MB")
+        XCTAssertTrue(L10n.bytes(2_700_000, .ro).hasPrefix("2,7")); XCTAssertTrue(L10n.bytes(2_700_000, .es).hasPrefix("2,7"))
+        XCTAssertTrue(L10n.bytes(20_800_000, .en).hasPrefix("20.8"))
+    }
+}

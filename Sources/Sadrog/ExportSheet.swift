@@ -101,16 +101,16 @@ struct ExportSheet: View {
     }
     /// The estimate in a few words, for the simple view.
     private var shortEstimate: String? {
-        func f(_ b: Int64) -> String { ByteCountFormatter.string(fromByteCount: b, countStyle: .file) }
+        func f(_ b: Int64) -> String { L10n.bytes(b) }
         if let r = ExportEstimate.qualityRange(plan, settings: m.exportSettings) { return L10n.f("Mărime estimată: %@ – %@", f(r.low), f(r.motion)) }      // static screen … continuous motion: the whole honest span
         return ExportEstimate.bytes(plan, settings: m.exportSettings).map { L10n.f("Mărime estimată: ≈ %@", f($0)) }
     }
     private var estimateLine: String? {
         if let r = ExportEstimate.qualityRange(plan, settings: m.exportSettings) {
-            func f(_ b: Int64) -> String { ByteCountFormatter.string(fromByteCount: b, countStyle: .file) }
+            func f(_ b: Int64) -> String { L10n.bytes(b) }
             return L10n.f("Mărime estimată: %@ – %@ pentru captură de ecran (după conținut); cu video cu mișcare continuă, până la ≈ %@. Estimare, nu valoare garantată.", f(r.low), f(r.high), f(r.motion))
         }
-        return ExportEstimate.bytes(plan, settings: m.exportSettings).map { L10n.f("Mărime estimată: ≈ %@ (estimare, nu valoare garantată)", ByteCountFormatter.string(fromByteCount: $0, countStyle: .file)) }
+        return ExportEstimate.bytes(plan, settings: m.exportSettings).map { L10n.f("Mărime estimată: ≈ %@ (estimare, nu valoare garantată)", L10n.bytes($0)) }
     }
     /// The result in one line, before anything is decided: what file, what picture, how long (of the range when only the range is exported).
     private var summary: String {
@@ -331,7 +331,7 @@ struct ExportSheet: View {
         let bytes = ProjectArchive.requiredBytes(m.project)
         field(T("Conține")) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(L10n.f("Proiectul și %@ fișiere media (%@)", "\(files.count - gone.count)", ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file))).font(Theme.F.body).foregroundStyle(Theme.C.text)
+                Text(L10n.f("Proiectul și %@ fișiere media (%@)", "\(files.count - gone.count)", L10n.bytes(bytes))).font(Theme.F.body).foregroundStyle(Theme.C.text)
                 Text(T("O copie: proiectul și media originale nu se schimbă. Arhiva se deschide ca orice proiect și își găsește media chiar dacă folderul e mutat.")).font(Theme.F.caption).foregroundStyle(Theme.C.textFaint).fixedSize(horizontal: false, vertical: true)
                 if !gone.isEmpty { Text(L10n.f("%@ fișiere lipsesc și nu pot fi arhivate.", "\(gone.count)")).font(Theme.F.caption).foregroundStyle(Theme.C.warn) }
             }

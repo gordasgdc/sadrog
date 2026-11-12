@@ -284,14 +284,43 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
         func disc(_ r: CGFloat, _ c: CIColor) -> CIImage {
             CIFilter(name: "CIRadialGradient", parameters: ["inputCenter": CIVector(x: cx, y: cy), "inputRadius0": r, "inputRadius1": r + max(1.5, r * 0.04), "inputColor0": c, "inputColor1": CIColor(red: c.red, green: c.green, blue: c.blue, alpha: 0)])!.outputImage!.cropped(to: rect)
         }
+        /// Filled disc of radius `r` centred at (x, y) with a 1.5 px soft edge; an annulus is one disc with a smaller one cut out of it.
+        func solid(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ c: CIColor) -> CIImage {
+            CIFilter(name: "CIRadialGradient", parameters: ["inputCenter": CIVector(x: x, y: y), "inputRadius0": max(0, r), "inputRadius1": max(0, r) + 1.5, "inputColor0": c, "inputColor1": CIColor(red: c.red, green: c.green, blue: c.blue, alpha: 0)])!.outputImage!.cropped(to: rect)
+        }
+        func annulus(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ w: CGFloat, _ c: CIColor) -> CIImage {
+            solid(x, y, r, c).applyingFilter("CISourceOutCompositing", parameters: [kCIInputBackgroundImageKey: solid(x, y, max(0, r - w), CIColor(red: 1, green: 1, blue: 1, alpha: 1))])
+        }
         var out = img
-        if fx.highlight { out = disc(base, CIColor(red: 1, green: 0.85, blue: 0.2, alpha: 0.35)).composited(over: out) }
-        if fx.clickRing, let c = track.sinceClick(at: t), c.age >= 0, c.age < MouseFX.ringSeconds {
-            let k = c.age / MouseFX.ringSeconds, r = base * (0.6 + 1.6 * k), w = max(2, base * 0.18), a = 0.9 * (1 - k)
-            let ccx = c.x * n.width, ccy = (1 - c.y) * n.height
-            func ring(_ rr: CGFloat, _ col: CIColor) -> CIImage { CIFilter(name: "CIRadialGradient", parameters: ["inputCenter": CIVector(x: ccx, y: ccy), "inputRadius0": rr, "inputRadius1": rr + 1.5, "inputColor0": col, "inputColor1": CIColor(red: col.red, green: col.green, blue: col.blue, alpha: 0)])!.outputImage!.cropped(to: rect) }
-            let outer = ring(r, CIColor(red: 1, green: 1, blue: 1, alpha: a)), inner = ring(max(0, r - w), CIColor(red: 1, green: 1, blue: 1, alpha: 1))
-            out = outer.applyingFilter("CISourceOutCompositing", parameters: [kCIInputBackgroundImageKey: inner]).composited(over: out)
+        let radius = base * fx.size
+        if fx.highlight {
+            let col = CIColor(red: fx.color.r, green: fx.color.g, blue: fx.color.b, alpha: fx.opacity)
+            switch fx.style {
+            case .disc: out = disc(radius, col).composited(over: out)
+            case .ring: out = annulus(cx, cy, radius, max(1.5, radius * fx.stroke), col).composited(over: out)
+            case .halo:      // brightest at the pointer, fading to nothing at 1.8 × the radius: nothing has a hard edge
+                let g = CIFilter(name: "CIRadialGradient", parameters: ["inputCenter": CIVector(x: cx, y: cy), "inputRadius0": radius * 0.15, "inputRadius1": radius * 1.8, "inputColor0": col, "inputColor1": CIColor(red: col.red, green: col.green, blue: col.blue, alpha: 0)])!.outputImage!.cropped(to: rect)
+                out = g.composited(over: out)
+            }
+        }
+        if fx.clickRing {
+            let life = fx.clickSeconds, cc = fx.clickColor
+            /// One radar ring born at `age` 0: grows from 0.6 to 2.2 radii and fades out over `life`.
+            func ripple(_ c: MouseClick, age: Double, width: CGFloat, fill: Bool) {
+                guard age >= 0, age < life else { return }
+                let k = age / life, r = radius * (0.6 + 1.6 * k), a = fx.clickStrength * (1 - k)
+                let x = c.x * n.width, y = (1 - c.y) * n.height
+                if fill { out = solid(x, y, r, CIColor(red: cc.r, green: cc.g, blue: cc.b, alpha: a * 0.28)).composited(over: out) }
+                out = annulus(x, y, r, max(2, radius * width), CIColor(red: cc.r, green: cc.g, blue: cc.b, alpha: a)).composited(over: out)
+            }
+            for c in track.activeClicks(at: t, duration: life) {
+                let age = t - c.t
+                switch c.kind {
+                case .left: ripple(c, age: age, width: 0.18, fill: false)                        // one ring
+                case .right: ripple(c, age: age, width: 0.10, fill: true)                        // a thinner ring with a tinted inside
+                case .double: ripple(c, age: age, width: 0.18, fill: false); ripple(c, age: age - max(c.gap, 0.12), width: 0.18, fill: false)   // two rings, the second born at the second press
+                }
+            }
         }
         return out.cropped(to: rect)
     }
@@ -350,6 +379,8 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
                 guard let pb = request.sourceFrame(byTrackID: id) else { continue }
                 var full = CIImage(cvPixelBuffer: pb)
                 if let pa = it.picture, pa.background != .off { full = pa.applyBackground(to: full, buffer: pb) }      // on the whole frame, before any crop
+                // pointer effects are positions in the WHOLE recorded frame: drawn before any crop, so a cropped clip shows them where the pointer really was
+                if let mo = it.mouse { full = Self.drawPointer(mo.track, fx: mo.fx, at: mo.sourceStart + (now - it.start) * mo.speed, on: full, size: size) }
                 if let cr = it.crop {
                     src = cr.apply(to: full, source: size); n = CGSize(width: cr.side, height: cr.side)
                     if it.guide { guideSrc = full.transformed(by: CGAffineTransform(translationX: -cr.window.minX, y: -(size.height - cr.window.maxY))) }
@@ -363,7 +394,6 @@ final class SadrogCompositor: NSObject, AVVideoCompositing {
                 if let pa = it.picture { src = pa.applyColor(to: src) }
             case .image(let image, let size): src = image; n = size
             }
-            if let mo = it.mouse { src = Self.drawPointer(mo.track, fx: mo.fx, at: mo.sourceStart + (now - it.start) * mo.speed, on: src, size: n) }
             if let ky = it.keys, now >= it.start, now < it.start + it.duration { keyLabels = (ky.track, ky.sourceStart + (now - it.start) * ky.speed) }       // drawn last, in screen space: never zoomed, cropped or dimmed
             var t = Transform.state(start: it.a, end: it.b, motion: it.motion, elapsed: now - it.start, duration: it.duration)
             let m = flip(n.height).concatenating(BuiltComposition.matrix(natural: n, render: r, t, fit: it.fit)).concatenating(flip(r.height))

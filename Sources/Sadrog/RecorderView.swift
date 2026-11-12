@@ -33,7 +33,10 @@ struct StartWindowSizer: NSViewRepresentable {
             super.viewDidMoveToWindow()
             guard let w = window else { return }
             DispatchQueue.main.async {
-                if let e = ProcessInfo.processInfo.environment["SADROG_START_SIZE"]?.split(separator: "x").compactMap({ Double($0) }), e.count == 2 { w.setContentSize(NSSize(width: e[0], height: e[1])); w.center(); return }
+                if let e = ProcessInfo.processInfo.environment["SADROG_START_SIZE"]?.split(separator: "x").compactMap({ Double($0) }), e.count == 2 {      // verification only; applied again after the system has restored the saved window frame, which would otherwise win
+                    let apply = { w.setContentSize(NSSize(width: e[0], height: e[1])); w.center() }
+                    apply(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { apply() }; return
+                }
                 let cur = w.contentRect(forFrameRect: w.frame).size
                 guard cur.width > 820 || cur.height > 620 else { return }
                 w.setContentSize(NSSize(width: min(cur.width, 740), height: min(cur.height, 560))); w.center()
@@ -70,7 +73,16 @@ struct StartView: View {
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity).background(Theme.C.bg0)
         }
-        .task { m.observeProbeGuard(); if let r = m.requestedPage, let pg = StartPage(rawValue: r) { page = pg; m.requestedPage = nil }; await m.refresh(); await m.openRequestedProject() }
+        .task { m.observeProbeGuard(); if let r = m.requestedPage, let pg = StartPage(rawValue: r) { page = pg; m.requestedPage = nil }; await m.refresh()
+            // verification only (SADROG_ADD_SOURCES=camera,mic at launch, like SADROG_CONTENT_SIZE): the rows a documentation capture needs; nothing is recorded
+            if let add = ProcessInfo.processInfo.environment["SADROG_ADD_SOURCES"], m.cameraRows.isEmpty {
+                if add.contains("camera"), !m.cameras.isEmpty {
+                    m.addCameraRow()
+                    if let row = m.cameraRows.last, let cam = m.cameras.first(where: { $0.name.contains("FaceTime") }) ?? m.cameras.first { await m.setCamera(row.id, cam.uid) }
+                }
+                if add.contains("mic"), let d = m.devices.first(where: { $0.name.contains("MacBook") }) ?? m.devices.first { m.addInput(d) }
+            }
+            await m.openRequestedProject() }
         // coming back to SADROG (from the window you want to record, for instance) refreshes the list; nothing starts
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in if m.phase == .idle { Task { await m.refresh() } } }
         .onChange(of: page) { _, p in if p != .record { m.leaveContext() } }    // preview / identify / meters belong to the capture page only
@@ -332,7 +344,7 @@ struct StartView: View {
         Section(T("Audio")) {
             Button { m.addSystemAudio() } label: { Label(T("Sunetul calculatorului"), systemImage: "speaker.wave.2") }.disabled(m.audio.contains { $0.kind == .system })
             ForEach(m.devices, id: \.uid) { d in
-                Button("\(d.name) — \(d.inputChannels == 1 ? "mono" : "\(d.inputChannels) canale")") { m.addInput(d) }
+                Button("\(d.name) — \(d.inputChannels == 1 ? "mono" : L10n.f("%@ canale", "\(d.inputChannels)"))") { m.addInput(d) }
                 if d.inputChannels > 2 { Button(L10n.f("%@ — fiecare canal pe pistă separată (%@)", "\(d.name)", "\(d.inputChannels)")) { m.addInputSplit(d) } }
             }
             if m.devices.isEmpty { Text(T("Nicio intrare audio detectată")) }

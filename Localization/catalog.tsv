@@ -1502,3 +1502,29 @@ Spațiu insuficient la destinație: sunt liberi %@, sunt necesari cel puțin %@.
 Mărime estimată: %@ – %@	Estimated size: %@ – %@	Tamaño estimado: %@ – %@
 Mărime estimată: ≈ %@	Estimated size: ≈ %@	Tamaño estimado: ≈ %@
 Strălucire	Brightness	Brillo
+%@ canale	%@ channels	%@ canales
+Această înregistrare a fost făcută înainte de versiunea 1.7.0 și a reținut doar butonul principal: clicurile dreapta nu pot fi deosebite și nu se desenează. Clicul stânga și dublul clic funcționează.	This recording was made before version 1.7.0 and kept only the primary button: right clicks cannot be told apart and are not drawn. Left click and double click work.	Esta grabación se hizo antes de la versión 1.7.0 y solo guardó el botón principal: los clics derechos no se pueden distinguir y no se dibujan. El clic izquierdo y el doble clic funcionan.
+Clic dreapta: inel subțire cu interior colorat	Right click: a thin ring with a tinted inside	Clic derecho: un anillo fino con el interior coloreado
+Clic stânga: un inel	Left click: one ring	Clic izquierdo: un anillo
+Contur = un cerc gol, conținutul de sub cursor rămâne vizibil. Halo = o lumină moale, fără margine. Disc = un cerc plin, discret.	Outline = an empty circle, what is under the pointer stays visible. Halo = a soft glow with no edge. Disc = a discreet filled circle.	Contorno = un círculo vacío, lo que hay bajo el cursor sigue visible. Halo = una luz suave sin borde. Disco = un círculo relleno, discreto.
+Desenează un semn care urmărește cursorul pe tot clipul; apare și în export.	Draws a mark that follows the pointer for the whole clip; it is in the export too.	Dibuja una marca que sigue al cursor durante todo el clip; también aparece en la exportación.
+Disc	Disc	Disco
+Dublu clic: două inele, unul după altul	Double click: two rings, one after the other	Doble clic: dos anillos, uno tras otro
+Efect la clic	Click effect	Efecto de clic
+Evidențiere cursor	Pointer highlight	Resaltado del cursor
+Forma evidențierii	Shape of the highlight	Forma del resaltado
+Grosimea conturului, în procente din rază	Outline thickness, as a percentage of the radius	Grosor del contorno, en porcentaje del radio
+Halo	Halo	Halo
+Independent de evidențiere și de efectul la clic.	Independent of the highlight and of the click effect.	Independiente del resaltado y del efecto de clic.
+Inele la clic	Rings on click	Anillos al hacer clic
+Intensitate	Intensity	Intensidad
+La fiecare clic, un inel pornește de la cursor, se lărgește și se stinge.	At every click a ring starts at the pointer, widens and fades out.	En cada clic un anillo sale del cursor, se ensancha y se apaga.
+Resetează aspectul cursorului	Reset the pointer look	Restablecer el aspecto del cursor
+Zoom după cursor	Zoom following the pointer	Zoom que sigue al cursor
+Galben	Yellow	Amarillo
+Alb	White	Blanco
+Portocaliu	Orange	Naranja
+Verde	Green	Verde
+Turcoaz	Turquoise	Turquesa
+Albastru	Blue	Azul
+Mov	Purple	Morado
